@@ -3,7 +3,8 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Feed from "./pages/Feed";
-
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 function App() {
   return (
     <Router>
@@ -12,6 +13,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

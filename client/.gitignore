@@ -21,3 +21,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore lock and package files
+*.lock
+*.json
+# Ignore log files
+*.log
+
+# Ignore IDE settings
+.vscode/
+.idea/
