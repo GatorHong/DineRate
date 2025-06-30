@@ -4,7 +4,7 @@ import {useThemeStyles} from "@/constants/Styles";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
-    const { styles, colors } = useThemeStyles();
+    const { colors } = useThemeStyles();
 
     return (
         <Tabs
@@ -30,14 +30,24 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="testScreen"
+                name="Login"
                 options={{
-                    title: 'Test',
+                    title: 'Login',
                     tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24}/>
+                        <Ionicons name={focused ? 'cloud-circle' : 'cloud-circle-outline'} color={color} size={24}/>
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="Register"
+                options={{
+                    title: 'Register',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'person-add' : 'person-add-outline'} color={color} size={24}/>
+                    ),
+                }}
+            />
+
         </Tabs>
     );
 }
