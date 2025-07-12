@@ -3,8 +3,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from "../../services/api";
+import { useThemeStyles } from '../../constants/Styles';
 
 export default function Login() {
+  const { styles, colors } = useThemeStyles();
   const [form, setForm] = useState({ username: "", password: "" });
   const navigation = useNavigation();
 
@@ -24,56 +26,26 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={form.username}
-        onChangeText={handleUsernameChange}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={form.password}
-        onChangeText={handlePasswordChange}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.screenContainer}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor={colors.icon}
+              value={form.username}
+              onChangeText={handleUsernameChange}
+          />
+          <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor={colors.icon}
+              secureTextEntry
+              value={form.password}
+              onChangeText={handlePasswordChange}
+          />
+          <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+      </View>
   );
 }
-
-// Example basic styling
-const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    justifyContent: 'center',
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginBottom: 24,
-  },
-  input: {
-    backgroundColor: '#f1f5f9',
-    borderRadius: 6,
-    padding: 12,
-    marginBottom: 16,
-  },
-  button: {
-    backgroundColor: '#007aff',
-    padding: 14,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-});

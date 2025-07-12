@@ -2,10 +2,10 @@ import { View, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "../../services/api";
-import {useThemeStyles} from "@/constants/Styles";
+import {useThemeStyles} from '../../constants/Styles';
 
 export default function Register() {
-  const styles = useThemeStyles();
+  const { styles, colors } = useThemeStyles();
   const [form, setForm] = useState({ name: "", username: "", password: "" });
 
   const handleNameChange = (text) => setForm({ ...form, name: text });
@@ -25,7 +25,7 @@ export default function Register() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screenContainer}>
       <Text style={styles.title}>Register</Text>
       <TextInput
           style={styles.input}
@@ -46,7 +46,7 @@ export default function Register() {
           value={form.password}
           onChangeText={handlePasswordChange}
       />
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </View>
