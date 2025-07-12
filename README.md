@@ -10,6 +10,8 @@
 
 📄 Software Architecture Models: [Document](https://docs.google.com/document/d/1h8wXCg4vSrbHAELRN5YaBw80SWi1nlluY5IqDACGV0g/edit?usp=sharing)
 
+📄 Module 6: Sprint Retrospective: [Document](https://docs.google.com/document/d/1MbQkiB0ykF_aHopwrtce8XnawwX37eI-hUad5uLwl7k/edit?usp=sharing)
+
 # Expo Information:
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
@@ -22,9 +24,10 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Start the frontend
 
    ```bash
+   cd client
    npx expo start
    ```
 
