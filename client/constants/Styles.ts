@@ -1,6 +1,5 @@
 //if you want to use tailwind, we can use https://www.nativewind.dev
-import { StyleSheet } from "react-native";
-import { useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 
 //Color palette
 export const Colors = {
