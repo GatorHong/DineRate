@@ -40,6 +40,8 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
         screenContainer: {
             flex: 1,
             backgroundColor: colors.background,
+            padding: 24,
+            justifyContent: 'center'
         },
         text: {
             color: colors.text,
@@ -49,12 +51,15 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             color: colors.text,
             fontSize: 24,
             fontWeight: 'bold',
+            marginBottom: 12,
+            marginTop: 12,
         },
         buttonContainer: {
             padding: 10,
             backgroundColor: colors.buttonBackground,
             borderRadius: 5,
             marginTop: 10,
+            marginBottom: 10,
         },
         buttonText: {
             color: colors.buttonText,
@@ -64,6 +69,15 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             color: colors.tint,
             textDecorationLine: 'underline',
             fontSize: 20,
+        },
+        input: {
+            backgroundColor: colors.background,
+            borderWidth: 1,
+            borderColor: colors.border,
+            borderRadius: 6,
+            padding: 12,
+            marginBottom: 16,
+            color: colors.text
         },
     });
 };

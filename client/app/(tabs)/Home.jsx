@@ -2,9 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, ScrollView, Text, View } from 'react-native';
+import { useThemeStyles } from '../../constants/Styles';
 import api from '../../services/api';
 
 export default function Home() {
+  const { styles, colors } = useThemeStyles();
   const router = useRouter();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,37 +53,42 @@ export default function Home() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Button title="Logout" onPress={handleLogout} />
+      <View style={styles.screenContainer}>
+        <View style={{ padding: 20 }}>
+          <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>
+            🍽️ Nearby Restaurants
+          </Text>
 
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginVertical: 16 }}>
-        🍽️ Nearby Restaurants
-      </Text>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#007aff" />
-      ) : error ? (
-        <Text style={{ color: "red" }}>{error}</Text>
-      ) : (
-        <ScrollView>
-          {restaurants.map((restaurant) => (
-            <View key={restaurant._id} style={{
-              marginBottom: 12,
-              padding: 16,
-              borderWidth: 1,
-              borderColor: '#ccc',
-              borderRadius: 8,
-              backgroundColor: '#f8f9fa'
-            }}>
-              <Text style={{ fontSize: 18, fontWeight: '600' }}>
-                {restaurant.name}
-              </Text>
-              <Text>{restaurant.description}</Text>
-              <Text style={{ fontStyle: 'italic' }}>{restaurant.location}</Text>
-            </View>
-          ))}
-        </ScrollView>
-      )}
-    </View>
+          {loading ? (
+              <ActivityIndicator size="large" color={colors.tint} />
+          ) : error ? (
+              <Text style={{ color: "red" }}>{error}</Text>
+          ) : (
+              <ScrollView>
+                {restaurants.map((restaurant) => (
+                    <View key={restaurant._id} style={{
+                      marginBottom: 12,
+                      padding: 16,
+                      borderWidth: 1,
+                      borderColor: colors.border,
+                      borderRadius: 8,
+                      backgroundColor: colors.background
+                    }}>
+                      <Text style={{ ...styles.text, fontSize: 18, fontWeight: '600' }}>
+                        {restaurant.name}
+                      </Text>
+                      <Text style={styles.text}>{restaurant.description}</Text>
+                      <Text style={{ ...styles.text, fontStyle: 'italic' }}>{restaurant.location}</Text>
+                    </View>
+                ))}
+              </ScrollView>
+          )}
+        </View>
+      </View>
   );
 }
