@@ -7,7 +7,7 @@ export default function TabLayout() {
 
     return (
         <Tabs
-            initialRouteName="Login"
+            initialRouteName="Home"
             screenOptions={{
                 tabBarActiveTintColor: colors.tint,
                 headerStyle: {
@@ -20,6 +20,15 @@ export default function TabLayout() {
                 },
             }}
         >
+            <Tabs.Screen
+                name="Home"
+                options={{
+                    title: 'Home',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={24}/>
+                    ),
+                }}
+            />
             <Tabs.Screen
                 name="Login"
                 options={{
@@ -36,13 +45,6 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'person-add' : 'person-add-outline'} color={color} size={24}/>
                     ),
-                }}
-            />
-            <Tabs.Screen
-                name="Home"
-                options={{
-                    title: 'Home',
-                    tabBarButton: () => null, // Hide Home from tab bar
                 }}
             />
         </Tabs>

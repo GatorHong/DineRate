@@ -79,6 +79,72 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             marginBottom: 16,
             color: colors.text
         },
+        listContainer: {
+            marginBottom: 12,
+            flex: 1
+        },
+        listHeader: {
+            fontSize: 18,
+            fontWeight: '600',
+            color: colors.icon,
+            marginBottom: 10,
+        },
+        restaurantItem: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: colors.background,
+            paddingVertical: 16,
+            paddingHorizontal: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+            borderRadius: 8,
+            marginBottom: 8,
+        },
+        restaurantName: {
+            fontSize: 16,
+            color: colors.text,
+        },
+        // New styles for dashboard cards
+        dashboardContainer: {
+            marginBottom: 16,
+            flex : 1
+        },
+        cardRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 16,
+
+        },
+        card: {
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: colors.background,
+            borderRadius: 16,
+            padding: 20,
+            borderWidth: 1,
+            borderColor: colors.border,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 3,
+        },
+        cardIconContainer: {
+            alignItems: 'center',
+        },
+        cardLabel: {
+            marginTop: 8,
+            fontSize: 14,
+            color: colors.text,
+        },
+        cardCount: {
+            fontSize: 40,
+            fontWeight: 'bold',
+            color: colors.text,
+        },
     });
 };
 
