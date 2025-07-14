@@ -1,15 +1,13 @@
+import { useThemeStyles } from "@/constants/Styles";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Redirect, Tabs } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { Tabs } from 'expo-router';
 
-export default function TabsLayout() {
-  const [authenticated, setAuthenticated] = useState(null);
+export default function TabLayout() {
+    const { colors } = useThemeStyles();
 
-<<<<<<< Updated upstream
     return (
         <Tabs
-            initialRouteName="Login"
+            initialRouteName="Home"
             screenOptions={{
                 tabBarActiveTintColor: colors.tint,
                 headerStyle: {
@@ -22,6 +20,15 @@ export default function TabsLayout() {
                 },
             }}
         >
+            <Tabs.Screen
+                name="Home"
+                options={{
+                    title: 'Home',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={24}/>
+                    ),
+                }}
+            />
             <Tabs.Screen
                 name="Login"
                 options={{
@@ -40,32 +47,6 @@ export default function TabsLayout() {
                     ),
                 }}
             />
-            <Tabs.Screen
-                name="Home"
-                options={{
-                    title: 'Home',
-                    tabBarButton: () => null, // Hide Home from tab bar
-                }}
-            />
         </Tabs>
     );
 }
-=======
-  useEffect(() => {
-    AsyncStorage.getItem('token').then((token) => {
-      setAuthenticated(!!token);
-    });
-  }, []);
-
-  if (authenticated === null) return null; // Loading
-
-  if (!authenticated) return <Redirect href="/Landing" />;
-
-  return (
-    <Tabs>
-      <Tabs.Screen name="Home" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }} />
-      <Tabs.Screen name="Profile" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={size} color={color} /> }} />
-    </Tabs>
-  );
-}
->>>>>>> Stashed changes
