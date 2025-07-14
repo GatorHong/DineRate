@@ -1,13 +1,34 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, FlatList, Text, View, SafeAreaView, Platform } from 'react-native';
 import { useThemeStyles } from '../../constants/Styles';
 import api from '../../services/api';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+// Restaurant Item Component
+const RestaurantItem = ({ restaurant, colors, styles }) => (
+    <TouchableOpacity style={styles.restaurantItem}>
+      <Text style={styles.restaurantName}>{restaurant.name}</Text>
+      <Ionicons name="chevron-forward" size={20} color={colors.icon} />
+    </TouchableOpacity>
+);
+
+// Tracking List Card Component
+const TrackingListCard = ({ iconName, label, count, style, colors, styles }) => (
+    <TouchableOpacity style={[styles.card, style]}>
+      <View style={styles.cardIconContainer}>
+        <Ionicons name={iconName} size={28} color={colors.text} />
+        <Text style={styles.cardLabel}>{label}</Text>
+      </View>
+      <Text style={styles.cardCount}>{count}</Text>
+    </TouchableOpacity>
+);
 
 export default function Home() {
   const { styles, colors } = useThemeStyles();
   const router = useRouter();
+
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -52,43 +73,80 @@ export default function Home() {
     router.replace('/Login');
   };
 
-  return (
-      <View style={styles.screenContainer}>
-        <View style={{ padding: 20 }}>
-          <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={handleLogout}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>
-            🍽️ Nearby Restaurants
-          </Text>
+  const renderRestaurantItem = ({ item }) => (
+      <RestaurantItem
+          key={item._id}
+          restaurant={item}
+          colors={colors}
+          styles={styles}
+      />
+  );
 
-          {loading ? (
-              <ActivityIndicator size="large" color={colors.tint} />
-          ) : error ? (
-              <Text style={{ color: "red" }}>{error}</Text>
-          ) : (
-              <ScrollView>
-                {restaurants.map((restaurant) => (
-                    <View key={restaurant._id} style={{
-                      marginBottom: 12,
-                      padding: 16,
-                      borderWidth: 1,
-                      borderColor: colors.border,
-                      borderRadius: 8,
-                      backgroundColor: colors.background
-                    }}>
-                      <Text style={{ ...styles.text, fontSize: 18, fontWeight: '600' }}>
-                        {restaurant.name}
-                      </Text>
-                      <Text style={styles.text}>{restaurant.description}</Text>
-                      <Text style={{ ...styles.text, fontStyle: 'italic' }}>{restaurant.location}</Text>
-                    </View>
-                ))}
-              </ScrollView>
-          )}
+  return (
+      <SafeAreaView style={styles.screenContainer}>
+        <View style={{
+          flex: 1,
+          padding: 24
+        }}>
+          {/* Header with title and logout */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <Text style={styles.title}>DineRate</Text>
+            <TouchableOpacity
+                style={[styles.buttonContainer, { paddingHorizontal: 15, marginTop: 0 }]}
+                onPress={handleLogout}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Restaurant List*/}
+          <View style={ styles.listContainer}>
+            <Text style={styles.listHeader}>Hot Restaurants</Text>
+            {loading ? (
+                <ActivityIndicator size="large" color={colors.tint}/>
+            ) : error ? (
+                <Text style={{ color: "red" }}>{error}</Text>
+            ) : (
+                <FlatList
+                    data={restaurants}
+                    renderItem={renderRestaurantItem}
+                    keyExtractor={item => item._id}
+                    showsVerticalScrollIndicator={true}
+                />
+            )}
+          </View>
+
+          {/* Dashboard Cards at bottom */}
+          <View style={[styles.dashboardContainer]}>
+            {/* Top row of cards */}
+            <View style={[styles.cardRow, { flex: 1 }]}>
+              <TrackingListCard
+                  iconName="bookmark"
+                  label="To Visit"
+                  count={6}
+                  style={{ marginRight: 8 }}
+                  colors={colors}
+                  styles={styles}
+              />
+              <TrackingListCard
+                  iconName="time"
+                  label="In Progress"
+                  count={2}
+                  style={{ marginLeft: 8}}
+                  colors={colors}
+                  styles={styles}
+              />
+            </View>
+            {/* Bottom card */}
+            <TrackingListCard
+                iconName="checkmark-circle"
+                label="Completed"
+                count={3}
+                colors={colors}
+                style={{flex : 0.5}}
+                styles={styles}
+            />
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
   );
 }

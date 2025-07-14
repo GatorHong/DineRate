@@ -1,4 +1,4 @@
-import { useThemeStyles } from '@/constants/Styles';
+import { useThemeStyles } from '../../constants/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
