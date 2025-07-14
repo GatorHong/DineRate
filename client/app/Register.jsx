@@ -1,9 +1,13 @@
+<<<<<<< Updated upstream:client/app/(tabs)/Register.jsx
 import { useThemeStyles } from '@/constants/Styles';
+=======
+>>>>>>> Stashed changes:client/app/Register.jsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import api from '../../services/api';
+import { useThemeStyles } from '../constants/Styles';
+import api from '../services/api';
 
 export default function Register() {
   const { styles, colors } = useThemeStyles();

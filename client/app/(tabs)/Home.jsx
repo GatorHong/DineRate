@@ -1,9 +1,35 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+<<<<<<< Updated upstream
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../../constants/Styles';
 import api from '../../services/api';
+=======
+import { ActivityIndicator, FlatList, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { useThemeStyles } from '../../constants/Styles';
+import api from '../../services/api';
+
+// Restaurant Item Component
+const RestaurantItem = ({ restaurant, colors, styles }) => (
+    <TouchableOpacity style={styles.restaurantItem}>
+      <Text style={styles.restaurantName}>{restaurant.name}</Text>
+      <Ionicons name="chevron-forward" size={20} color={colors.icon} />
+    </TouchableOpacity>
+);
+
+// Tracking List Card Component
+const TrackingListCard = ({ iconName, label, count, style, colors, styles }) => (
+    <TouchableOpacity style={[styles.card, style]}>
+      <View style={styles.cardIconContainer}>
+        <Ionicons name={iconName} size={28} color={colors.text} />
+        <Text style={styles.cardLabel}>{label}</Text>
+      </View>
+      <Text style={styles.cardCount}>{count}</Text>
+    </TouchableOpacity>
+);
+>>>>>>> Stashed changes
 
 export default function Home() {
   const { styles, colors } = useThemeStyles();

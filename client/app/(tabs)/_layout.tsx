@@ -1,10 +1,12 @@
-import { useThemeStyles } from "@/constants/Styles";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Redirect, Tabs } from 'expo-router';
+import { useEffect, useState } from 'react';
 
-export default function TabLayout() {
-    const { colors } = useThemeStyles();
+export default function TabsLayout() {
+  const [authenticated, setAuthenticated] = useState(null);
 
+<<<<<<< Updated upstream
     return (
         <Tabs
             initialRouteName="Login"
@@ -48,3 +50,22 @@ export default function TabLayout() {
         </Tabs>
     );
 }
+=======
+  useEffect(() => {
+    AsyncStorage.getItem('token').then((token) => {
+      setAuthenticated(!!token);
+    });
+  }, []);
+
+  if (authenticated === null) return null; // Loading
+
+  if (!authenticated) return <Redirect href="/Landing" />;
+
+  return (
+    <Tabs>
+      <Tabs.Screen name="Home" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }} />
+      <Tabs.Screen name="Profile" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={size} color={color} /> }} />
+    </Tabs>
+  );
+}
+>>>>>>> Stashed changes
