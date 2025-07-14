@@ -1,15 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from "react";
-<<<<<<< Updated upstream:client/app/(tabs)/Login.jsx
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import api from "../../services/api";
-import { useThemeStyles } from '../../constants/Styles';
-=======
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
->>>>>>> Stashed changes:client/app/Login.jsx
 
 export default function Login() {
   const { styles, colors } = useThemeStyles();

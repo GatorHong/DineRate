@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream:client/app/(tabs)/Register.jsx
-import { useThemeStyles } from '@/constants/Styles';
-=======
->>>>>>> Stashed changes:client/app/Register.jsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
