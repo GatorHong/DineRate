@@ -1,57 +1,87 @@
 # 🍽😋 DineRate
 
-📄 Project Documentation: [Document](https://docs.google.com/document/d/1W4X9eVA9Q5IpPLjczei6R3KohnyaEdRY0KPBzs-iq6g/edit?usp=sharing)
+📄 Project Documentation: https://docs.google.com/document/d/1W4X9eVA9Q5IpPLjczei6R3KohnyaEdRY0KPBzs-iq6g/edit?usp=sharing  
+📄 User Story: https://docs.google.com/document/d/1xSLjSf7dwzB2mLF7UVhnWSOh7-C3nv561PlomYQYsFQ/edit?usp=sharing  
+📄 Presentation Slide: https://docs.google.com/presentation/d/1EEQ10oYte1v-55WKfstGGSpGmSx8MYTLaVl-BUDt-bc/edit?usp=sharing  
+📄 Product Backlog: https://docs.google.com/document/d/1GmRpzB3C9ZOoC-8YAY87VbYj4dz0q1FcRgDMcnN24dI/edit?usp=sharing  
+📄 Software Architecture Models: https://docs.google.com/document/d/1h8wXCg4vSrbHAELRN5YaBw80SWi1nlluY5IqDACGV0g/edit?usp=sharing  
+📄 Module 6: Sprint Retrospective: https://docs.google.com/document/d/1MbQkiB0ykF_aHopwrtce8XnawwX37eI-hUad5uLwl7k/edit?usp=sharing  
+📄 Sprint 1 Presentation: https://docs.google.com/presentation/d/18bzejdqN24Z-qWg7hXyeOIU-y7PUi2-JohPmL0mvQd4/edit?usp=sharing
 
-📄 User Story: [Document](https://docs.google.com/document/d/1xSLjSf7dwzB2mLF7UVhnWSOh7-C3nv561PlomYQYsFQ/edit?usp=sharing)
 
-📄 Presentation Slide: [Document](https://docs.google.com/presentation/d/1EEQ10oYte1v-55WKfstGGSpGmSx8MYTLaVl-BUDt-bc/edit?usp=sharing)
+---
 
-📄 Product Backlog: [Document](https://docs.google.com/document/d/1GmRpzB3C9ZOoC-8YAY87VbYj4dz0q1FcRgDMcnN24dI/edit?usp=sharing)
+## 🚀 Expo Information
 
-📄 Software Architecture Models: [Document](https://docs.google.com/document/d/1h8wXCg4vSrbHAELRN5YaBw80SWi1nlluY5IqDACGV0g/edit?usp=sharing)
+This is an Expo project created with create-expo-app.
 
-📄 Module 6: Sprint Retrospective: [Document](https://docs.google.com/document/d/1MbQkiB0ykF_aHopwrtce8XnawwX37eI-hUad5uLwl7k/edit?usp=sharing)
+### ▶️ Get Started
 
-# Expo Information:
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
+1. Install dependencies:
    npm install
-   ```
 
-2. Start the frontend
-
-   ```bash
-   cd client
+2. Start the frontend:
+   cd client  
    npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
+You can run the app on:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Expo Go
+- Android Emulator: https://docs.expo.dev/workflow/android-studio-emulator/
+- iOS Simulator: https://docs.expo.dev/workflow/ios-simulator/
+- Development Builds: https://docs.expo.dev/develop/development-builds/introduction/
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+You can start developing by editing files in the app/ directory.
 
-Starter example code is in the **app-example** directory.
+---
 
-## Learn more
+## 🛠 Backend Setup
 
-To learn more about developing your project with Expo, look at the following resources:
+The backend is a Node.js server using Express and MongoDB.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### ✅ 1. Prerequisites
 
-## Join the community
+- Node.js installed: https://nodejs.org/
+- MongoDB Community Edition: https://www.mongodb.com/try/download/community
 
-Join our community of developers creating universal apps.
+### ✅ 2. MongoDB Local Installation (Windows)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Download the installer:  
+   https://www.mongodb.com/try/download/community
+
+2. During installation:
+   - Check "Install MongoDB as a Service"
+   - Include MongoDB Compass (optional)
+
+3. After installation:
+   - Add MongoDB to system PATH:  
+     Go to C:\Program Files\MongoDB\Server\<version>\bin  
+     Copy the path, and add it in Environment Variables → Path → New
+
+4. Start MongoDB:
+   mongod
+
+5. Create a .env file in the server/ folder:
+
+   MONGO_URI=mongodb://127.0.0.1:27017/dinerate  
+   PORT=5000
+
+6. In a second terminal:
+   cd server  
+   npm install  
+   npm run dev
+
+---
+
+## 📚 Learn More
+
+- Expo Documentation: https://docs.expo.dev/
+- Expo Router Guide: https://docs.expo.dev/router/introduction/
+- MongoDB Docs: https://www.mongodb.com/docs/manual/
+
+---
+
+## 🧑‍🤝‍🧑 Join the Community
+
+- Expo GitHub: https://github.com/expo/expo  
+- Expo Discord: https://chat.expo.dev
