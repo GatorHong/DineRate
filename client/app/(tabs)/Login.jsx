@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from "../../services/api";
 
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState(""); // ✅ new state for error
   const navigation = useNavigation();
 
   const handleUsernameChange = (text) => setForm({ ...form, username: text });
@@ -13,19 +14,27 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); // Clear old errors
+
     try {
       const res = await api.post("/auth/login", form);
       await AsyncStorage.setItem("token", res.data.token);
-      Alert.alert("Success", "✅ Login successful!");
-      navigation.navigate("Home"); // 👈 redirect after login
+      navigation.navigate("Home");
     } catch (err) {
-      Alert.alert("Error", err.response?.data?.message || "❌ Login failed");
+      const message = err?.response?.data?.message || "❌ Login failed";
+      setErrorMessage(message); // ✅ set the error to display on screen
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+
+      {/* ✅ Show error message if exists */}
+      {errorMessage !== "" && (
+        <Text style={styles.error}>{errorMessage}</Text>
+      )}
+
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -75,5 +84,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  error: {
+    color: 'red',
+    marginBottom: 12,
+    textAlign: 'center',
   },
 });
