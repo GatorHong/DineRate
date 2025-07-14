@@ -1,51 +1,72 @@
-import { View, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from "react";
+import { useThemeStyles } from "@/constants/Styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from "../../services/api";
-import {useThemeStyles} from "@/constants/Styles";
 
 export default function Register() {
   const styles = useThemeStyles();
+  const router = useRouter();
+
   const [form, setForm] = useState({ name: "", username: "", password: "" });
+  const [error, setError] = useState("");
 
-  const handleNameChange = (text) => setForm({ ...form, name: text });
-  const handleUsernameChange = (text) => setForm({ ...form, username: text });
-  const handlePasswordChange = (text) => setForm({ ...form, password: text });
+  const handleChange = (key) => (text) => {
+    setForm((prev) => ({ ...prev, [key]: text }));
+    setError(""); // clear error on input change
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!form.name || !form.username || !form.password) {
+      setError("All fields are required.");
+      return;
+    }
+
     try {
       const res = await api.post("/auth/register", form);
-      localStorage.setItem("token", res.data.token);
       await AsyncStorage.setItem("token", res.data.token);
-      Alert.alert("Success", "✅ Registration successful!");
+      router.replace("/Login");
     } catch (err) {
-      Alert.alert("Error", err.response?.data?.message || "❌ Registration failed");
+      const status = err.response?.status;
+      const msg =
+        status === 409
+          ? "Username already exists. Try a different one."
+          : err.response?.data?.message || "❌ Registration failed.";
+      setError(msg);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
+
+      {error ? (
+        <Text style={{ color: "red", marginBottom: 12, textAlign: "center" }}>
+          {error}
+        </Text>
+      ) : null}
+
       <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          value={form.name}
-          onChangeText={handleNameChange}
+        style={styles.input}
+        placeholder="Full Name"
+        value={form.name}
+        onChangeText={handleChange("name")}
       />
       <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={form.username}
-          onChangeText={handleUsernameChange}
+        style={styles.input}
+        placeholder="Username"
+        value={form.username}
+        onChangeText={handleChange("username")}
       />
       <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={form.password}
-          onChangeText={handlePasswordChange}
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={form.password}
+        onChangeText={handleChange("password")}
       />
+
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
