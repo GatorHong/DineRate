@@ -3,7 +3,11 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+<<<<<<< Updated upstream
     "start": "node_modules/.bin/expo start",
+=======
+    "start": "expo start",
+>>>>>>> Stashed changes
     "reset-project": "node ./scripts/reset-project.js",
     "android": "node_modules/.bin/expo start --android",
     "ios": "node_modules/.bin/expo start --ios",
