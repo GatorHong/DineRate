@@ -11,7 +11,8 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const handleUsernameChange = (text) => setForm({ ...form, username: text });
+  const handleUsernameChange = (text) => setForm({ ...form, username: text.toLowerCase() });
+
   const handlePasswordChange = (text) => setForm({ ...form, password: text });
 
   const handleSubmit = async () => {

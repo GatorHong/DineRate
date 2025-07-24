@@ -47,16 +47,28 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    console.log("🔐 Login attempt:", { username, password });
+
     if (!username || !password) {
+      console.log("⛔ Missing fields");
       return res.status(400).json({ message: 'Username and password are required' });
     }
 
     const user = await User.findOne({ username });
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user) {
+      console.log("❌ User not found:", username);
+      return res.status(401).json({ message: 'User not found' });
     }
 
-    const token = generateToken(user);
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      console.log("❌ Password mismatch");
+      return res.status(401).json({ message: 'Incorrect password' });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    console.log("✅ Login successful");
 
     return res.status(200).json({
       token,
@@ -68,8 +80,10 @@ exports.login = async (req, res) => {
         photo: user.photo,
       },
     });
+
   } catch (err) {
-    console.error("Login Error:", err);
+    console.error("🔥 Login Error:", err.message);
+    console.error(err.stack);
     return res.status(500).json({ message: 'Login failed', error: err.message });
   }
 };
