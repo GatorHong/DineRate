@@ -8,7 +8,7 @@ export default function TabLayout() {
         <Tabs
             initialRouteName="(home)"
             screenOptions={{
-                headerShown : false,
+                headerShown : true,
                 tabBarStyle: {
                     backgroundColor: colors.background, // Change this to your desired background color
                     borderTopColor: colors.border, // Change this to your desired border color
@@ -22,6 +22,7 @@ export default function TabLayout() {
                 name="(home)"
                 options={{
                     title: 'Home',
+                    headerShown : false,
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={24}/>
                     ),
@@ -40,7 +41,7 @@ export default function TabLayout() {
                         // prevent default navigation
                         e.preventDefault();
                         // open the modal instead
-                        router.navigate('../../LogScreen');
+                        router.navigate('/LogScreen');
                     }
                 }}
             />

@@ -8,7 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const navigateToList = ({list}) => {
   router.push({
-    pathname: '/[logListType]',
+    pathname: '/[logListType]/LogList',
     params: {logListType : list },
   });
 };
