@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useThemeStyles } from '../constants/Styles';
 
 export default function LogScreen() {
@@ -18,6 +9,7 @@ export default function LogScreen() {
     const [food, setFood] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const navigation = useNavigation();
 
     const handleSave = () => {
         // Implement save functionality here
@@ -27,13 +19,8 @@ export default function LogScreen() {
     const handleClose = () => {
         // Implement close functionality here
         console.log('Close pressed');
-
+        navigation.goBack();
     }
-
-    const handleAddImage = () => {
-        // Implement image picker functionality here
-        console.log('Add image pressed');
-    };
 
     return (
         <KeyboardAvoidingView
@@ -90,14 +77,6 @@ export default function LogScreen() {
                         </View>
                     </View>
                 </View>
-
-                {/* Add Image Button */}
-                <TouchableOpacity style={styles.formButton} onPress={handleAddImage}>
-                    <Text style={styles.actionButton}>Add Image</Text>
-                    <View style={styles.iconContainer}>
-                        <Ionicons name="camera" size={20} color="white" />
-                    </View>
-                </TouchableOpacity>
 
                 {/* Log Section */}
                 <View style={styles.formSection}>
