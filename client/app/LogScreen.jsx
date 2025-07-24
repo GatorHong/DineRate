@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeStyles } from '../constants/Styles';
 
-export default function LogMealForm({ onCancel, onSave }) {
+export default function LogScreen() {
     const { colors, styles } = useThemeStyles();
     const [location, setLocation] = useState('');
     const [food, setFood] = useState('');
@@ -22,8 +22,13 @@ export default function LogMealForm({ onCancel, onSave }) {
     const handleSave = () => {
         // Implement save functionality here
         console.log('Save pressed');
-        onSave({ location, food, title, description });
     };
+
+    const handleClose = () => {
+        // Implement close functionality here
+        console.log('Close pressed');
+
+    }
 
     const handleAddImage = () => {
         // Implement image picker functionality here
@@ -38,7 +43,7 @@ export default function LogMealForm({ onCancel, onSave }) {
         >
             {/* Header */}
             <View style={styles.formHeader}>
-                <TouchableOpacity onPress={onCancel}>
+                <TouchableOpacity onPress={handleClose}>
                     <Text style={styles.actionButton}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSave}>

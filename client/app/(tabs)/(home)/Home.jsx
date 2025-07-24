@@ -1,10 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import {router, useRouter} from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, FlatList, Text, View, SafeAreaView, Platform } from 'react-native';
-import { useThemeStyles } from '../../constants/Styles';
-import api from '../../services/api';
+import { useThemeStyles } from '../../../constants/Styles';
+import api from '../../../services/api';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+const navigateToList = ({list}) => {
+  router.push({
+    pathname: '/[logListType]',
+    params: {logListType : list },
+  });
+};
 
 // Restaurant Item Component
 const RestaurantItem = ({ restaurant, colors, styles }) => (
@@ -16,7 +23,7 @@ const RestaurantItem = ({ restaurant, colors, styles }) => (
 
 // Tracking List Card Component
 const TrackingListCard = ({ iconName, label, count, style, colors, styles }) => (
-    <TouchableOpacity style={[styles.card, style]}>
+    <TouchableOpacity style={[styles.card, style]} onPress={() => navigateToList({list : label})}>
       <View style={styles.cardIconContainer}>
         <Ionicons name={iconName} size={28} color={colors.text} />
         <Text style={styles.cardLabel}>{label}</Text>

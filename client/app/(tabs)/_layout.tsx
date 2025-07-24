@@ -6,7 +6,7 @@ export default function TabLayout() {
     const { colors } = useThemeStyles();
     return (
         <Tabs
-            initialRouteName="Home"
+            initialRouteName="(home)"
             screenOptions={{
                 headerShown : false,
                 tabBarStyle: {
@@ -17,10 +17,9 @@ export default function TabLayout() {
                 tabBarInactiveTintColor: colors.tabIconDefault, // Color for inactive tab icons and text
 
             }}
-
         >
             <Tabs.Screen
-                name="Home"
+                name="(home)"
                 options={{
                     title: 'Home',
                     tabBarIcon: ({ color, focused }) => (
@@ -41,7 +40,7 @@ export default function TabLayout() {
                         // prevent default navigation
                         e.preventDefault();
                         // open the modal instead
-                        router.push('../LogScreen');
+                        router.navigate('../../LogScreen');
                     }
                 }}
             />
@@ -51,24 +50,6 @@ export default function TabLayout() {
                     title: 'Profile',
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'person' : 'person-outline'} color={color} size={24}/>
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="Login"
-                options={{
-                    title: 'Login',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'cloud-circle' : 'cloud-circle-outline'} color={color} size={24}/>
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="Register"
-                options={{
-                    title: 'Register',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'person-add' : 'person-add-outline'} color={color} size={24}/>
                     ),
                 }}
             />
