@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
-import api from '../services/api'; // Axios instance
+import api from '../services/api';
 
 export default function LogScreen() {
   const { colors, styles } = useThemeStyles();
@@ -11,47 +11,47 @@ export default function LogScreen() {
   const [food, setFood] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const navigation = useNavigation();
 
-const handleSave = async () => {
-  try {
-    const token = await AsyncStorage.getItem('token');
-    if (!token) {
-      console.warn('⚠️ No auth token found. Are you logged in?');
-      return;
+  const handleSave = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.warn('⚠️ No auth token found. Are you logged in?');
+        return;
+      }
+
+      const payload = {
+        title,
+        description,
+        location,
+        food,
+      };
+
+      console.log('📤 Sending log payload:', payload);
+
+      const response = await api.post('/logs', payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log('✅ Log successfully saved to server:', response.data);
+
+      // ✅ Navigate to the Home screen after success
+      router.replace('/(tabs)/(home)/Home');
+
+    } catch (err) {
+      console.error('❌ Error saving log:');
+      if (err.response) {
+        console.error('Server responded with:', err.response.data);
+      } else {
+        console.error(err.message);
+      }
     }
-
-    const payload = {
-      title,
-      description,
-      location,
-      food,
-    };
-
-    console.log('📤 Sending log payload:', payload);
-
-    const response = await api.post('/logs', payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    console.log('✅ Log successfully saved to server:', response.data);
-    navigation.goBack();
-
-  } catch (err) {
-    console.error('❌ Error saving log:');
-    if (err.response) {
-      console.error('Server responded with:', err.response.data);
-    } else {
-      console.error(err.message);
-    }
-  }
-};
-
+  };
 
   const handleClose = () => {
-    navigation.goBack();
+    router.back();
   };
 
   return (
@@ -76,10 +76,8 @@ const handleSave = async () => {
         contentContainerStyle={styles.formContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Title */}
         <Text style={styles.title}>Log a Meal</Text>
 
-        {/* Info Section */}
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Info</Text>
 
@@ -110,7 +108,6 @@ const handleSave = async () => {
           </View>
         </View>
 
-        {/* Log Section */}
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Log</Text>
 
@@ -144,7 +141,6 @@ const handleSave = async () => {
           </View>
         </View>
 
-        {/* Bottom Padding */}
         <View style={{ height: 40 }} />
       </ScrollView>
     </KeyboardAvoidingView>
