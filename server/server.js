@@ -14,9 +14,11 @@ app.use(express.json());
 // Routes
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurant');
+const logRoutes = require('./routes/logs'); // Import log routes
 
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/logs', logRoutes); // Register log routes
 
 // Health check
 app.get("/", (req, res) => {
