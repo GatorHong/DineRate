@@ -8,15 +8,18 @@ export default function TabLayout() {
         <Tabs
             initialRouteName="(home)"
             screenOptions={{
-                headerShown : true,
-                tabBarStyle: {
-                    backgroundColor: colors.background, // Change this to your desired background color
-                    borderTopColor: colors.border, // Change this to your desired border color
+                headerShown: true,
+                headerStyle: {
+                    backgroundColor: colors.background, // fixes white header
                 },
-                tabBarActiveTintColor: colors.tabIconSelected, // Color for active tab icons and text
-                tabBarInactiveTintColor: colors.tabIconDefault, // Color for inactive tab icons and text
-
-            }}
+                headerTintColor: colors.text, // optional: sets title/icon color
+                tabBarStyle: {
+                    backgroundColor: colors.background,
+                    borderTopColor: colors.border,
+                },
+                tabBarActiveTintColor: colors.tabIconSelected,
+                tabBarInactiveTintColor: colors.tabIconDefault,
+                }}
         >
             <Tabs.Screen
                 name="(home)"
