@@ -1,57 +1,95 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
 
 export default function LogScreen() {
   const { colors, styles } = useThemeStyles();
   const [location, setLocation] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const [food, setFood] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [rating, setRating] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [token, setToken] = useState(null);
 
-  const handleSave = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (!token) {
-        console.warn('⚠️ No auth token found. Are you logged in?');
+  useEffect(() => {
+    const loadToken = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      if (!storedToken) {
+        router.replace('/Login');
         return;
       }
+      setToken(storedToken);
+    };
+    loadToken();
+  }, []);
 
-      const payload = {
-        title,
-        description,
-        location,
-        food,
-      };
+  const handleSave = async () => {
+  try {
+    if (!token) return;
 
-      console.log('📤 Sending log payload:', payload);
+    // Basic form validation
+    if (!location.trim()) {
+      alert('Please select a restaurant before submitting.');
+      return;
+    }
 
-      const response = await api.post('/logs', payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const payload = { title, description, location, food };
+    console.log('📤 Sending log payload:', payload);
+
+    const response = await api.post('/logs', payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log('✅ Log saved:', response.data);
+    router.replace('/(tabs)/(home)/Home');
+  } catch (err) {
+    console.error('❌ Error saving log:', err.response?.data || err.message);
+  }
+};
+
+
+  const handleClose = () => router.back();
+
+  const handleSearch = async (query) => {
+    setLocation(query);
+    if (query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await api.get('/google/search', {
+        params: { query },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log('✅ Log successfully saved to server:', response.data);
-
-      // ✅ Navigate to the Home screen after success
-      router.replace('/(tabs)/(home)/Home');
-
-    } catch (err) {
-      console.error('❌ Error saving log:');
-      if (err.response) {
-        console.error('Server responded with:', err.response.data);
-      } else {
-        console.error(err.message);
-      }
+      setSuggestions(res.data || []);
+    } catch (error) {
+      console.error('❌ Error fetching suggestions:', error);
     }
   };
 
-  const handleClose = () => {
-    router.back();
+  const handleSuggestionSelect = (item) => {
+    setTitle(item.name || '');
+    setLocation(item.address || '');
+    setPhotoUrl(item.photo_url || '');
+    setRating(item.rating || null);
+    setSuggestions([]);
   };
 
   return (
@@ -75,31 +113,88 @@ export default function LogScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={styles.formContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <Text style={styles.title}>Log a Meal</Text>
 
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Info</Text>
 
+          {/* Restaurant Search */}
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Location</Text>
+              <Text style={styles.formFieldLabel}>Restaurant</Text>
               <TextInput
                 style={styles.formFieldInput}
-                placeholder="Enter Text"
+                placeholder="Start typing..."
                 placeholderTextColor={colors.icon}
                 value={location}
-                onChangeText={setLocation}
+                onChangeText={handleSearch}
               />
             </View>
+
+            {/* Autocomplete Suggestions */}
+            {suggestions.length > 0 && (
+              <FlatList
+                data={suggestions}
+                keyExtractor={(item) => item.place_id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSuggestionSelect(item)}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 10,
+                      padding: 10,
+                      backgroundColor: colors.sectionBackground,
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border,
+                    }}
+                  >
+                    {item.photo_url && (
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 8,
+                          overflow: 'hidden',
+                          backgroundColor: colors.border,
+                        }}
+                      >
+                        <Image
+                          source={{ uri: item.photo_url }}
+                          style={{ width: 50, height: 50 }}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ color: colors.text, fontWeight: 'bold' }}>
+                        {item.name}
+                      </Text>
+                      <Text style={{ color: colors.text, fontSize: 12 }}>
+                        {item.address}
+                      </Text>
+                      {item.rating && (
+                        <Text style={{ color: colors.text, fontSize: 12 }}>
+                          ⭐ {item.rating}
+                        </Text>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                )}
+                style={{ borderRadius: 8, marginTop: 4 }}
+              />
+            )}
           </View>
 
+          {/* Food Input */}
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
               <Text style={styles.formFieldLabel}>Food</Text>
               <TextInput
                 style={styles.formFieldInput}
-                placeholder="Enter Text"
+                placeholder="Enter Food"
                 placeholderTextColor={colors.icon}
                 value={food}
                 onChangeText={setFood}
@@ -108,9 +203,9 @@ export default function LogScreen() {
           </View>
         </View>
 
+        {/* Log Section */}
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Log</Text>
-
           <View style={localStyles(colors).logContainer}>
             <View style={styles.formField}>
               <View style={styles.formFieldRow}>
@@ -147,13 +242,14 @@ export default function LogScreen() {
   );
 }
 
-const localStyles = (colors) => StyleSheet.create({
-  logContainer: {
-    backgroundColor: colors.sectionBackground,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  descriptionContainer: {
-    padding: 16
-  },
-});
+const localStyles = (colors) =>
+  StyleSheet.create({
+    logContainer: {
+      backgroundColor: colors.sectionBackground,
+      borderRadius: 10,
+      overflow: 'hidden',
+    },
+    descriptionContainer: {
+      padding: 16,
+    },
+  });
