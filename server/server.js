@@ -15,6 +15,8 @@ app.use(express.json());
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurant');
 const logRoutes = require('./routes/logs'); // Import log routes
+const googlePlacesRoutes = require('./routes/googlePlaces');
+app.use('/api/google', googlePlacesRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
