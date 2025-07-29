@@ -91,7 +91,7 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             color: colors.icon,
             marginBottom: 10,
         },
-        restaurantItem: {
+        restaurantListItem: {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',

@@ -4,25 +4,25 @@ import {useLayoutEffect, useState} from 'react';
 import LogCard from '../../../../components/LogCard';
 import {useThemeStyles} from '../../../../constants/Styles';
 
-export default function LogList() {
+export default function LogList({ navigation: stackNavigation }) {
     const {logListType} = useLocalSearchParams();
-    const {styles: themeStyles, colors} = useThemeStyles();
+    const {styles, colors} = useThemeStyles();
     const [loading] = useState(false);
 
     //set the header title based on logListType
-    const navigation = useNavigation();
+    const navigation = stackNavigation || useNavigation();
     useLayoutEffect(() => {
-        navigation.setOptions({
+        navigation?.setOptions({
+            headerShown: true,
             title: logListType
         });
     }, [navigation, logListType]);
 
-
     // Dummy data for demonstration
     const logs = [
-        {id: '1', title: 'Log 1', description: 'Description 1', category: logListType, rating: 4.5, tag: 'tag1'},
-        {id: '2', title: 'Log 2', description: 'Description 2', category: logListType, rating: 3.8, tag: 'tag2'},
-        {id: '3', title: 'Log 3', description: 'Description 3', category: logListType, rating: 2.6, tag: 'tag2'},
+        {id: '1', title: 'Log 1', location: 'Location 1', category: logListType, rating: 4.5, tag: 'tag1'},
+        {id: '2', title: 'Log 2', location: 'Location 2', category: logListType, rating: 3.8, tag: 'tag2'},
+        {id: '3', title: 'Log 3', location: 'Location 3', category: logListType, rating: 2.6, tag: 'tag2'},
     ];
 
     const renderItem = ({item}) => (
@@ -30,7 +30,7 @@ export default function LogList() {
     );
 
     return (
-        <View style={styles.container}>
+        <View style={styles.screenContainer}>
             {loading ? (
                 <ActivityIndicator size="large" color={colors.tint}/>
             ) : (
@@ -38,19 +38,9 @@ export default function LogList() {
                     data={logs}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
-                    contentContainerStyle={styles.listContainer}
+                    contentContainerStyle={[styles.listContainer, {flex : 0}]}
                 />
             )}
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    listContainer: {
-        padding: 16,
-    },
-});
