@@ -60,21 +60,24 @@ export default function Profile() {
 
   return (
     <View style={styles.screenContainer}>
-      <View style={{ alignItems: 'center', marginTop: 20 }}>
+      {/* Header with logout button in top-right */}
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: 16 }}>
+        <TouchableOpacity onPress={handleLogout} style={[styles.buttonContainer, { paddingHorizontal: 15 }]}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* User Info */}
+      <View style={{ alignItems: 'center', marginTop: 10 }}>
         <Ionicons name="person-circle-outline" size={100} color={colors.icon} />
         <Text style={[styles.title, { marginTop: 10 }]}>{user.name || 'No Name'}</Text>
-        <Text style={styles.text}>{user.email}</Text>
       </View>
 
+      {/* Account Details */}
       <View style={{ marginTop: 40, paddingHorizontal: 24 }}>
-        <Text style={styles.subtitle}>Account Details</Text>
-        <Text style={styles.text}>Email: {user.email}</Text>
+        <Text style={[styles.title, { marginBottom: 8 }]}>Account Details</Text>
         <Text style={styles.text}>User ID: {user._id}</Text>
       </View>
-
-      <TouchableOpacity onPress={handleLogout} style={[styles.buttonContainer, { marginTop: 40 }]}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
     </View>
   );
 }
