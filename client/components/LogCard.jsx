@@ -1,12 +1,4 @@
-// use    <Link
-//         href={{
-//           pathname: '/details/[id]',
-//           params: { id: 'logIdGoesHere' },
-//         }}>
-// to navigate to the details screen
-
-//for now, just a button that navigates to the details screen
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import { useRouter } from 'expo-router';
 
@@ -17,15 +9,31 @@ export default function LogCard({ log }) {
     const handlePress = () => {
         router.push({
             pathname: '/(tabs)/(home)/[logListType]/details/[id]',
-            params: {logListType : log.category, id: log.id },
+            params: { logListType: log.category, id: log.id },
         });
     };
 
     return (
-        <TouchableOpacity style={styles.card} onPress={handlePress}>
-            <View style={styles.cardIconContainer}>
-                <Text style={styles.cardLabel}>{log.title}</Text>
-                <Text style={styles.cardCount}>{log.description}</Text>
+        <TouchableOpacity
+            style={[styles.card, { marginBottom: 12}]}
+            onPress={handlePress}
+            activeOpacity={0.85}
+        >
+            <View style={{ flex: 1 }}>
+                <Text style={[styles.title, { fontSize: 18, marginTop: 0}]} numberOfLines={1}>
+                    {log.title}
+                </Text>
+                <Text style={[styles.text, { marginBottom: 8, color: colors.icon }]} numberOfLines={2}>
+                    {log.location}
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                    <Text style={[styles.text, { fontWeight: 'bold', marginRight: 12 }]}>
+                        ⭐ {log.rating}
+                    </Text>
+                    <Text style={[styles.text, { backgroundColor: colors.tint, color: colors.buttonText, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, fontSize: 12 }]}>
+                        {log.tag}
+                    </Text>
+                </View>
             </View>
         </TouchableOpacity>
     );

@@ -15,7 +15,7 @@ const navigateToList = ({list}) => {
 
 // Restaurant Item Component
 const RestaurantItem = ({ restaurant, colors, styles }) => (
-    <TouchableOpacity style={styles.restaurantItem}>
+    <TouchableOpacity style={styles.restaurantListItem}>
       <Text style={styles.restaurantName}>{restaurant.name}</Text>
       <Ionicons name="chevron-forward" size={20} color={colors.icon} />
     </TouchableOpacity>
