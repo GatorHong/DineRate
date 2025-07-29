@@ -11,19 +11,28 @@ export const options = {
   headerShown: false,
 };
 
-// 🔹 Reusable tracking card
-const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
+// 🔹 Reusable tracking card with conditional routing
+const TrackingListCard = ({ iconName, label, count, colors, styles, id }) => {
   const router = useRouter();
+
+  const handlePress = () => {
+    if (label === 'Dined') {
+      const logListType = 'Dined';
+      const logId = id || '12345'; // Replace '12345' with actual ID from data if available
+      router.push({
+        pathname: '/[logListType]/details/[id]',
+        params: { logListType, id: logId },
+      });
+    } else {
+      router.push({
+        pathname: '/[logListType]/LogList',
+        params: { logListType: label },
+      });
+    }
+  };
+
   return (
-    <TouchableOpacity
-      style={[styles.card, { marginBottom: 12 }]}
-      onPress={() =>
-        router.push({
-          pathname: '/[logListType]/LogList',
-          params: { logListType: label },
-        })
-      }
-    >
+    <TouchableOpacity style={[styles.card, { marginBottom: 12 }]} onPress={handlePress}>
       <View style={[styles.cardIconContainer, { flexDirection: 'row', alignItems: 'center' }]}>
         <Ionicons name={iconName} size={28} color={colors.text} />
         <Text style={styles.cardLabel}>{label}</Text>
@@ -40,7 +49,6 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -88,7 +96,6 @@ export default function Profile() {
 
   return (
     <View style={[styles.screenContainer, { paddingTop: 0, marginTop: 0 }]}>
-      {/* Remove default top spacing */}
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
       {/* Logout button (top right) */}
@@ -115,16 +122,17 @@ export default function Profile() {
         <TrackingListCard
           iconName="bookmark"
           label="To Dine"
-          count={6} // Optional: make dynamic
+          count={6}
           colors={colors}
           styles={styles}
         />
         <TrackingListCard
           iconName="checkmark-circle"
           label="Dined"
-          count={3} // Optional: make dynamic
+          count={3}
           colors={colors}
           styles={styles}
+          
         />
       </View>
     </View>
