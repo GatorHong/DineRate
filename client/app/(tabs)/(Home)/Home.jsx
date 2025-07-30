@@ -91,7 +91,7 @@ export default function Home() {
       styles={styles}
       onPress={() =>
         router.push({
-          pathname: '/(tabs)/(home)/restaurant',
+          pathname: '/(tabs)/(Home)/restaurant',
           params: { restaurant: JSON.stringify(item) },
         })
       }
