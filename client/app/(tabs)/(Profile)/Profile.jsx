@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StatusBar, Text, TouchableOpacity, View } from 'react-native';
-import { useThemeStyles } from '../../constants/Styles';
-import api from '../../services/api';
+import { useThemeStyles } from '../../../constants/Styles';
+import api from '../../../services/api';
 
 // 🔧 Disable Expo Router's default screen header
 export const options = {

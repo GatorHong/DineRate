@@ -6,9 +6,9 @@ export default function TabLayout() {
     const { colors } = useThemeStyles();
     return (
         <Tabs
-            initialRouteName="(home)"
+            initialRouteName="(Home)"
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
                 headerStyle: {
                     backgroundColor: colors.background, // fixes white header
                 },
@@ -22,7 +22,7 @@ export default function TabLayout() {
                 }}
         >
             <Tabs.Screen
-                name="(home)"
+                name="(Home)"
                 options={{
                     title: 'Home',
                     headerShown : false,
@@ -49,7 +49,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="Profile"
+                name="(Profile)"
                 options={{
                     title: 'Profile',
                     tabBarIcon: ({ color, focused }) => (
