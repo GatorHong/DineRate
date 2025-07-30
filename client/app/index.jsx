@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 
-export default function Landing() {
+export default function Index() {
   const router = useRouter();
   const { styles, colors } = useThemeStyles();
 
@@ -23,8 +23,8 @@ export default function Landing() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => router.push('/Register')}
-          style={[styles.buttonContainer, { backgroundColor: colors.secondary }]}>
+            onPress={() => router.push('/Register')}
+            style={[styles.buttonContainer]}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
