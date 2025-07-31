@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Log = require('../models/Log');
+const Log = require('../models/log'); // ✅ lowercase!
 const jwt = require('jsonwebtoken');
 
 // Auth middleware
@@ -20,7 +20,7 @@ router.post('/', authenticate, async (req, res) => {
   try {
     const log = new Log({
       ...req.body,
-      userId: req.user.id
+      user: req.user.id // ✅ this must match the schema
     });
 
     const saved = await log.save();
@@ -30,6 +30,5 @@ router.post('/', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Failed to create log' });
   }
 });
-
 
 module.exports = router;
