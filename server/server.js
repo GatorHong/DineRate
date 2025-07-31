@@ -13,25 +13,38 @@ app.use(express.json());
 
 // Routes
 const authRoutes = require('./routes/auth');
-const restaurantRoutes = require('./routes/restaurant'); // 👈 Added
+const restaurantRoutes = require('./routes/restaurant');
+const logRoutes = require('./routes/logs'); // Import log routes
+const googlePlacesRoutes = require('./routes/googlePlaces');
+app.use('/api/google', googlePlacesRoutes);
 
 app.use('/api/auth', authRoutes);
-app.use('/api/restaurants', restaurantRoutes); // 👈 Added
+app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/logs', logRoutes); // Register log routes
 
-// Health check route
+// Health check
 app.get("/", (req, res) => {
   res.send("✅ DineRate backend is running.");
 });
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
+// MongoDB connection using secure environment variables
+const DB_USERNAME = process.env.DB_USERNAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const CLUSTER_URL = process.env.CLUSTER_URL;
+const DB_NAME = process.env.DB_NAME;
+
+const uri = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${CLUSTER_URL}/${DB_NAME}?retryWrites=true&w=majority&appName=DineRateCluster`;
+
+mongoose.connect(uri, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 })
 .then(() => {
   console.log("✅ MongoDB Connected");
-  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+  app.listen(PORT, () =>
+    console.log(`🚀 Server running on http://localhost:${PORT}`)
+  );
 })
-.catch(err => {
+.catch((err) => {
   console.error("❌ MongoDB connection error:", err);
 });
