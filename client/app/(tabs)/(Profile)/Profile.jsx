@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StatusBar, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
 
@@ -32,11 +32,11 @@ const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
 };
 
 export default function Profile() {
-  const { styles, colors } = useThemeStyles();
-  const router = useRouter();
+    const { styles, colors } = useThemeStyles();
+    const router = useRouter();
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -103,8 +103,9 @@ export default function Profile() {
             <View style={localStyles.section}>
                 <Text style={[styles.listHeader, { marginBottom: 4 }]}>Account Details</Text>
                 <View style={styles.formFieldRow}>
-                    <Text style={styles.text}>User ID:</Text>
-                    <Text style={[styles.text, { fontWeight: 'bold' }]}>{user._id}</Text>
+                    <Text style={styles.text}>
+                        User ID: <Text style={[styles.text, { fontWeight: 'bold' }]}>{user._id}</Text>
+                    </Text>
                 </View>
             </View>
 
@@ -154,12 +155,12 @@ const localStyles = StyleSheet.create({
     },
     section: {
         marginTop: 12,
-        marginBottom: 12
+        marginBottom: 12,
     },
     card: {
         minWidth: 140,
         marginHorizontal: 0,
-        flex : undefined
+        flex: undefined,
     },
     cardIconContainer: {
         flexDirection: 'row',
