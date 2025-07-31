@@ -1,7 +1,8 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
 
@@ -12,7 +13,6 @@ export default function Login() {
   const router = useRouter();
 
   const handleUsernameChange = (text) => setForm({ ...form, username: text.toLowerCase() });
-
   const handlePasswordChange = (text) => setForm({ ...form, password: text });
 
   const handleSubmit = async () => {
@@ -21,7 +21,7 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", form);
       await AsyncStorage.setItem("token", res.data.token);
-      router.replace("/(tabs)/Home"); // 👈 This navigates to Home tab
+      router.replace("/(tabs)/Home"); // 👈 Navigate to Home tab
     } catch (err) {
       const message = err?.response?.data?.message || "❌ Login failed";
       setErrorMessage(message);
@@ -33,7 +33,10 @@ export default function Login() {
       <Text style={styles.title}>Login</Text>
 
       {errorMessage !== "" && (
-        <Text style={styles.error}>{errorMessage}</Text>
+        <View style={localStyles.errorContainer}>
+          <Ionicons name="warning-outline" size={18} color="red" style={{ marginRight: 6 }} />
+          <Text style={localStyles.errorText}>{errorMessage}</Text>
+        </View>
       )}
 
       <TextInput
@@ -57,3 +60,20 @@ export default function Login() {
     </View>
   );
 }
+
+const localStyles = StyleSheet.create({
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffdddd',
+    padding: 8,
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 14,
+    flexShrink: 1,
+  },
+});
