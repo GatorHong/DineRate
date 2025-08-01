@@ -14,6 +14,10 @@ const logSchema = new mongoose.Schema({
     enum: ['Public', 'Private', 'Friend'],
     default: 'Public',
   },
+  logType: {
+    type: String,
+    enum: ['Dined', 'To Dine']
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Log', logSchema);
