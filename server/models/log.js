@@ -1,17 +1,18 @@
 const mongoose = require('mongoose');
 
 const logSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // 🟢 changed from `user` to `userId`
   title: String,
   description: String,
   location: String,
   food: String,
   photoUrl: String,
   rating: Number,
+  category: String, // 🟢 add this to support filtering
   visibility: {
     type: String,
     enum: ['Public', 'Private', 'Friend'],
-    default: 'Public'
+    default: 'Public',
   },
   logType: {
     type: String,
