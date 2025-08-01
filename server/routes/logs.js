@@ -47,4 +47,16 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
+// GET /api/logs/:id
+router.get('/:id', authenticate, async (req, res) => {
+  try {
+    const log = await Log.findOne({ _id: req.params.id, user: req.user.id });
+    if (!log) return res.status(404).json({ message: 'Log not found' });
+    res.json(log);
+  } catch (err) {
+    console.error('❌ Failed to fetch log:', err.message);
+    res.status(500).json({ message: 'Failed to fetch log' });
+  }
+});
+
 module.exports = router;

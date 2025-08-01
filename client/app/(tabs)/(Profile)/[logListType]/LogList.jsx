@@ -54,7 +54,7 @@ export default function LogList() {
             <FlatList
                 data={logs}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 contentContainerStyle={[styles.listContainer, { flex: 0 }]}
             />
         )}
