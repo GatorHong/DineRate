@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { View, Text } from 'react-native';
 import { useLayoutEffect } from 'react';
+import { Text, View } from 'react-native';
 import { useThemeStyles } from '../../../../../constants/Styles';
 
 export default function DetailsScreen({ navigation: stackNavigation, logData }) {
@@ -10,7 +10,7 @@ export default function DetailsScreen({ navigation: stackNavigation, logData }) 
 
     // Example logData,TODO: implement actual data fetching logic
     const log = logData || {
-        title: 'Sample Log Title',
+        title: 'Dined',
         date: '2024-06-10',
         description: 'This is a sample log description.',
         tags: ['example', 'log'],
