@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Log = require('../models/log'); // ✅ lowercase!
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 
 // Auth middleware
 const authenticate = (req, res, next) => {
@@ -16,12 +15,12 @@ const authenticate = (req, res, next) => {
   });
 };
 
-// POST /api/logs → Create a log
+// POST /api/logs
 router.post('/', authenticate, async (req, res) => {
   try {
     const log = new Log({
       ...req.body,
-      user: req.user.id, // ✅ set user from token
+      user: req.user.id // ✅ this must match the schema
     });
 
     const saved = await log.save();
@@ -41,7 +40,6 @@ router.get('/', authenticate, async (req, res) => {
       query.logType = logType;
     }
     const logs = await Log.find(query).sort({ createdAt: -1 });
-
     res.json(logs);
   } catch (err) {
     console.error('❌ Failed to fetch logs:', err.message);
@@ -60,6 +58,5 @@ router.get('/:id', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch log' });
   }
 });
-
 
 module.exports = router;
