@@ -82,6 +82,7 @@ Follow these steps when setting up DineRate for the very first time on your mach
 2. Install dependencies:
     ```bash
     npm install
+    npx expo install expo-location
     ```
 
 3. Start the Expo development server:

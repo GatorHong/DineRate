@@ -26,6 +26,7 @@ export default function LogScreen() {
   const [rating, setRating] = useState(null);
   const [photoUrl, setPhotoUrl] = useState('');
   const [token, setToken] = useState(null);
+  const [visibility, setVisibility] = useState('Public'); // NEW
 
   useEffect(() => {
     const loadToken = async () => {
@@ -40,29 +41,27 @@ export default function LogScreen() {
   }, []);
 
   const handleSave = async () => {
-  try {
-    if (!token) return;
+    try {
+      if (!token) return;
 
-    // Basic form validation
-    if (!location.trim()) {
-      alert('Please select a restaurant before submitting.');
-      return;
+      if (!location.trim()) {
+        alert('Please select a restaurant before submitting.');
+        return;
+      }
+
+      const payload = { title, description, location, food, visibility }; // include visibility
+      console.log('📤 Sending log payload:', payload);
+
+      const response = await api.post('/logs', payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log('✅ Log saved:', response.data);
+      router.replace('/(tabs)/(home)/Home');
+    } catch (err) {
+      console.error('❌ Error saving log:', err.response?.data || err.message);
     }
-
-    const payload = { title, description, location, food };
-    console.log('📤 Sending log payload:', payload);
-
-    const response = await api.post('/logs', payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    console.log('✅ Log saved:', response.data);
-    router.replace('/(tabs)/(home)/Home');
-  } catch (err) {
-    console.error('❌ Error saving log:', err.response?.data || err.message);
-  }
-};
-
+  };
 
   const handleClose = () => router.back();
 
@@ -98,7 +97,6 @@ export default function LogScreen() {
       style={styles.formContainer}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      {/* Header */}
       <View style={styles.formHeader}>
         <TouchableOpacity onPress={handleClose}>
           <Text style={styles.actionButton}>Cancel</Text>
@@ -108,7 +106,6 @@ export default function LogScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Content */}
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={styles.formContent}
@@ -132,8 +129,6 @@ export default function LogScreen() {
                 onChangeText={handleSearch}
               />
             </View>
-
-            {/* Autocomplete Suggestions */}
             {suggestions.length > 0 && (
               <FlatList
                 data={suggestions}
@@ -188,7 +183,7 @@ export default function LogScreen() {
             )}
           </View>
 
-          {/* Food Input */}
+          {/* Food */}
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
               <Text style={styles.formFieldLabel}>Food</Text>
@@ -199,6 +194,32 @@ export default function LogScreen() {
                 value={food}
                 onChangeText={setFood}
               />
+            </View>
+          </View>
+
+          {/* Visibility */}
+          <View style={styles.formField}>
+            <View style={styles.formFieldRow}>
+              <Text style={styles.formFieldLabel}>Visibility</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  const options = ['Public', 'Private', 'Friend'];
+                  const currentIndex = options.indexOf(visibility);
+                  const nextIndex = (currentIndex + 1) % options.length;
+                  setVisibility(options[nextIndex]);
+                }}
+                style={{
+                  flex: 1,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  backgroundColor: colors.cardBackground,
+                }}
+              >
+                <Text style={{ color: colors.text }}>{visibility}</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
