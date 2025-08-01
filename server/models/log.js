@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
 
-const LogSchema = new mongoose.Schema({
+const logSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   title: String,
   description: String,
-  location: { type: String, required: true },
-  food: { type: String, required: true },
-  category: { type: String, default: 'To Visit' },
-  rating: Number,
+  location: String,
+  food: String,
   photoUrl: String,
-  tag: String,
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  rating: Number,
+  visibility: {
+    type: String,
+    enum: ['Public', 'Private', 'Friend'],
+    default: 'Public'
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Log', LogSchema);
+module.exports = mongoose.model('Log', logSchema);
