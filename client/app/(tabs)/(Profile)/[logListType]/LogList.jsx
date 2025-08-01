@@ -1,16 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import LogCard from '../../../../components/LogCard';
 import { useThemeStyles } from '../../../../constants/Styles';
+import api from '../../../../services/api'; // ✅ using your axios instance
 
 export default function LogList() {
   const { logListType } = useLocalSearchParams();
   const { styles, colors } = useThemeStyles();
-  const [loading] = useState(false);
   const navigation = useNavigation();
 
-  // ✅ Set title, but don't override headerLeft or back behavior
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -18,12 +21,26 @@ export default function LogList() {
     });
   }, [navigation, logListType]);
 
-  // Dummy data
-  const logs = [
-    { id: '1', title: 'Log 1', location: 'Location 1', category: logListType, rating: 4.5, tag: 'tag1' },
-    { id: '2', title: 'Log 2', location: 'Location 2', category: logListType, rating: 3.8, tag: 'tag2' },
-    { id: '3', title: 'Log 3', location: 'Location 3', category: logListType, rating: 2.6, tag: 'tag2' },
-  ];
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        setLoading(true);
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await api.get('/logs', {
+          params: { category: logListType }
+        });
+
+        setLogs(response.data);
+      } catch (err) {
+        console.error('❌ Error fetching logs:', err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLogs();
+  }, [logListType]);
 
   const renderItem = ({ item }) => <LogCard log={item} />;
 
@@ -35,8 +52,19 @@ export default function LogList() {
         <FlatList
           data={logs}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={[styles.listContainer, { flex: 0 }]}
+          keyExtractor={item => item._id}
+          contentContainerStyle={[
+            styles.listContainer,
+            {
+              flexGrow: 1,
+              paddingBottom: 16,
+            },
+          ]}
+          ListEmptyComponent={
+            <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 16, color: colors.text }}>
+              No logs found.
+            </Text>
+          }
         />
       )}
     </View>

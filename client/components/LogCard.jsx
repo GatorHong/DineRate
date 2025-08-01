@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useThemeStyles } from '../constants/Styles';
 import { useRouter } from 'expo-router';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { useThemeStyles } from '../constants/Styles';
 
 export default function LogCard({ log }) {
     const { styles, colors } = useThemeStyles();
@@ -9,7 +9,7 @@ export default function LogCard({ log }) {
     const handlePress = () => {
         router.push({
             pathname: '/(tabs)/(Profile)/[logListType]/details/[id]',
-            params: { logListType: log.category, id: log.id },
+            params: { logListType: log.category, id: log._id },
         });
     };
 
