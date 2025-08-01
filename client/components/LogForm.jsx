@@ -348,6 +348,7 @@ export default function LogForm({
         message="Are you sure you want to delete this log?"
         onCancel={() => setShowConfirm(false)}
         onConfirm={confirmDelete}
+        colors={colors}
       />
     </KeyboardAvoidingView>
   );
