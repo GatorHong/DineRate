@@ -1,23 +1,35 @@
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { useLayoutEffect, useEffect, useState } from 'react';
-import { Text, View, ActivityIndicator } from 'react-native';
-import { useThemeStyles } from '../../../../../constants/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import {
+    ActivityIndicator,
+    Alert,
+    Button,
+    ScrollView,
+    Text,
+    TextInput,
+    View,
+} from 'react-native';
+import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
 
 export default function DetailsScreen() {
-    const { id } = useLocalSearchParams();
+    const { id, mode } = useLocalSearchParams();
     const { styles, colors } = useThemeStyles();
     const navigation = useNavigation();
+    const isEditMode = mode === 'edit';
+
     const [log, setLog] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [editedLog, setEditedLog] = useState({ title: '', description: '' });
+    const [saving, setSaving] = useState(false);
 
     useLayoutEffect(() => {
         navigation?.setOptions({
             headerShown: true,
-            title: log?.title || id,
+            title: isEditMode ? 'Edit Log' : log?.title || id,
         });
-    }, [navigation, id, log?.title]);
+    }, [navigation, id, log?.title, isEditMode]);
 
     useEffect(() => {
         const fetchLog = async () => {
@@ -28,6 +40,7 @@ export default function DetailsScreen() {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setLog(res.data);
+                setEditedLog({ title: res.data.title, description: res.data.description });
             } catch (err) {
                 console.error('❌ Error fetching log:', err);
                 setLog(null);
@@ -37,6 +50,27 @@ export default function DetailsScreen() {
         };
         fetchLog();
     }, [id]);
+
+    const handleSave = async () => {
+        setSaving(true);
+        const token = await AsyncStorage.getItem('token');
+        try {
+            const res = await api.put(
+                `/logs/${id}`,
+                editedLog,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            Alert.alert('✅ Log updated successfully!');
+            navigation.goBack();
+        } catch (err) {
+            console.error('❌ Error updating log:', err);
+            Alert.alert('❌ Failed to update log');
+        } finally {
+            setSaving(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -54,14 +88,42 @@ export default function DetailsScreen() {
         );
     }
 
-    //TODO: Make look good and add more details
     return (
-        <View style={styles.screenContainer}>
-            <Text style={styles.title}>{log.title}</Text>
-            <Text style={styles.listHeader}>Date</Text>
-            <Text style={styles.text}>{log.createdAt}</Text>
-            <Text style={styles.listHeader}>Description</Text>
-            <Text style={styles.text}>{log.description}</Text>
-        </View>
+        <ScrollView contentContainerStyle={styles.screenContainer}>
+            {isEditMode ? (
+                <>
+                    <Text style={styles.listHeader}>Title</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={editedLog.title}
+                        onChangeText={(text) => setEditedLog({ ...editedLog, title: text })}
+                    />
+
+                    <Text style={styles.listHeader}>Description</Text>
+                    <TextInput
+                        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+                        multiline
+                        value={editedLog.description}
+                        onChangeText={(text) => setEditedLog({ ...editedLog, description: text })}
+                    />
+
+                    <View style={{ marginTop: 20 }}>
+                        <Button
+                            title={saving ? 'Saving...' : 'Save'}
+                            onPress={handleSave}
+                            disabled={saving}
+                        />
+                    </View>
+                </>
+            ) : (
+                <>
+                    <Text style={styles.title}>{log.title}</Text>
+                    <Text style={styles.listHeader}>Date</Text>
+                    <Text style={styles.text}>{new Date(log.createdAt).toLocaleString()}</Text>
+                    <Text style={styles.listHeader}>Description</Text>
+                    <Text style={styles.text}>{log.description}</Text>
+                </>
+            )}
+        </ScrollView>
     );
 }
