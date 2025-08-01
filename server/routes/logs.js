@@ -59,4 +59,42 @@ router.get('/:id', authenticate, async (req, res) => {
   }
 });
 
+// PUT /api/logs/:id
+router.put('/:id', authenticate, async (req, res) => {
+  try {
+    const updatedLog = await Log.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id }, // Only allow updating own log
+      req.body,
+      { new: true } // Return updated document
+    );
+
+    if (!updatedLog) return res.status(404).json({ message: 'Log not found' });
+
+    res.json(updatedLog);
+  } catch (err) {
+    console.error('❌ Failed to update log:', err.message);
+    res.status(500).json({ message: 'Failed to update log' });
+  }
+});
+
+// DELETE /api/logs/:id
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    const log = await Log.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!log) {
+      return res.status(404).json({ message: 'Log not found or unauthorized' });
+    }
+
+    res.json({ message: 'Log deleted successfully' });
+  } catch (err) {
+    console.error('❌ Failed to delete log:', err.message);
+    res.status(500).json({ message: 'Failed to delete log' });
+  }
+});
+
+
 module.exports = router;
