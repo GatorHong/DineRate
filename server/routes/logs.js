@@ -31,4 +31,32 @@ router.post('/', authenticate, async (req, res) => {
   }
 });
 
+// GET /api/logs?logType=Dined
+router.get('/', authenticate, async (req, res) => {
+  try {
+    const { logType } = req.query;
+    const query = { user: req.user.id };
+    if (logType) {
+      query.logType = logType;
+    }
+    const logs = await Log.find(query).sort({ createdAt: -1 });
+    res.json(logs);
+  } catch (err) {
+    console.error('❌ Failed to fetch logs:', err.message);
+    res.status(500).json({ message: 'Failed to fetch logs' });
+  }
+});
+
+// GET /api/logs/:id
+router.get('/:id', authenticate, async (req, res) => {
+  try {
+    const log = await Log.findOne({ _id: req.params.id, user: req.user.id });
+    if (!log) return res.status(404).json({ message: 'Log not found' });
+    res.json(log);
+  } catch (err) {
+    console.error('❌ Failed to fetch log:', err.message);
+    res.status(500).json({ message: 'Failed to fetch log' });
+  }
+});
+
 module.exports = router;

@@ -9,7 +9,7 @@ export default function LogCard({ log }) {
     const handlePress = () => {
         router.push({
             pathname: '/(tabs)/(Profile)/[logListType]/details/[id]',
-            params: { logListType: log.category, id: log.id },
+            params: { logListType: log.logType, id: log._id }
         });
     };
 
@@ -31,7 +31,7 @@ export default function LogCard({ log }) {
                         ⭐ {log.rating}
                     </Text>
                     <Text style={[styles.text, { backgroundColor: colors.tint, color: colors.buttonText, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, fontSize: 12 }]}>
-                        {log.tag}
+                        {log.logType}
                     </Text>
                 </View>
             </View>
