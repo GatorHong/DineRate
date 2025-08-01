@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useLayoutEffect, useState, useEffect } from 'react';
 import { ActivityIndicator, FlatList, View, Text } from 'react-native';
@@ -7,14 +6,12 @@ import { useThemeStyles } from '../../../../constants/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../../../services/api';
 
-
 export default function LogList() {
   const { logListType } = useLocalSearchParams();
   const { styles, colors } = useThemeStyles();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -24,7 +21,6 @@ export default function LogList() {
   }, [navigation, logListType]);
 
   useEffect(() => {
-
     const loadLogs = async () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('token');
@@ -39,20 +35,16 @@ export default function LogList() {
       } catch (err) {
         console.error('❌ Error loading logs:', err);
         setLogs([]);
-
       } finally {
         setLoading(false);
       }
     };
-
     loadLogs();
-
   }, [logListType]);
 
   const renderItem = ({ item }) => <LogCard log={item} />;
 
   return (
-
       <View style={styles.screenContainer}>
         {loading ? (
             <ActivityIndicator size="large" color={colors.tint} />
@@ -67,6 +59,5 @@ export default function LogList() {
             />
         )}
       </View>
-
   );
 }
