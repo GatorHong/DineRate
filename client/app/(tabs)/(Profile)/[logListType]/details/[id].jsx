@@ -8,7 +8,8 @@ import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
 
 export default function DetailsScreen() {
-  const { id } = useLocalSearchParams();
+  const { id, mode } = useLocalSearchParams();
+  const isEditMode = mode === 'edit';
   const navigation = useNavigation();
   const { styles, colors } = useThemeStyles();
 
@@ -24,7 +25,7 @@ export default function DetailsScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLog(res.data);
-        navigation.setOptions({ headerShown: true, title: res.data.title || 'Edit Log' });
+        navigation.setOptions({ headerShown: true, title: res.data.title || 'Log' });
       } catch (err) {
         console.error('❌ Error fetching log:', err);
       } finally {
@@ -50,7 +51,7 @@ export default function DetailsScreen() {
     );
   }
 
-  return (
+  return isEditMode ? (
     <LogForm
       mode="edit"
       initialData={log}
@@ -58,5 +59,23 @@ export default function DetailsScreen() {
       onSaved={() => navigation.goBack()}
       onCancel={() => navigation.goBack()}
     />
+  ) : (
+    <View style={styles.screenContainer}>
+      <Text style={styles.title}>{log.title}</Text>
+      <Text style={styles.listHeader}>Date</Text>
+      <Text style={styles.text}>{new Date(log.createdAt).toLocaleString()}</Text>
+      <Text style={styles.listHeader}>Description</Text>
+      <Text style={styles.text}>{log.description}</Text>
+      <Text style={styles.listHeader}>Location</Text>
+      <Text style={styles.text}>{log.location}</Text>
+      <Text style={styles.listHeader}>Food</Text>
+      <Text style={styles.text}>{log.food}</Text>
+      <Text style={styles.listHeader}>Rating</Text>
+      <Text style={styles.text}>⭐ {log.rating}</Text>
+      <Text style={styles.listHeader}>Visibility</Text>
+      <Text style={styles.text}>{log.visibility}</Text>
+      <Text style={styles.listHeader}>Log Type</Text>
+      <Text style={styles.text}>{log.logType}</Text>
+    </View>
   );
 }

@@ -39,7 +39,7 @@ export default function LogCard({ log }) {
                         zIndex: 1
                     }}
                 >
-                    <FontAwesome name="pencil" size={16} color={colors.icon} />
+                    <FontAwesome name="pencil" size={24} color={colors.icon} />
                 </TouchableOpacity>
 
                 <Text style={[styles.title, { fontSize: 18, marginTop: 0 }]} numberOfLines={1}>

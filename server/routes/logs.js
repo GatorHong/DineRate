@@ -77,4 +77,24 @@ router.put('/:id', authenticate, async (req, res) => {
   }
 });
 
+// DELETE /api/logs/:id
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    const log = await Log.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!log) {
+      return res.status(404).json({ message: 'Log not found or unauthorized' });
+    }
+
+    res.json({ message: 'Log deleted successfully' });
+  } catch (err) {
+    console.error('❌ Failed to delete log:', err.message);
+    res.status(500).json({ message: 'Failed to delete log' });
+  }
+});
+
+
 module.exports = router;

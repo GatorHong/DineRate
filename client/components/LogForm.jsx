@@ -1,9 +1,7 @@
-// components/LogForm.jsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-    Alert,
     FlatList,
     Image,
     KeyboardAvoidingView,
@@ -13,10 +11,11 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
+import ConfirmModal from './ConfirmModal';
 
 function ToggleButton({ options, value, onChange, colors }) {
   return (
@@ -32,7 +31,6 @@ function ToggleButton({ options, value, onChange, colors }) {
             borderColor: colors.border,
             backgroundColor:
               value === option ? colors.buttonBackground : colors.sectionBackground,
-            marginRight: 4,
           }}
           onPress={() => onChange(option)}
         >
@@ -50,15 +48,6 @@ function ToggleButton({ options, value, onChange, colors }) {
   );
 }
 
-/**
- * Reusable form for creating/editing logs.
- * Props:
- * - mode: 'create' | 'edit'
- * - initialData: object with existing log fields (for edit)
- * - logId: string (for edit PUT)
- * - onSaved: (savedLog) => void
- * - onCancel: () => void
- */
 export default function LogForm({
   mode = 'create',
   initialData = {},
@@ -70,8 +59,8 @@ export default function LogForm({
   const { colors, styles } = useThemeStyles();
 
   const [token, setToken] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  // Fields
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [food, setFood] = useState('');
@@ -82,7 +71,6 @@ export default function LogForm({
   const [visibility, setVisibility] = useState('Public');
   const [logType, setLogType] = useState('Dined');
 
-  // Load token and prefill (for edit)
   useEffect(() => {
     const load = async () => {
       const storedToken = await AsyncStorage.getItem('token');
@@ -104,7 +92,6 @@ export default function LogForm({
       }
     };
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, initialData?._id]);
 
   const handleSearch = async (query) => {
@@ -134,12 +121,9 @@ export default function LogForm({
 
   const handleSubmit = async () => {
     try {
-      if (!token) {
-        console.log('No auth token found');
-        return;
-      }
+      if (!token) return;
       if (!location.trim()) {
-        Alert.alert('Missing Restaurant', 'Please select a restaurant before submitting.');
+        alert('Please select a restaurant before submitting.');
         return;
       }
 
@@ -153,7 +137,6 @@ export default function LogForm({
         photoUrl,
         rating,
       };
-      console.log('📤 Saving payload:', payload);
 
       const resp = isEdit
         ? await api.put(`/logs/${logId}`, payload, {
@@ -163,12 +146,29 @@ export default function LogForm({
             headers: { Authorization: `Bearer ${token}` },
           });
 
-      console.log('✅ Saved:', resp.data);
       onSaved?.(resp.data);
     } catch (err) {
       console.error('❌ Save failed:', err.response?.data || err.message);
-      Alert.alert('Save failed', err.response?.data?.message || 'Please try again.');
+      alert(err.response?.data?.message || 'Save failed. Please try again.');
     }
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await api.delete(`/logs/${logId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setShowConfirm(false);
+      onSaved?.();
+      router.replace('/(tabs)/(Profile)/Profile');
+    } catch (err) {
+      console.error('❌ Error deleting log:', err.message);
+      alert(err.response?.data?.message || 'Delete failed.');
+    }
+  };
+
+  const handleDelete = () => {
+    setShowConfirm(true);
   };
 
   return (
@@ -177,7 +177,6 @@ export default function LogForm({
       style={styles.formContainer}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      {/* Header */}
       <View style={styles.formHeader}>
         <TouchableOpacity onPress={onCancel}>
           <Text style={styles.actionButton}>Cancel</Text>
@@ -185,6 +184,11 @@ export default function LogForm({
         <TouchableOpacity onPress={handleSubmit}>
           <Text style={styles.emphasisButton}>{isEdit ? 'Save' : 'Done'}</Text>
         </TouchableOpacity>
+        {isEdit && (
+          <TouchableOpacity onPress={handleDelete}>
+            <Text style={[styles.actionButton, { color: 'red' }]}>Delete</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView
@@ -199,7 +203,6 @@ export default function LogForm({
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Info</Text>
 
-          {/* Restaurant Search */}
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
               <Text style={styles.formFieldLabel}>Restaurant</Text>
@@ -280,14 +283,12 @@ export default function LogForm({
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
               <Text style={styles.formFieldLabel}>Category</Text>
-              <View style={{ alignItems: 'flex-end' }}>
-                <ToggleButton
-                  options={['Dined', 'To Dine']}
-                  value={logType}
-                  onChange={setLogType}
-                  colors={colors}
-                />
-              </View>
+              <ToggleButton
+                options={['Dined', 'To Dine']}
+                value={logType}
+                onChange={setLogType}
+                colors={colors}
+              />
             </View>
           </View>
 
@@ -306,10 +307,9 @@ export default function LogForm({
         </View>
 
         {/* Log Section */}
-        <View className="log-section" style={styles.formSection}>
+        <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Log</Text>
           <View style={localStyles(colors).logContainer}>
-            {/* Title */}
             <View style={styles.formField}>
               <View style={styles.formFieldRow}>
                 <Text style={styles.formFieldLabel}>Title</Text>
@@ -325,7 +325,6 @@ export default function LogForm({
 
             <View style={styles.divider} />
 
-            {/* Description */}
             <View style={localStyles(colors).descriptionContainer}>
               <TextInput
                 style={styles.textArea}
@@ -342,6 +341,14 @@ export default function LogForm({
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      {/* 🔒 Confirm Delete Modal */}
+      <ConfirmModal
+        visible={showConfirm}
+        message="Are you sure you want to delete this log?"
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={confirmDelete}
+      />
     </KeyboardAvoidingView>
   );
 }
