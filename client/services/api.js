@@ -10,4 +10,20 @@ const api = axios.create({
   },
 });
 
+export const fetchLogs = async (type, token) => {
+  const res = await api.get('/logs', {
+    params: { type },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const fetchLogById = async (id, token) => {
+  const res = await api.get(`/logs/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+
 export default api;

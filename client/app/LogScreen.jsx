@@ -16,6 +16,33 @@ import {
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
 
+function ToggleButton({ options, value, onChange, colors }) {
+  return (
+      <View style={{ flexDirection: 'row', gap: 8}}>
+        {options.map((option) => (
+            <TouchableOpacity
+                key={option}
+                style={{
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  backgroundColor: value === option ? colors.buttonBackground : colors.sectionBackground,
+                  marginRight: 4,
+                }}
+                onPress={() => onChange(option)}
+            >
+              <Text style={{ color: colors.text, fontWeight: value === option ? 'bold' : 'normal' }}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+        ))}
+      </View>
+  );
+}
+
+
 export default function LogScreen() {
   const { colors, styles } = useThemeStyles();
   const [location, setLocation] = useState('');
@@ -26,7 +53,8 @@ export default function LogScreen() {
   const [rating, setRating] = useState(null);
   const [photoUrl, setPhotoUrl] = useState('');
   const [token, setToken] = useState(null);
-  const [visibility, setVisibility] = useState('Public'); // NEW
+  const [visibility, setVisibility] = useState('Public');
+  const [logType, setLogType] = useState('Dined');
 
   useEffect(() => {
     const loadToken = async () => {
@@ -42,14 +70,17 @@ export default function LogScreen() {
 
   const handleSave = async () => {
     try {
-      if (!token) return;
+      if (!token) {
+        console.log('Error creating token');
+        return;
+      }
 
       if (!location.trim()) {
         alert('Please select a restaurant before submitting.');
         return;
       }
 
-      const payload = { title, description, location, food, visibility }; // include visibility
+      const payload = { title, description, location, food, visibility, logType }; // include visibility
       console.log('📤 Sending log payload:', payload);
 
       const response = await api.post('/logs', payload, {
@@ -57,7 +88,7 @@ export default function LogScreen() {
       });
 
       console.log('✅ Log saved:', response.data);
-      router.replace('/(tabs)/(home)/Home');
+      router.replace('/(tabs)/(Home)/Home');
     } catch (err) {
       console.error('❌ Error saving log:', err.response?.data || err.message);
     }
@@ -197,29 +228,32 @@ export default function LogScreen() {
             </View>
           </View>
 
-          {/* Visibility */}
+          {/* Category Picker */}
+          <View style={styles.formField}>
+            <View style={styles.formFieldRow}>
+              <Text style={styles.formFieldLabel}>Category</Text>
+              <View style={{ alignItems: 'flex-end' }}>
+                <ToggleButton
+                    options={['Dined', 'To Dine']}
+                    value={logType}
+                    onChange={setLogType}
+                    colors={colors}
+                />
+              </View>
+            </View>
+          </View>
+
+
+          {/* Visibility Picker */}
           <View style={styles.formField}>
             <View style={styles.formFieldRow}>
               <Text style={styles.formFieldLabel}>Visibility</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  const options = ['Public', 'Private', 'Friend'];
-                  const currentIndex = options.indexOf(visibility);
-                  const nextIndex = (currentIndex + 1) % options.length;
-                  setVisibility(options[nextIndex]);
-                }}
-                style={{
-                  flex: 1,
-                  borderColor: colors.border,
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  backgroundColor: colors.cardBackground,
-                }}
-              >
-                <Text style={{ color: colors.text }}>{visibility}</Text>
-              </TouchableOpacity>
+              <ToggleButton
+                  options={['Public', 'Private']}
+                  value={visibility}
+                  onChange={setVisibility}
+                  colors={colors}
+              />
             </View>
           </View>
         </View>
