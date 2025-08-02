@@ -56,7 +56,7 @@ export default function Profile() {
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        router.replace('/Landing');
+        router.replace('/..'); // Redirect to home after logout
     };
 
     if (loading) {
