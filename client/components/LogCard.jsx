@@ -10,7 +10,7 @@ export default function LogCard({ log }) {
     const handlePress = () => {
         router.push({
             pathname: '/(tabs)/(Profile)/[logListType]/details/[id]',
-            params: { logListType: log.logType, id: log._id }
+            params: { logListType: log.logType, id: log._id, title: log.title }
         });
     };
 

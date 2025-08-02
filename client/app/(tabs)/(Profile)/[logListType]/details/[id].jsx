@@ -8,7 +8,7 @@ import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
 
 export default function DetailsScreen() {
-  const { id, mode } = useLocalSearchParams();
+  const { id, mode, title } = useLocalSearchParams();
   const isEditMode = mode === 'edit';
   const navigation = useNavigation();
   const { styles, colors } = useThemeStyles();
@@ -16,7 +16,18 @@ export default function DetailsScreen() {
   const [log, setLog] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
+        navigation.setOptions({
+            title: title || 'Log',
+            headerShown: true,
+            headerStyle: {
+                backgroundColor: colors.background, // fixes white header
+            },
+            headerTintColor: colors.text, // optional: sets title/icon color
+        });
+    }, [navigation, title, colors]);
+
+    useEffect(() => {
     const fetchLog = async () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('token');
@@ -25,7 +36,6 @@ export default function DetailsScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLog(res.data);
-        navigation.setOptions({ headerShown: true, title: res.data.title || 'Log' });
       } catch (err) {
         console.error('❌ Error fetching log:', err);
       } finally {
@@ -33,7 +43,7 @@ export default function DetailsScreen() {
       }
     };
     fetchLog();
-  }, [id]);
+  }, [id, navigation]);
 
   if (loading) {
     return (
