@@ -25,7 +25,7 @@ export default function DetailsScreen() {
             },
             headerTintColor: colors.text, // optional: sets title/icon color
         });
-    }, [navigation, title]);
+    }, [navigation, title, colors]);
 
     useEffect(() => {
     const fetchLog = async () => {
