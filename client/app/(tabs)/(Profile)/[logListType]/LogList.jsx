@@ -18,6 +18,10 @@ export default function LogList() {
     navigation.setOptions({
       headerShown: true,
       title: logListType,
+      headerStyle: {
+        backgroundColor: colors.background, // fixes white header
+      },
+      headerTintColor: colors.text, // optional: sets title/icon color
     });
   }, [navigation, logListType]);
 

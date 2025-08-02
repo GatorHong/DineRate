@@ -16,9 +16,18 @@ export default function DetailsScreen() {
   const [log, setLog] = useState(null);
   const [loading, setLoading] = useState(true);
 
-    navigation.setOptions({ title: title || 'Log' });
+    useEffect(() => {
+        navigation.setOptions({
+            title: title || 'Log',
+            headerShown: true,
+            headerStyle: {
+                backgroundColor: colors.background, // fixes white header
+            },
+            headerTintColor: colors.text, // optional: sets title/icon color
+        });
+    }, [navigation, title]);
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchLog = async () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('token');
