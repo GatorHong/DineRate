@@ -1,4 +1,3 @@
-// components/ConfirmModal.jsx
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ConfirmModal({ visible, message, onConfirm, onCancel, colors }) {

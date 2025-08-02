@@ -8,13 +8,15 @@ import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
 
 export default function DetailsScreen() {
-  const { id, mode } = useLocalSearchParams();
+  const { id, mode, title } = useLocalSearchParams();
   const isEditMode = mode === 'edit';
   const navigation = useNavigation();
   const { styles, colors } = useThemeStyles();
 
   const [log, setLog] = useState(null);
   const [loading, setLoading] = useState(true);
+
+    navigation.setOptions({ title: title || 'Log' });
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -25,7 +27,6 @@ export default function DetailsScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLog(res.data);
-        navigation.setOptions({ headerShown: true, title: res.data.title || 'Log' });
       } catch (err) {
         console.error('❌ Error fetching log:', err);
       } finally {
@@ -33,7 +34,7 @@ export default function DetailsScreen() {
       }
     };
     fetchLog();
-  }, [id]);
+  }, [id, navigation]);
 
   if (loading) {
     return (
