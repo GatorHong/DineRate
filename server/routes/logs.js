@@ -18,10 +18,14 @@ const authenticate = (req, res, next) => {
 // POST /api/logs
 router.post('/', authenticate, async (req, res) => {
   try {
-    const log = new Log({
-      ...req.body,
-      user: req.user.id // ✅ this must match the schema
-    });
+    const { tags = [], ...rest } = req.body;
+
+const log = new Log({
+  ...rest,
+  tags,
+  user: req.user.id,
+});
+
 
     const saved = await log.save();
     res.status(201).json(saved);
