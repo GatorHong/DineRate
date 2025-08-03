@@ -10,6 +10,9 @@ export default function RestaurantDetail() {
   const [data, setData] = useState(null);
   const [token, setToken] = useState(null);
 
+  const handleAddToDine = () => {
+  console.log('➕ Add to To-Dine pressed');
+};
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('token');
