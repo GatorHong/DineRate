@@ -146,7 +146,7 @@ const handleSubmit = async () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-    router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } }); // ✅ Redirect with refresh
+    router.replace({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } }); // ✅ Redirect with refresh
   } catch (err) {
     console.error('❌ Save failed:', err.response?.data || err.message);
     alert(err.response?.data?.message || 'Save failed. Please try again.');

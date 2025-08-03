@@ -2,6 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
+import BackgroundPattern from "../components/BackgroundPattern";
 
 export default function Index() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
+        <BackgroundPattern/>
         <Ionicons name="restaurant-outline" size={100} color={colors.tint} />
         <Text style={[styles.title, { marginVertical: 20 }]}>Welcome to DineRate</Text>
         <Text style={[styles.text, { textAlign: 'center', marginBottom: 30 }]}>
