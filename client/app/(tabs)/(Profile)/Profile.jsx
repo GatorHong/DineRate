@@ -1,8 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     StatusBar,
@@ -46,6 +45,8 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  const fetchInProgress = useRef(false);
+
   const fetchData = async (isInitial = false) => {
     try {
       if (isInitial) setLoading(true);
@@ -75,22 +76,19 @@ export default function Profile() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData(true);
+      if (fetchInProgress.current) return;
+
+      fetchInProgress.current = true;
+      fetchData(true).finally(() => {
+        fetchInProgress.current = false;
+      });
     }, [])
   );
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', () => {
-      fetchData(false); // Only background refresh
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  useEffect(() => {
     if (refresh === 'true') {
       fetchData(false).then(() => {
-        router.replace('/(tabs)/Profile'); // Clean URL
+        router.replace('/(tabs)/Profile');
       });
     }
   }, [refresh]);
@@ -136,7 +134,7 @@ export default function Profile() {
 
       <View style={localStyles.section}>
         <Text style={[styles.listHeader, { marginBottom: 4 }]}>Account Details</Text>
-        <View style={styles.formFieldRow}>
+        <View className={styles.formFieldRow}>
           <Text style={styles.text}>
             User ID: <Text style={[styles.text, { fontWeight: 'bold' }]}>{user._id}</Text>
           </Text>
