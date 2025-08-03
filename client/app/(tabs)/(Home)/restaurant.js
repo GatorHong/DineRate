@@ -10,9 +10,29 @@ export default function RestaurantDetail() {
   const [data, setData] = useState(null);
   const [token, setToken] = useState(null);
 
-  const handleAddToDine = () => {
-  console.log('➕ Add to To-Dine pressed');
+  const handleAddToDine = async () => {
+  try {
+    await axios.post(
+      'http://localhost:5000/api/logs',
+      {
+        title: data.name,
+        location: data.location || data.address,
+        photoUrl: data.photo_url,
+        rating: data.rating || 0,
+        logType: 'To Dine',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log('✅ Added to To-Dine!');
+  } catch (err) {
+    console.error('❌ Failed to add to To-Dine:', err.message);
+  }
 };
+
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('token');
