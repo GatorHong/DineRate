@@ -34,9 +34,9 @@ export default function RestaurantDetail() {
   }, [restaurant]);
 
 
-  if (!token) return <Text style={{ padding: 20, color: '#000' }}>Loading user...</Text>;
+if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
 
-  if (!data) return <Text style={{ padding: 20, color: '#000' }}>Loading...</Text>;
+if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
 
   
   const handleAddToDine = async () => {
@@ -140,18 +140,19 @@ export default function RestaurantDetail() {
 }
 
 const localStyles = StyleSheet.create({
-  name: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 8,
-  },
-  detail: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+ name: {
+  fontSize: 22,
+  fontWeight: 'bold',
+  color: '#ffffff', // changed from '#000'
+  marginBottom: 8,
+},
+detail: {
+  marginTop: 8,
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#cccccc', // changed from '#000'
+},
+
   overlay: {
     backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 10,
@@ -161,6 +162,11 @@ const localStyles = StyleSheet.create({
   padding: 20,
   backgroundColor: '#121212',
   flex: 1,
+},
+loadingText: {
+  padding: 20,
+  color: '#ffffff',
+  fontSize: 16,
 },
 
 });
