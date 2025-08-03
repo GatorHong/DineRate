@@ -88,7 +88,11 @@ router.put('/:id', authenticate, async (req, res) => {
   try {
     const updatedLog = await Log.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id }, // Only allow updating own log
-      req.body,
+      {
+  ...req.body,
+  tags: req.body.tags || [],
+},
+
       { new: true } // Return updated document
     );
 
