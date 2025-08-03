@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import LogCard from '../../../../components/LogCard';
@@ -19,9 +19,9 @@ export default function LogList() {
       headerShown: true,
       title: logListType,
       headerStyle: {
-        backgroundColor: colors.background, // fixes white header
+        backgroundColor: colors.background,
       },
-      headerTintColor: colors.text, // optional: sets title/icon color
+      headerTintColor: colors.text,
     });
   }, [navigation, logListType]);
 
@@ -43,12 +43,17 @@ export default function LogList() {
     }
   }, [logListType]);
 
-  // Run on first mount
+  // Run on screen focus
   useFocusEffect(
     useCallback(() => {
       loadLogs();
     }, [loadLogs])
   );
+
+  // ✅ Call this manually after log change
+  const navigateBackToProfile = () => {
+    router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
+  };
 
   const renderItem = ({ item }) => <LogCard log={item} />;
 
