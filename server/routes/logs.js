@@ -18,7 +18,15 @@ const authenticate = (req, res, next) => {
 // POST /api/logs
 router.post('/', authenticate, async (req, res) => {
   try {
-    const { tags = [], ...rest } = req.body;
+    let tags = req.body.tags || [];
+
+if (req.body.description) {
+  const extracted = req.body.description.match(/#\w+/g);
+  if (extracted) {
+    tags = [...new Set([...tags, ...extracted.map(t => t.toLowerCase())])];
+  }
+}
+
 
 const log = new Log({
   ...rest,
