@@ -17,16 +17,20 @@ export default function RestaurantDetail() {
     return;
   }
 
+  const payload = {
+    title: data.name,
+    location: data.location || data.address,
+    photoUrl: data.photo_url,
+    rating: data.rating || 0,
+    logType: 'To Dine',
+  };
+
+  console.log('📦 To-Dine Payload:', payload); // ✅ NEW
+
   try {
     await axios.post(
       'http://localhost:5000/api/logs',
-      {
-        title: data.name,
-        location: data.location || data.address,
-        photoUrl: data.photo_url,
-        rating: data.rating || 0,
-        logType: 'To Dine',
-      },
+      payload,
       {
         headers: {
           Authorization: `Bearer ${token}`,
