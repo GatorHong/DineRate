@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Log = require('../models/log'); // ✅ lowercase!
+const Log = require('../models/log'); 
 const jwt = require('jsonwebtoken');
 
 // Auth middleware
@@ -10,7 +10,7 @@ const authenticate = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(403).json({ message: 'Invalid token' });
-    req.user = decoded;
+    req.user = { id: decoded.id || decoded._id };
     next();
   });
 };
@@ -44,6 +44,27 @@ router.get('/', authenticate, async (req, res) => {
   } catch (err) {
     console.error('❌ Failed to fetch logs:', err.message);
     res.status(500).json({ message: 'Failed to fetch logs' });
+  }
+});
+
+// GET /api/logs/stats
+router.get('/stats', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    console.log('✅ Stats requested by user:', req.user.id);
+    const [toDineCount, dinedCount] = await Promise.all([
+      Log.countDocuments({ user: userId, logType: 'To Dine' }),
+      Log.countDocuments({ user: userId, logType: 'Dined' }),
+    ]);
+
+    res.json({
+      toDine: toDineCount,
+      dined: dinedCount,
+    });
+  } catch (err) {
+    console.error('❌ Failed to fetch log stats:', err.message);
+    res.status(500).json({ message: 'Failed to fetch log stats' });
   }
 });
 
@@ -95,6 +116,8 @@ router.delete('/:id', authenticate, async (req, res) => {
     res.status(500).json({ message: 'Failed to delete log' });
   }
 });
+
+
 
 
 module.exports = router;

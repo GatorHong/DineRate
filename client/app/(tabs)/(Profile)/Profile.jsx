@@ -32,31 +32,39 @@ export default function Profile() {
     const router = useRouter();
 
     const [user, setUser] = useState(null);
+    const [logStats, setLogStats] = useState({ toDine: 0, dined: 0 });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await api.get('/auth/profile', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setUser(response.data);
+
+                const [profileRes, statsRes] = await Promise.all([
+                    api.get('/auth/profile', {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    api.get('/logs/stats', {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                ]);
+
+                setUser(profileRes.data);
+                setLogStats(statsRes.data);
             } catch (error) {
+                console.error('❌ Error fetching profile or stats:', error.message);
                 setUser(null);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchUser();
+        fetchData();
     }, []);
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        router.replace('/..'); // Redirect to home after logout
+        router.replace('/Login');
     };
 
     if (loading) {
@@ -82,7 +90,7 @@ export default function Profile() {
         <View style={[styles.screenContainer, { paddingTop: 0 }]}>
             <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-            {/* Logout button (top right) */}
+            {/* Logout button */}
             <View style={localStyles.logoutRow}>
                 <TouchableOpacity onPress={handleLogout} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>Logout</Text>
@@ -112,14 +120,14 @@ export default function Profile() {
                     <TrackingListCard
                         iconName="bookmark"
                         label="To Dine"
-                        count={6}
+                        count={logStats.toDine}
                         colors={colors}
                         styles={styles}
                     />
                     <TrackingListCard
                         iconName="checkmark-circle"
                         label="Dined"
-                        count={3}
+                        count={logStats.dined}
                         colors={colors}
                         styles={styles}
                     />
