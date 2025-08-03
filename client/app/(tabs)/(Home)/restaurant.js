@@ -71,6 +71,12 @@ export default function RestaurantDetail() {
           <Text style={styles.buttonText}>🧭 Get Directions</Text>
         </TouchableOpacity>
       )}
+      <TouchableOpacity
+  style={[styles.buttonContainer, { marginTop: 10, backgroundColor: 'green' }]}
+  onPress={handleAddToDine}
+>
+  <Text style={styles.buttonText}>➕ Add to To-Dine</Text>
+</TouchableOpacity>
     </ScrollView>
   );
 }
