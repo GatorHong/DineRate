@@ -81,7 +81,8 @@ export default function RestaurantDetail() {
   };
 
   return (
-    <ScrollView style={{ padding: 20 }}>
+    <ScrollView style={localStyles.container}>
+
       {data.photo_url && (
         <Image
           source={{ uri: data.photo_url }}
@@ -156,4 +157,10 @@ const localStyles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
   },
+  container: {
+  padding: 20,
+  backgroundColor: '#121212',
+  flex: 1,
+},
+
 });
