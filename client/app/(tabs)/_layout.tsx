@@ -19,14 +19,6 @@ export default function TabLayout() {
                 },
                 tabBarActiveTintColor: colors.tabIconSelected,
                 tabBarInactiveTintColor: colors.tabIconDefault,
-                animation: 'fade',
-
-                transitionSpec: {
-                    animation: 'timing',
-                    config: {
-                        duration: 120,
-                    },
-                },
                 }}
         >
             <Tabs.Screen

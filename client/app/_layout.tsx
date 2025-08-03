@@ -1,7 +1,9 @@
 //root layout
 import { Stack } from 'expo-router';
+import { useThemeStyles } from '../constants/Styles';
 
 export default function RootLayout() {
+    const { colors } = useThemeStyles();
   return (
     <Stack screenOptions={{headerShown : false}}>
         <Stack.Screen
@@ -16,6 +18,10 @@ export default function RootLayout() {
             options={{
                 headerShown: true,
                 headerBackTitle: 'Back',
+                headerStyle: {
+                    backgroundColor: colors.background, // fixes white header
+                },
+                headerTintColor: colors.text, // optional: sets title/icon color
             }}
         />
         <Stack.Screen
@@ -23,6 +29,10 @@ export default function RootLayout() {
             options={{
                 headerShown: true,
                 headerBackTitle: 'Back',
+                headerStyle: {
+                    backgroundColor: colors.background, // fixes white header
+                },
+                headerTintColor: colors.text, // optional: sets title/icon color
             }}
         />
     </Stack>

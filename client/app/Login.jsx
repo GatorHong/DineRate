@@ -5,7 +5,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
-
+import BackgroundPattern from "../components/BackgroundPattern";
 
 export default function Login() {
   const { styles, colors } = useThemeStyles();

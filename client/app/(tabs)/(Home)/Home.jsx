@@ -78,11 +78,6 @@ export default function Home() {
     fetchNearbyRestaurants();
   }, [token]);
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    router.replace('/Login');
-  };
-
   const renderRestaurantItem = ({ item }) => (
     <RestaurantItem
       key={item.place_id}
@@ -103,11 +98,6 @@ export default function Home() {
       <View style={{ flex: 1, padding: 24 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <Text style={styles.title}>DineRate</Text>
-          <TouchableOpacity
-            style={[styles.buttonContainer, { paddingHorizontal: 15, marginTop: 0 }]}
-            onPress={handleLogout}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.listContainer}>
