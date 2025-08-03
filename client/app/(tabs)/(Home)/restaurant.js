@@ -33,9 +33,13 @@ export default function RestaurantDetail() {
     }
   }, [restaurant]);
 
-  if (!token) return <Text style={{ padding: 20, color: '#000' }}>Loading user...</Text>;
-  if (!data) return <Text style={{ padding: 20, color: '#000' }}>Loading...</Text>;
+if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
 
+if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
+
+if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
+
+  
   const handleAddToDine = async () => {
     if (!token) {
       Alert.alert('Error', 'You must be logged in to add to your list.');
@@ -82,12 +86,13 @@ export default function RestaurantDetail() {
   };
 
   return (
-    <ScrollView style={{ padding: 20 }}>
-      {data.photo_url && (
-        <Image
-          source={{ uri: data.photo_url }}
-          style={{ height: 200, borderRadius: 10, marginBottom: 16 }}
-        />
+    <ScrollView style={localStyles.container}>
+
+      <Image
+  source={{ uri: data.photo_url }}
+  style={localStyles.image}
+/>
+
       )}
 
       <Text style={localStyles.name}>{data.name}</Text>
@@ -107,51 +112,80 @@ export default function RestaurantDetail() {
       </Text>
 
       {data.place_id && (
-        <TouchableOpacity
-          style={[styles.buttonContainer, { marginTop: 20 }]}
-          onPress={() =>
-            Linking.openURL(`https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`)
-          }
-        >
-          <Text style={styles.buttonText}>🧭 Get Directions</Text>
-        </TouchableOpacity>
+       <TouchableOpacity
+  style={[styles.buttonContainer, localStyles.directionButton]}
+  onPress={() =>
+    Linking.openURL(
+      `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
+    )
+  }
+>
+  <Text style={styles.buttonText}>🧭 Get Directions</Text>
+</TouchableOpacity>
+
       )}
 
       <TouchableOpacity
-        disabled={isSubmitting}
-        style={[
-          styles.buttonContainer,
-          {
-            marginTop: 24,
-            backgroundColor: isSubmitting ? '#ccc' : '#2e7d32',
-          },
-        ]}
-        onPress={handleAddToDine}
-      >
-        <Text style={styles.buttonText}>
-          {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
-        </Text>
-      </TouchableOpacity>
+  disabled={isSubmitting}
+  style={[
+    styles.buttonContainer,
+    localStyles.addButton,
+    isSubmitting && localStyles.disabledButton,
+  ]}
+  onPress={handleAddToDine}
+>
+  <Text style={styles.buttonText}>
+    {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
+  </Text>
+</TouchableOpacity>
+
     </ScrollView>
   );
 }
 
 const localStyles = StyleSheet.create({
-  name: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 8,
-  },
-  detail: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+ name: {
+  fontSize: 22,
+  fontWeight: 'bold',
+  color: '#ffffff', // changed from '#000'
+  marginBottom: 8,
+},
+detail: {
+  marginTop: 8,
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#cccccc', // changed from '#000'
+},
+
   overlay: {
     backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 10,
     padding: 12,
   },
+  container: {
+  padding: 20,
+  backgroundColor: '#121212',
+  flex: 1,
+},
+loadingText: {
+  padding: 20,
+  color: '#ffffff',
+  fontSize: 16,
+},
+addButton: {
+  marginTop: 24,
+  backgroundColor: '#2e7d32',
+},
+disabledButton: {
+  backgroundColor: '#555',
+},
+image: {
+  height: 200,
+  borderRadius: 10,
+  marginBottom: 16,
+},
+directionButton: {
+  marginTop: 20,
+},
+
 });
