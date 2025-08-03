@@ -60,7 +60,7 @@ export default function LogForm({
 
   const [token, setToken] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-
+const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [food, setFood] = useState('');
@@ -126,6 +126,10 @@ const handleSubmit = async () => {
       alert('Please select a restaurant before submitting.');
       return;
     }
+const formattedTags = tags
+  .split(' ')
+  .map(tag => tag.trim())
+  .filter(tag => tag.startsWith('#') && tag.length > 1);
 
     const payload = {
       title,
@@ -136,6 +140,7 @@ const handleSubmit = async () => {
       logType,
       photoUrl,
       rating,
+      tags: formattedTags,
     };
 
     const resp = isEdit
@@ -305,7 +310,16 @@ const confirmDelete = async () => {
             </View>
           </View>
         </View>
-
+{/* Tags */}
+<View style={styles.formField}>
+  <Text style={styles.label}>Tags</Text>
+  <TextInput
+    style={styles.input}
+    placeholder="e.g. #sushi #birthday #spicy"
+    value={tags}
+    onChangeText={setTags}
+  />
+</View>
         {/* Log Section */}
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Log</Text>

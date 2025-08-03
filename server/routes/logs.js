@@ -29,7 +29,7 @@ if (req.body.description) {
 
 
 const log = new Log({
-  ...rest,
+  ...req.body,
   tags,
   user: req.user.id,
 });

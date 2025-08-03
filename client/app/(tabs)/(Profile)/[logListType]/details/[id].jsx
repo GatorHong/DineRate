@@ -86,6 +86,8 @@ export default function DetailsScreen() {
       <Text style={styles.text}>{log.visibility}</Text>
       <Text style={styles.listHeader}>Log Type</Text>
       <Text style={styles.text}>{log.logType}</Text>
+      <Text style={styles.listHeader}>Tags</Text>
+    <Text style={styles.text}>{log.tags.join(', ')}</Text>
     </View>
   );
 }
