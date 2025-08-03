@@ -1,13 +1,28 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {
-  const { styles } = useThemeStyles(); // no need for colors anymore
+  const { styles } = useThemeStyles();
   const { restaurant } = useLocalSearchParams();
   const [data, setData] = useState(null);
+  const [token, setToken] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Load user token
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      if (storedToken) setToken(storedToken);
+    };
+    fetchToken();
+  }, []);
+
+  // Parse restaurant data
   useEffect(() => {
     if (restaurant) {
       try {
@@ -19,39 +34,89 @@ export default function RestaurantDetail() {
     }
   }, [restaurant]);
 
-  if (!data) return <Text style={{ padding: 20, color: '#000' }}>Loading...</Text>;
+  if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
+  if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
+
+  const handleAddToDine = async () => {
+    if (!token) {
+      Alert.alert('Error', 'You must be logged in to add to your list.');
+      return;
+    }
+
+    const payload = {
+      title: data.name,
+      location: data.location || data.address,
+      photoUrl: data.photo_url,
+      rating: data.rating || 0,
+      logType: 'To Dine',
+    };
+
+    console.log('📦 To-Dine Payload:', payload);
+
+    try {
+      setIsSubmitting(true);
+
+      await axios.post('http://localhost:5000/api/logs', payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log('✅ To-Dine log created successfully');
+
+      Alert.alert(
+        'Success',
+        'Restaurant added to your To-Dine list!',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
+            },
+          },
+        ]
+      );
+    } catch (err) {
+      console.error('❌ Add to To-Dine failed:', err.response?.data || err.message);
+      Alert.alert('Error', 'Could not add to list. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <ScrollView style={{ padding: 20 }}>
+    <ScrollView style={localStyles.container}>
+      {/* Back button */}
+      <TouchableOpacity onPress={() => router.push('/(tabs)/Home')} style={localStyles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="#ffffff" />
+        <Text style={localStyles.backText}>Back</Text>
+      </TouchableOpacity>
+
+      {/* Restaurant Image */}
       {data.photo_url && (
         <Image
           source={{ uri: data.photo_url }}
-          style={{ height: 200, borderRadius: 10, marginBottom: 16 }}
+          style={localStyles.image}
         />
       )}
 
-      {/* Optional: Wrap in background for contrast */}
-      {/* <View style={localStyles.overlay}> */}
-        <Text style={localStyles.name}>{data.name}</Text>
+      <Text style={localStyles.name}>{data.name}</Text>
 
+      <Text style={localStyles.detail}>
+        📍 {data.location || data.address}
+      </Text>
+
+      {data.rating && (
         <Text style={localStyles.detail}>
-          📍 {data.location || data.address}
+          ⭐ {data.rating} / 5
         </Text>
+      )}
 
-        {data.rating && (
-          <Text style={localStyles.detail}>
-            ⭐ {data.rating} / 5
-          </Text>
-        )}
-
-        <Text style={localStyles.detail}>
-          {data.description || "No description available."}
-        </Text>
-      {/* </View> */}
+      <Text style={localStyles.detail}>
+        {data.description || 'No description available.'}
+      </Text>
 
       {data.place_id && (
         <TouchableOpacity
-          style={[styles.buttonContainer, { marginTop: 20 }]}
+          style={[styles.buttonContainer, localStyles.directionButton]}
           onPress={() =>
             Linking.openURL(
               `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
@@ -61,26 +126,70 @@ export default function RestaurantDetail() {
           <Text style={styles.buttonText}>🧭 Get Directions</Text>
         </TouchableOpacity>
       )}
+
+      <TouchableOpacity
+        disabled={isSubmitting}
+        style={[
+          styles.buttonContainer,
+          localStyles.addButton,
+          isSubmitting && localStyles.disabledButton,
+        ]}
+        onPress={handleAddToDine}
+      >
+        <Text style={styles.buttonText}>
+          {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const localStyles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#121212',
+    flex: 1,
+  },
+  loadingText: {
+    padding: 20,
+    color: '#ffffff',
+    fontSize: 16,
+  },
+  image: {
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
   name: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#ffffff',
     marginBottom: 8,
   },
   detail: {
     marginTop: 8,
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
+    color: '#cccccc',
   },
-  overlay: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 10,
-    padding: 12,
+  addButton: {
+    marginTop: 24,
+    backgroundColor: '#2e7d32',
+  },
+  disabledButton: {
+    backgroundColor: '#555',
+  },
+  directionButton: {
+    marginTop: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  backText: {
+    color: '#ffffff',
+    fontSize: 16,
+    marginLeft: 8,
   },
 });

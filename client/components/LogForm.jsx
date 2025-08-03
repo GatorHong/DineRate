@@ -2,16 +2,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
@@ -119,53 +119,53 @@ export default function LogForm({
     setSuggestions([]);
   };
 
-  const handleSubmit = async () => {
-    try {
-      if (!token) return;
-      if (!location.trim()) {
-        alert('Please select a restaurant before submitting.');
-        return;
-      }
-
-      const payload = {
-        title,
-        description,
-        location,
-        food,
-        visibility,
-        logType,
-        photoUrl,
-        rating,
-      };
-
-      const resp = isEdit
-        ? await api.put(`/logs/${logId}`, payload, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        : await api.post('/logs', payload, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-      onSaved?.(resp.data);
-    } catch (err) {
-      console.error('❌ Save failed:', err.response?.data || err.message);
-      alert(err.response?.data?.message || 'Save failed. Please try again.');
+const handleSubmit = async () => {
+  try {
+    if (!token) return;
+    if (!location.trim()) {
+      alert('Please select a restaurant before submitting.');
+      return;
     }
-  };
 
-  const confirmDelete = async () => {
-    try {
-      await api.delete(`/logs/${logId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setShowConfirm(false);
-      onSaved?.();
-      router.replace('/(tabs)/(Profile)/Profile');
-    } catch (err) {
-      console.error('❌ Error deleting log:', err.message);
-      alert(err.response?.data?.message || 'Delete failed.');
-    }
-  };
+    const payload = {
+      title,
+      description,
+      location,
+      food,
+      visibility,
+      logType,
+      photoUrl,
+      rating,
+    };
+
+    const resp = isEdit
+      ? await api.put(`/logs/${logId}`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      : await api.post('/logs', payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+    router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } }); // ✅ Redirect with refresh
+  } catch (err) {
+    console.error('❌ Save failed:', err.response?.data || err.message);
+    alert(err.response?.data?.message || 'Save failed. Please try again.');
+  }
+};
+
+const confirmDelete = async () => {
+  try {
+    await api.delete(`/logs/${logId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setShowConfirm(false);
+    router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } }); // ✅ Redirect with refresh
+  } catch (err) {
+    console.error('❌ Error deleting log:', err.message);
+    alert(err.response?.data?.message || 'Delete failed.');
+  }
+};
+
 
   const handleDelete = () => {
     setShowConfirm(true);
