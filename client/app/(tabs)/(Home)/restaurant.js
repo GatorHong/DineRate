@@ -86,11 +86,11 @@ if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
   return (
     <ScrollView style={localStyles.container}>
 
-      {data.photo_url && (
-        <Image
-          source={{ uri: data.photo_url }}
-          style={{ height: 200, borderRadius: 10, marginBottom: 16 }}
-        />
+      <Image
+  source={{ uri: data.photo_url }}
+  style={localStyles.image}
+/>
+
       )}
 
       <Text style={localStyles.name}>{data.name}</Text>
@@ -110,14 +110,17 @@ if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
       </Text>
 
       {data.place_id && (
-        <TouchableOpacity
-          style={[styles.buttonContainer, { marginTop: 20 }]}
-          onPress={() =>
-            Linking.openURL(`https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`)
-          }
-        >
-          <Text style={styles.buttonText}>🧭 Get Directions</Text>
-        </TouchableOpacity>
+       <TouchableOpacity
+  style={[styles.buttonContainer, localStyles.directionButton]}
+  onPress={() =>
+    Linking.openURL(
+      `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
+    )
+  }
+>
+  <Text style={styles.buttonText}>🧭 Get Directions</Text>
+</TouchableOpacity>
+
       )}
 
       <TouchableOpacity
@@ -173,6 +176,14 @@ addButton: {
 },
 disabledButton: {
   backgroundColor: '#555',
+},
+image: {
+  height: 200,
+  borderRadius: 10,
+  marginBottom: 16,
+},
+directionButton: {
+  marginTop: 20,
 },
 
 });
