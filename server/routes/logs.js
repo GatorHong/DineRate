@@ -38,11 +38,12 @@ const log = new Log({
 // GET /api/logs?logType=Dined
 router.get('/', authenticate, async (req, res) => {
   try {
-    const { logType } = req.query;
-    const query = { user: req.user.id };
-    if (logType) {
-      query.logType = logType;
-    }
+    const { logType, tag } = req.query;
+const query = { user: req.user.id };
+
+if (logType) query.logType = logType;
+if (tag) query.tags = tag; // exact match on tags array
+
     const logs = await Log.find(query).sort({ createdAt: -1 });
     res.json(logs);
   } catch (err) {
