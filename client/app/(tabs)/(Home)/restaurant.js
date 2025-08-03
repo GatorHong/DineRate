@@ -121,20 +121,19 @@ if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
       )}
 
       <TouchableOpacity
-        disabled={isSubmitting}
-        style={[
-          styles.buttonContainer,
-          {
-            marginTop: 24,
-            backgroundColor: isSubmitting ? '#ccc' : '#2e7d32',
-          },
-        ]}
-        onPress={handleAddToDine}
-      >
-        <Text style={styles.buttonText}>
-          {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
-        </Text>
-      </TouchableOpacity>
+  disabled={isSubmitting}
+  style={[
+    styles.buttonContainer,
+    localStyles.addButton,
+    isSubmitting && localStyles.disabledButton,
+  ]}
+  onPress={handleAddToDine}
+>
+  <Text style={styles.buttonText}>
+    {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
+  </Text>
+</TouchableOpacity>
+
     </ScrollView>
   );
 }
@@ -167,6 +166,13 @@ loadingText: {
   padding: 20,
   color: '#ffffff',
   fontSize: 16,
+},
+addButton: {
+  marginTop: 24,
+  backgroundColor: '#2e7d32',
+},
+disabledButton: {
+  backgroundColor: '#555',
 },
 
 });
