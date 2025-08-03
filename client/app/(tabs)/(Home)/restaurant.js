@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {
@@ -10,43 +10,9 @@ export default function RestaurantDetail() {
   const { restaurant } = useLocalSearchParams();
   const [data, setData] = useState(null);
   const [token, setToken] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Step 12
 
-  const handleAddToDine = async () => {
-  if (!token) {
-    Alert.alert('Error', 'You must be logged in to add to your list.');
-    return;
-  }
-
-  const payload = {
-    title: data.name,
-    location: data.location || data.address,
-    photoUrl: data.photo_url,
-    rating: data.rating || 0,
-    logType: 'To Dine',
-  };
-
-  console.log('📦 To-Dine Payload:', payload); 
-
-  try {
-    await axios.post(
-      'http://localhost:5000/api/logs', 
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    Alert.alert('Success', 'Restaurant added to your To-Dine list!');
-  } catch (err) {
-    console.error('❌ Failed to add to To-Dine:', err.message);
-    Alert.alert('Error', 'Could not add to list. Please try again.');
-  }
-};
-
-
-
-
+  // Load user token
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('token');
@@ -55,6 +21,7 @@ export default function RestaurantDetail() {
     fetchToken();
   }, []);
 
+  // Parse restaurant data
   useEffect(() => {
     if (restaurant) {
       try {
@@ -66,7 +33,52 @@ export default function RestaurantDetail() {
     }
   }, [restaurant]);
 
+
+  if (!token) return <Text style={{ padding: 20, color: '#000' }}>Loading user...</Text>;
+
   if (!data) return <Text style={{ padding: 20, color: '#000' }}>Loading...</Text>;
+
+  
+  const handleAddToDine = async () => {
+    if (!token) {
+      Alert.alert('Error', 'You must be logged in to add to your list.');
+      return;
+    }
+
+    
+    const payload = {
+      title: data.name,
+      location: data.location || data.address,
+      photoUrl: data.photo_url,
+      rating: data.rating || 0,
+      logType: 'To Dine',
+    };
+
+    
+    console.log('📦 To-Dine Payload:', payload);
+
+    try {
+      setIsSubmitting(true); 
+
+      await axios.post(
+        'http://localhost:5000/api/logs', 
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('✅ To-Dine log created successfully'); 
+      Alert.alert('Success', 'Restaurant added to your To-Dine list!');
+    } catch (err) {
+      console.error('❌ Add to To-Dine failed:', err.response?.data || err.message); 
+      Alert.alert('Error', 'Could not add to list. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <ScrollView style={{ padding: 20 }}>
@@ -105,12 +117,23 @@ export default function RestaurantDetail() {
           <Text style={styles.buttonText}>🧭 Get Directions</Text>
         </TouchableOpacity>
       )}
+
+  
       <TouchableOpacity
-  style={[styles.buttonContainer, { marginTop: 10, backgroundColor: 'green' }]}
-  onPress={handleAddToDine}
->
-  <Text style={styles.buttonText}>➕ Add to To-Dine</Text>
-</TouchableOpacity>
+        disabled={isSubmitting}
+        style={[
+          styles.buttonContainer,
+          {
+            marginTop: 24,
+            backgroundColor: isSubmitting ? '#ccc' : '#2e7d32',
+          },
+        ]}
+        onPress={handleAddToDine}
+      >
+        <Text style={styles.buttonText}>
+          {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
