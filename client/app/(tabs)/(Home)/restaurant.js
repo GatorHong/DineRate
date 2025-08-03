@@ -35,6 +35,8 @@ export default function RestaurantDetail() {
 
 if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
 
+if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
+
 if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
 
   
