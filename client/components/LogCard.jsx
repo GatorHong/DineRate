@@ -3,9 +3,19 @@ import { useRouter } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 
-export default function LogCard({ log }) {
+export default function LogCard({ log, placeholder = false }) {
     const { styles, colors } = useThemeStyles();
     const router = useRouter();
+
+    if (placeholder) {
+        return (
+            <View style={[styles.card, { marginBottom: 12, opacity: 0.5 }]}>
+                <View style={{ height: 24, backgroundColor: colors.border, borderRadius: 4, marginBottom: 8, width: '60%' }} />
+                <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, marginBottom: 8, width: '40%' }} />
+                <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, width: '30%' }} />
+            </View>
+        );
+    }
 
     const handlePress = () => {
         router.push({

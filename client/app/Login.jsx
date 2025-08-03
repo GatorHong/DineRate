@@ -6,7 +6,6 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
 
-
 export default function Login() {
   const { styles, colors } = useThemeStyles();
   const [form, setForm] = useState({ username: "", password: "" });
