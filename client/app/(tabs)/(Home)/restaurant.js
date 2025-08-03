@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {
@@ -27,11 +28,13 @@ export default function RestaurantDetail() {
         },
       }
     );
-    console.log('✅ Added to To-Dine!');
+    Alert.alert('Success', 'Restaurant added to your To-Dine list!');
   } catch (err) {
     console.error('❌ Failed to add to To-Dine:', err.message);
+    Alert.alert('Error', 'Could not add to list. Please try again.');
   }
 };
+
 
   useEffect(() => {
     const fetchToken = async () => {
