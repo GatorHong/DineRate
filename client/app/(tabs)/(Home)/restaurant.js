@@ -12,6 +12,11 @@ export default function RestaurantDetail() {
   const [token, setToken] = useState(null);
 
   const handleAddToDine = async () => {
+  if (!token) {
+    Alert.alert('Error', 'You must be logged in to add to your list.');
+    return;
+  }
+
   try {
     await axios.post(
       'http://localhost:5000/api/logs',
@@ -34,6 +39,7 @@ export default function RestaurantDetail() {
     Alert.alert('Error', 'Could not add to list. Please try again.');
   }
 };
+
 
 
   useEffect(() => {
