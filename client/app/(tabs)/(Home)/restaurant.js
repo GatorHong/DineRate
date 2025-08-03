@@ -1,12 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {
-  const { styles } = useThemeStyles(); // no need for colors anymore
+  const { styles } = useThemeStyles(); 
   const { restaurant } = useLocalSearchParams();
   const [data, setData] = useState(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      if (storedToken) setToken(storedToken);
+    };
+    fetchToken();
+  }, []);
 
   useEffect(() => {
     if (restaurant) {
@@ -30,24 +40,21 @@ export default function RestaurantDetail() {
         />
       )}
 
-      {/* Optional: Wrap in background for contrast */}
-      {/* <View style={localStyles.overlay}> */}
-        <Text style={localStyles.name}>{data.name}</Text>
+      <Text style={localStyles.name}>{data.name}</Text>
 
+      <Text style={localStyles.detail}>
+        📍 {data.location || data.address}
+      </Text>
+
+      {data.rating && (
         <Text style={localStyles.detail}>
-          📍 {data.location || data.address}
+          ⭐ {data.rating} / 5
         </Text>
+      )}
 
-        {data.rating && (
-          <Text style={localStyles.detail}>
-            ⭐ {data.rating} / 5
-          </Text>
-        )}
-
-        <Text style={localStyles.detail}>
-          {data.description || "No description available."}
-        </Text>
-      {/* </View> */}
+      <Text style={localStyles.detail}>
+        {data.description || "No description available."}
+      </Text>
 
       {data.place_id && (
         <TouchableOpacity
