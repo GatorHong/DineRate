@@ -62,6 +62,28 @@ export default function LogCard({ log, placeholder = false }) {
                     <Text style={[styles.text, { fontWeight: 'bold', marginRight: 12 }]}>
                         ⭐ {log.rating}
                     </Text>
+                    {log.tags?.length > 0 && (
+  <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 8 }}>
+    {log.tags.map((tag, index) => (
+      <Text
+        key={index}
+        style={{
+          marginRight: 6,
+          marginBottom: 4,
+          paddingHorizontal: 8,
+          paddingVertical: 2,
+          backgroundColor: colors.border,
+          color: colors.text,
+          borderRadius: 4,
+          fontSize: 12,
+        }}
+      >
+        {tag}
+      </Text>
+    ))}
+  </View>
+)}
+
                     <Text style={[styles.text, { backgroundColor: colors.tint, color: colors.buttonText, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, fontSize: 12 }]}>
                         {log.logType}
                     </Text>
