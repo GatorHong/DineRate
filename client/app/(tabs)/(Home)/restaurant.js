@@ -25,11 +25,11 @@ export default function RestaurantDetail() {
     logType: 'To Dine',
   };
 
-  console.log('📦 To-Dine Payload:', payload); // ✅ NEW
+  console.log('📦 To-Dine Payload:', payload); 
 
   try {
     await axios.post(
-      'http://localhost:5000/api/logs',
+      'http://localhost:5000/api/logs', 
       payload,
       {
         headers: {
@@ -43,6 +43,7 @@ export default function RestaurantDetail() {
     Alert.alert('Error', 'Could not add to list. Please try again.');
   }
 };
+
 
 
 
