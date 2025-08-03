@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -33,13 +34,9 @@ export default function RestaurantDetail() {
     }
   }, [restaurant]);
 
-if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
+  if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
+  if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
 
-if (!token) return <Text style={localStyles.loadingText}>Loading user...</Text>;
-
-if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
-
-  
   const handleAddToDine = async () => {
     if (!token) {
       Alert.alert('Error', 'You must be logged in to add to your list.');
@@ -87,12 +84,18 @@ if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
 
   return (
     <ScrollView style={localStyles.container}>
+      {/* Back button */}
+      <TouchableOpacity onPress={() => router.push('/(tabs)/Home')} style={localStyles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="#ffffff" />
+        <Text style={localStyles.backText}>Back</Text>
+      </TouchableOpacity>
 
-      <Image
-  source={{ uri: data.photo_url }}
-  style={localStyles.image}
-/>
-
+      {/* Restaurant Image */}
+      {data.photo_url && (
+        <Image
+          source={{ uri: data.photo_url }}
+          style={localStyles.image}
+        />
       )}
 
       <Text style={localStyles.name}>{data.name}</Text>
@@ -112,80 +115,81 @@ if (!data) return <Text style={localStyles.loadingText}>Loading...</Text>;
       </Text>
 
       {data.place_id && (
-       <TouchableOpacity
-  style={[styles.buttonContainer, localStyles.directionButton]}
-  onPress={() =>
-    Linking.openURL(
-      `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
-    )
-  }
->
-  <Text style={styles.buttonText}>🧭 Get Directions</Text>
-</TouchableOpacity>
-
+        <TouchableOpacity
+          style={[styles.buttonContainer, localStyles.directionButton]}
+          onPress={() =>
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
+            )
+          }
+        >
+          <Text style={styles.buttonText}>🧭 Get Directions</Text>
+        </TouchableOpacity>
       )}
 
       <TouchableOpacity
-  disabled={isSubmitting}
-  style={[
-    styles.buttonContainer,
-    localStyles.addButton,
-    isSubmitting && localStyles.disabledButton,
-  ]}
-  onPress={handleAddToDine}
->
-  <Text style={styles.buttonText}>
-    {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
-  </Text>
-</TouchableOpacity>
-
+        disabled={isSubmitting}
+        style={[
+          styles.buttonContainer,
+          localStyles.addButton,
+          isSubmitting && localStyles.disabledButton,
+        ]}
+        onPress={handleAddToDine}
+      >
+        <Text style={styles.buttonText}>
+          {isSubmitting ? 'Adding...' : '➕ Add to To-Dine'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const localStyles = StyleSheet.create({
- name: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  color: '#ffffff', // changed from '#000'
-  marginBottom: 8,
-},
-detail: {
-  marginTop: 8,
-  fontSize: 16,
-  fontWeight: '600',
-  color: '#cccccc', // changed from '#000'
-},
-
-  overlay: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 10,
-    padding: 12,
-  },
   container: {
-  padding: 20,
-  backgroundColor: '#121212',
-  flex: 1,
-},
-loadingText: {
-  padding: 20,
-  color: '#ffffff',
-  fontSize: 16,
-},
-addButton: {
-  marginTop: 24,
-  backgroundColor: '#2e7d32',
-},
-disabledButton: {
-  backgroundColor: '#555',
-},
-image: {
-  height: 200,
-  borderRadius: 10,
-  marginBottom: 16,
-},
-directionButton: {
-  marginTop: 20,
-},
-
+    padding: 20,
+    backgroundColor: '#121212',
+    flex: 1,
+  },
+  loadingText: {
+    padding: 20,
+    color: '#ffffff',
+    fontSize: 16,
+  },
+  image: {
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  detail: {
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#cccccc',
+  },
+  addButton: {
+    marginTop: 24,
+    backgroundColor: '#2e7d32',
+  },
+  disabledButton: {
+    backgroundColor: '#555',
+  },
+  directionButton: {
+    marginTop: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  backText: {
+    color: '#ffffff',
+    fontSize: 16,
+    marginLeft: 8,
+  },
 });
