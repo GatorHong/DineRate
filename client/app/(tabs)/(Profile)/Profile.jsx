@@ -6,10 +6,6 @@ import { ActivityIndicator, StatusBar, StyleSheet, Text, TouchableOpacity, View 
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
 
-export const options = {
-    headerShown: false,
-};
-
 const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
     const router = useRouter();
     return (
@@ -60,7 +56,7 @@ export default function Profile() {
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        router.replace('/Landing');
+        router.replace('/..'); // Redirect to home after logout
     };
 
     if (loading) {
