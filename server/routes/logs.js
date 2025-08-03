@@ -52,7 +52,6 @@ router.get('/stats', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    console.log('✅ Stats requested by user:', req.user.id);
     const [toDineCount, dinedCount] = await Promise.all([
       Log.countDocuments({ user: userId, logType: 'To Dine' }),
       Log.countDocuments({ user: userId, logType: 'Dined' }),
