@@ -200,13 +200,13 @@ export default function AdminPanel() {
               <Text style={local.logHeader}>To Dine</Text>
               {logs.toDine?.map((item, index) => (
                 <Text key={index} style={styles.text}>
-                  - {item.restaurantName}
+                  - {item.title}
                 </Text>
               ))}
               <Text style={local.logHeader}>Dined</Text>
               {logs.dined?.map((item, index) => (
                 <Text key={index} style={styles.text}>
-                  - {item.restaurantName}
+                  - {item.title}
                 </Text>
               ))}
             </ScrollView>

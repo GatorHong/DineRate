@@ -3,17 +3,15 @@ const Log = require('../models/log');
 // GET logs by any user ID (admin only)
 exports.getLogsByUserId = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Ensure only admins can access this route
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Forbidden: Admins only' });
     }
 
-    const [toDine, dined] = await Promise.all([
-      Log.find({ user: id, logType: 'To Dine' }).sort({ createdAt: -1 }),
-      Log.find({ user: id, logType: 'Dined' }).sort({ createdAt: -1 }),
-    ]);
+    const allLogs = await Log.find({ user: req.params.id });
+
+    // Case-insensitive filtering
+    const toDine = allLogs.filter(log => log.logType?.toLowerCase() === 'to dine');
+    const dined = allLogs.filter(log => log.logType?.toLowerCase() === 'dined');
 
     res.json({ toDine, dined });
   } catch (err) {
@@ -21,3 +19,4 @@ exports.getLogsByUserId = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch user logs' });
   }
 };
+
