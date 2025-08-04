@@ -4,6 +4,7 @@ import { StyleSheet, useColorScheme } from "react-native";
 export const Colors = {
     light: {
         text: '#11181C',
+        secondaryText: '#332f61',
         background: '#F5F5F5',
         tint: '#007AFF',
         icon: '#687076',
@@ -11,7 +12,7 @@ export const Colors = {
         tabIconSelected: '#007AFF',
         buttonText: '#fff',
         buttonBackground: '#007AFF',
-        sectionBackground: '#FFFF',
+        sectionBackground: '#FFFFFF',
         border: '#E6E8EB',
         subScreenBackground: '#d7f3fa',
         subScreenHeaderBackground: '#bbe4fa',
@@ -19,6 +20,7 @@ export const Colors = {
     },
     dark: {
         text: '#FFFFFF',
+        secondaryText: '#abcbed',
         background: '#00171F',
         tint: '#fff',
         icon: '#007EA7',
