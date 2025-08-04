@@ -13,8 +13,8 @@ DineRate is a restaurant rating and review application built with **React Native
 - [Sprint Retrospective (Module 6)](https://docs.google.com/document/d/1MbQkiB0ykF_aHopwrtce8XnawwX37eI-hUad5uLwl7k/edit?usp=sharing)
 - [Presentation Slide](https://docs.google.com/presentation/d/1EEQ10oYte1v-55WKfstGGSpGmSx8MYTLaVl-BUDt-bc/edit?usp=sharing)
 - [Sprint 1 Presentation](https://docs.google.com/presentation/d/18bzejdqN24Z-qWg7hXyeOIU-y7PUi2-JohPmL0mvQd4/edit?usp=sharing)
-- [Documentation Report] (https://docs.google.com/document/d/1jOUgxgivcps8LqwIHUEZrWq-3Z5TEBrNvIB4DMdmTkM/edit?usp=sharing)
-- [Final Presentation] (https://docs.google.com/presentation/d/1ea-zvXJDvOFaTVhsQOSY6LjtgCy5kOG3eIAWlKarGEU/edit?usp=sharing)
+- [Documentation Report](https://docs.google.com/document/d/1jOUgxgivcps8LqwIHUEZrWq-3Z5TEBrNvIB4DMdmTkM/edit?usp=sharing)
+- [Final Presentation](https://docs.google.com/presentation/d/1ea-zvXJDvOFaTVhsQOSY6LjtgCy5kOG3eIAWlKarGEU/edit?usp=sharing)
 ---
 
 ## 📁 Repository Structure
