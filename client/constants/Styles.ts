@@ -89,6 +89,7 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
         },
         listContainer: {
             marginBottom: 12,
+            paddingBottom: 48,
             flex: 1
         },
         listHeader: {
