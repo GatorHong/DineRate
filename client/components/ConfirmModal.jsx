@@ -27,10 +27,8 @@ export default function ConfirmModal({
           </Text>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onCancel}>
-              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>
-                Cancel
-              </Text>
+            <TouchableOpacity onPress={onCancel} style={styles.buttonWrapper}>
+              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -38,20 +36,9 @@ export default function ConfirmModal({
                 console.log(`✅ ConfirmModal: ${confirmLabel} clicked`);
                 onConfirm();
               }}
+              style={styles.buttonWrapper}
             >
-              <Text
-                style={[
-                  styles.button,
-                  {
-                    color:
-                      confirmLabel.toLowerCase().includes('demote') ||
-                      confirmLabel.toLowerCase().includes('delete')
-                        ? 'red'
-                        : '#007aff',
-                    fontWeight: 'bold',
-                  },
-                ]}
-              >
+              <Text style={[styles.button, { color: '#007aff', fontWeight: 'bold' }]}>
                 {confirmLabel}
               </Text>
             </TouchableOpacity>
@@ -83,6 +70,9 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  buttonWrapper: {
+    paddingHorizontal: 10,
   },
   button: {
     fontSize: 16,
