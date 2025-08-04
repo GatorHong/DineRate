@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import { ScrollView, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useRef, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 const IconScroller = ({ colors }) => {
   // Base set of icons
