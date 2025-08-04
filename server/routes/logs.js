@@ -18,10 +18,22 @@ const authenticate = (req, res, next) => {
 // POST /api/logs
 router.post('/', authenticate, async (req, res) => {
   try {
-    const log = new Log({
-      ...req.body,
-      user: req.user.id // ✅ this must match the schema
-    });
+    let tags = req.body.tags || [];
+
+if (req.body.description) {
+  const extracted = req.body.description.match(/#\w+/g);
+  if (extracted) {
+    tags = [...new Set([...tags, ...extracted.map(t => t.toLowerCase())])];
+  }
+}
+
+
+const log = new Log({
+  ...req.body,
+  tags,
+  user: req.user.id,
+});
+
 
     const saved = await log.save();
     res.status(201).json(saved);
@@ -34,11 +46,12 @@ router.post('/', authenticate, async (req, res) => {
 // GET /api/logs?logType=Dined
 router.get('/', authenticate, async (req, res) => {
   try {
-    const { logType } = req.query;
-    const query = { user: req.user.id };
-    if (logType) {
-      query.logType = logType;
-    }
+    const { logType, tag } = req.query;
+const query = { user: req.user.id };
+
+if (logType) query.logType = logType;
+if (tag) query.tags = tag; // exact match on tags array
+
     const logs = await Log.find(query).sort({ createdAt: -1 });
     res.json(logs);
   } catch (err) {
@@ -84,7 +97,11 @@ router.put('/:id', authenticate, async (req, res) => {
   try {
     const updatedLog = await Log.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id }, // Only allow updating own log
-      req.body,
+      {
+  ...req.body,
+  tags: req.body.tags || [],
+},
+
       { new: true } // Return updated document
     );
 
