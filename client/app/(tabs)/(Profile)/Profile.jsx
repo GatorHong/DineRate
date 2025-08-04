@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -13,7 +14,6 @@ import {
 import Toast from 'react-native-root-toast';
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
   const router = useRouter();
@@ -257,30 +257,7 @@ export default function Profile() {
                         </View>
                     </View>
 
-                    <View style={[styles.formField, { marginBottom: 8 }]}>
-                        <View style={styles.formFieldRow}>
-                            <Text style={[styles.text, { color: colors.icon }]}>Role</Text>
-                            {loading ? (
-                                <View style={{
-                                    width: 60,
-                                    height: 24,
-                                    backgroundColor: colors.border,
-                                    borderRadius: 16
-                                }} />
-                            ) : (
-                                <View style={{
-                                    paddingVertical: 4,
-                                    paddingHorizontal: 12,
-                                    borderRadius: 16,
-                                    backgroundColor: user.role?.toLowerCase() === 'admin' ? colors.tint : colors.icon
-                                }}>
-                                    <Text style={[styles.text, { color: '#fff', fontSize: 14 }]}>
-                                        {user.role || 'User'}
-                                    </Text>
-                                </View>
-                            )}
-                        </View>
-                    </View>
+                    
                 </View>
 
                 <View style={{ marginVertical: 16 }}>
