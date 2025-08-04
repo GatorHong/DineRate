@@ -4,10 +4,8 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Animated,
   Platform,
   StatusBar,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -122,11 +120,11 @@ export default function Profile() {
                 router.replace('/(tabs)/Profile');
             });
         }
-    }, [refresh]);
+    }, [refresh,router]);
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        router.replace('/Login', undefined, { shallow: true });
+        router.replace('/', undefined, { shallow: true });
     };
 
     const handleAdminPress = () => {
@@ -162,23 +160,20 @@ export default function Profile() {
                 barStyle={colorScheme === 'dark' ? "light-content" : "dark-content"}
             />
 
-            <View style={{ width: '100%' }}>
+            <View>
                 <LinearGradient
                     colors={gradientColors}
                     style={{
                         paddingTop: Platform.OS === 'ios' ? 60 : 48,
                         paddingBottom: 24,
-                        width: '100%',
                         alignItems: 'center',
-                        borderBottomLeftRadius: 24,
-                        borderBottomRightRadius: 24,
                     }}
                 >
                     <TouchableOpacity
                         onPress={handleLogout}
                         style={{
                             position: 'absolute',
-                            top: Platform.OS === 'ios' ? 50 : 36,
+                            top: Platform.OS === 'ios' ? 64 : 36,
                             right: 16,
                             flexDirection: 'row',
                             alignItems: 'center',

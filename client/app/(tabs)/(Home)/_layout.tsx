@@ -7,7 +7,7 @@ export default function RootLayout() {
         <Stack screenOptions={{
             headerShown: true,
             headerBackTitle: 'Home',
-            headerLargeTitle : true,
+            headerLargeTitle: true,
             headerStyle: {
                 backgroundColor: colors.background,
             },
@@ -17,7 +17,9 @@ export default function RootLayout() {
                 name="Home"
                 options={{
                     headerShown: true,
-                    headerTitle : 'DineRate',
+                    headerTitle: 'DineRate',
+                    headerBackVisible: false,
+                    headerLeft: () => null
                 }}
             />
         </Stack>
