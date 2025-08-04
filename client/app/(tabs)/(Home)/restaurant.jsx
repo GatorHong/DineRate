@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {router, useLocalSearchParams, useNavigation} from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, Image, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
+import {Platform, Alert, Image, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {
@@ -142,8 +142,12 @@ export default function RestaurantDetail() {
                   style={[styles.buttonContainer, { marginTop: 20 }]}
                   onPress={() =>
                       Linking.openURL(
-                          `https://www.google.com/maps/search/?api=1&query_place_id=${data.place_id}`
-                      )
+                            Platform.select({
+                                ios: `maps:0,0?q=${encodeURIComponent(data.name)}@${data.location || data.address}`,
+                                android: `geo:0,0?q=${encodeURIComponent(data.name)}@${data.location || data.address}`,
+                                web: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.name)}@${data.location || data.address}`
+                            })
+                        )
                   }
               >
                 <Text style={styles.buttonText}>Get Directions</Text>

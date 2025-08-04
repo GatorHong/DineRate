@@ -186,7 +186,7 @@ export default function DetailsScreen() {
                   marginBottom: 6,
                 }}
               >
-                #{tag}
+                {tag}
               </Text>
             ))}
           </View>
