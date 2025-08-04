@@ -1,3 +1,4 @@
+// middlewares/auth.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -14,4 +15,24 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = protect;
+// Middleware to check for Admin role
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== 'Admin') {
+    return res.status(403).json({ message: 'Access denied: Admins only' });
+  }
+  next();
+};
+
+// Middleware to check for Member role
+const isMember = (req, res, next) => {
+  if (req.user.role !== 'Member') {
+    return res.status(403).json({ message: 'Access denied: Members only' });
+  }
+  next();
+};
+
+module.exports = {
+  protect,
+  isAdmin,
+  isMember,
+};

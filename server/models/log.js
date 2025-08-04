@@ -8,6 +8,7 @@ const logSchema = new mongoose.Schema({
   food: String,
   photoUrl: String,
   rating: Number,
+  googleRating: Number,
   visibility: {
     type: String,
     enum: ['Public', 'Private', 'Friend'],
@@ -17,6 +18,11 @@ const logSchema = new mongoose.Schema({
     type: String,
     enum: ['Dined', 'To Dine']
     },
+    tags: {
+  type: [String],
+  default: [],
+},
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Log', logSchema);

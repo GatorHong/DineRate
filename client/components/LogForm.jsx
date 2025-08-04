@@ -60,7 +60,7 @@ export default function LogForm({
 
   const [token, setToken] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-
+const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [food, setFood] = useState('');
@@ -70,6 +70,7 @@ export default function LogForm({
   const [photoUrl, setPhotoUrl] = useState('');
   const [visibility, setVisibility] = useState('Public');
   const [logType, setLogType] = useState('Dined');
+const [googleRating, setGoogleRating] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -89,6 +90,8 @@ export default function LogForm({
         setRating(initialData.rating ?? null);
         setVisibility(initialData.visibility || 'Public');
         setLogType(initialData.logType || 'Dined');
+        setGoogleRating(initialData.googleRating ?? null);
+
       }
     };
     load();
@@ -115,7 +118,8 @@ export default function LogForm({
     setTitle(item.name || '');
     setLocation(item.address || '');
     setPhotoUrl(item.photo_url || '');
-    setRating(item.rating ?? null);
+    setGoogleRating(item.rating ?? null);
+
     setSuggestions([]);
   };
 
@@ -126,6 +130,10 @@ const handleSubmit = async () => {
       alert('Please select a restaurant before submitting.');
       return;
     }
+const formattedTags = tags
+  .split(' ')
+  .map(tag => tag.trim())
+  .filter(tag => tag.startsWith('#') && tag.length > 1);
 
     const payload = {
       title,
@@ -136,6 +144,8 @@ const handleSubmit = async () => {
       logType,
       photoUrl,
       rating,
+      googleRating,
+      tags: formattedTags,
     };
 
     const resp = isEdit
@@ -191,156 +201,180 @@ const confirmDelete = async () => {
         )}
       </View>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.formContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text style={styles.title}>{isEdit ? 'Edit Log' : 'Log a Meal'}</Text>
+     <ScrollView
+  style={{ flex: 1 }}
+  contentContainerStyle={{ padding: 16 }}
+  showsVerticalScrollIndicator={false}
+  keyboardShouldPersistTaps="handled"
+>
+  {/* 🍽️ Title */}
+  <Text style={[styles.title, { fontSize: 24, marginBottom: 16 }]}>
+    {isEdit ? '✏️ Edit Log' : '🍽️ Log a Meal'}
+  </Text>
 
-        {/* Info Section */}
-        <View style={styles.formSection}>
-          <Text style={styles.formSectionHeader}>Info</Text>
+  {/* 🏪 Restaurant Preview (with image and rating) */}
+  {title !== '' && (
+    <View
+      style={{
+        backgroundColor: colors.sectionBackground,
+        padding: 12,
+        borderRadius: 12,
+        flexDirection: 'row',
+        marginBottom: 16,
+        gap: 10,
+        alignItems: 'center',
+      }}
+    >
+      {photoUrl ? (
+        <Image
+          source={{ uri: photoUrl }}
+          style={{ width: 60, height: 60, borderRadius: 10 }}
+        />
+      ) : (
+        <View
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            backgroundColor: colors.border,
+          }}
+        />
+      )}
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.text, { fontWeight: 'bold' }]}>{title}</Text>
+        <Text style={[styles.text, { color: colors.icon, fontSize: 12 }]}>{location}</Text>
+        {googleRating && (
+          <Text style={[styles.text, { color: '#87CEEB', fontSize: 12 }]}>
+            🌐 Google Rating: {Number(googleRating).toFixed(1)}
+          </Text>
+        )}
+      </View>
+    </View>
+  )}
 
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Restaurant</Text>
-              <TextInput
-                style={styles.formFieldInput}
-                placeholder="Start typing..."
-                placeholderTextColor={colors.icon}
-                value={location}
-                onChangeText={handleSearch}
-              />
-            </View>
+  {/* 🔍 Restaurant Search */}
+  <Text style={styles.formFieldLabel}>🏪 Restaurant</Text>
+  <TextInput
+    style={styles.formFieldInput}
+    placeholder="Search restaurant..."
+    placeholderTextColor={colors.icon}
+    value={location}
+    onChangeText={handleSearch}
+  />
 
-            {suggestions.length > 0 && (
-              <FlatList
-                data={suggestions}
-                keyExtractor={(item) => item.place_id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => handleSuggestionSelect(item)}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 10,
-                      padding: 10,
-                      backgroundColor: colors.sectionBackground,
-                      borderBottomWidth: 1,
-                      borderBottomColor: colors.border,
-                    }}
-                  >
-                    {item.photo_url && (
-                      <View
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 8,
-                          overflow: 'hidden',
-                          backgroundColor: colors.border,
-                        }}
-                      >
-                        <Image
-                          source={{ uri: item.photo_url }}
-                          style={{ width: 50, height: 50 }}
-                          resizeMode="cover"
-                        />
-                      </View>
-                    )}
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: colors.text, fontWeight: 'bold' }}>
-                        {item.name}
-                      </Text>
-                      <Text style={{ color: colors.text, fontSize: 12 }}>{item.address}</Text>
-                      {item.rating && (
-                        <Text style={{ color: colors.text, fontSize: 12 }}>⭐ {item.rating}</Text>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                )}
-                style={{ borderRadius: 8, marginTop: 4 }}
-              />
+  {/* Suggestions */}
+  {suggestions.length > 0 && (
+    <FlatList
+      data={suggestions}
+      keyExtractor={(item) => item.place_id}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          onPress={() => handleSuggestionSelect(item)}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            padding: 10,
+            backgroundColor: colors.sectionBackground,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+          }}
+        >
+          {item.photo_url && (
+            <Image
+              source={{ uri: item.photo_url }}
+              style={{ width: 50, height: 50, borderRadius: 8 }}
+            />
+          )}
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.text, fontWeight: 'bold' }}>{item.name}</Text>
+            <Text style={{ color: colors.text, fontSize: 12 }}>{item.address}</Text>
+            {item.rating && (
+              <Text style={{ color: '#FFD700', fontSize: 12 }}>⭐ {item.rating}</Text>
             )}
           </View>
+        </TouchableOpacity>
+      )}
+      style={{ borderRadius: 8, marginTop: 6, marginBottom: 12 }}
+    />
+  )}
 
-          {/* Food */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Food</Text>
-              <TextInput
-                style={styles.formFieldInput}
-                placeholder="Enter Food"
-                placeholderTextColor={colors.icon}
-                value={food}
-                onChangeText={setFood}
-              />
-            </View>
-          </View>
+  {/* ⭐ Your Rating */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>⭐ Your Rating</Text>
+  <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
+    {[1, 2, 3, 4, 5].map((num) => (
+      <TouchableOpacity key={num} onPress={() => setRating(num)}>
+        <Text
+          style={{
+            fontSize: 32,
+            marginHorizontal: 6,
+            color: num <= rating ? '#FFD700' : colors.icon,
+          }}
+        >
+          ★
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
 
-          {/* Category */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Category</Text>
-              <ToggleButton
-                options={['Dined', 'To Dine']}
-                value={logType}
-                onChange={setLogType}
-                colors={colors}
-              />
-            </View>
-          </View>
+  {/* 🍔 Food */}
+  <Text style={styles.formFieldLabel}>🍔 What did you eat?</Text>
+  <TextInput
+    style={styles.formFieldInput}
+    placeholder="e.g. Pizza, Pho, Sushi"
+    placeholderTextColor={colors.icon}
+    value={food}
+    onChangeText={setFood}
+  />
 
-          {/* Visibility */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Visibility</Text>
-              <ToggleButton
-                options={['Public', 'Private']}
-                value={visibility}
-                onChange={setVisibility}
-                colors={colors}
-              />
-            </View>
-          </View>
-        </View>
+  {/* 📝 Description */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>📝 Description</Text>
+  <TextInput
+    style={styles.textArea}
+    placeholder="How was it? Spicy? Amazing service?"
+    placeholderTextColor={colors.icon}
+    value={description}
+    onChangeText={setDescription}
+    multiline
+    textAlignVertical="top"
+  />
 
-        {/* Log Section */}
-        <View style={styles.formSection}>
-          <Text style={styles.formSectionHeader}>Log</Text>
-          <View style={localStyles(colors).logContainer}>
-            <View style={styles.formField}>
-              <View style={styles.formFieldRow}>
-                <Text style={styles.formFieldLabel}>Title</Text>
-                <TextInput
-                  style={styles.formFieldInput}
-                  placeholder="Optional"
-                  placeholderTextColor={colors.icon}
-                  value={title}
-                  onChangeText={setTitle}
-                />
-              </View>
-            </View>
+  {/* 📂 Category & 🔒 Visibility */}
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+    <View style={{ flex: 1 }}>
+      <Text style={styles.formFieldLabel}>📂 Category</Text>
+      <ToggleButton
+        options={['Dined', 'To Dine']}
+        value={logType}
+        onChange={setLogType}
+        colors={colors}
+      />
+    </View>
+    <View style={{ width: 16 }} />
+    <View style={{ flex: 1 }}>
+      <Text style={styles.formFieldLabel}>🔒 Visibility</Text>
+      <ToggleButton
+        options={['Public', 'Private']}
+        value={visibility}
+        onChange={setVisibility}
+        colors={colors}
+      />
+    </View>
+  </View>
 
-            <View style={styles.divider} />
+  {/* 🏷️ Tags */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>🏷️ Tags</Text>
+  <TextInput
+    style={styles.formFieldInput}
+    placeholder="e.g. #spicy #birthday #tacos"
+    placeholderTextColor={colors.icon}
+    value={tags}
+    onChangeText={setTags}
+  />
 
-            <View style={localStyles(colors).descriptionContainer}>
-              <TextInput
-                style={styles.textArea}
-                placeholder="Enter your thoughts and description here..."
-                placeholderTextColor={colors.icon}
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                textAlignVertical="top"
-              />
-            </View>
-          </View>
-        </View>
+  <View style={{ height: 40 }} />
+</ScrollView>
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
 
       {/* 🔒 Confirm Delete Modal */}
       <ConfirmModal

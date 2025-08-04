@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     bio: { type: String, default: '' },
     photo: { type: String, default: '' },
+    role: {
+      type: String,
+      enum: ['Admin', 'Member'],
+      default: 'Member', // 👈 Default role on registration
+    },
   },
   { timestamps: true }
 );
