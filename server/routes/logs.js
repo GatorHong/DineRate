@@ -131,7 +131,7 @@ router.delete('/:id', authenticate, async (req, res) => {
   }
 });
 
-// ✅ GET /api/logs/user/:id — Admin only
+// GET /api/logs/user/:id — Admin only
 router.get('/user/:id', protect, isAdmin, getLogsByUserId);
 
 module.exports = router;

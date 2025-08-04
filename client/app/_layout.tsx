@@ -1,13 +1,13 @@
 // root layout
 import { Stack } from 'expo-router';
 import { useThemeStyles } from '../constants/Styles';
-import { AuthProvider } from '../context/AuthContext'; // ✅ import AuthProvider
+import { AuthProvider } from '../context/AuthContext'; // import AuthProvider
 
 export default function RootLayout() {
   const { colors } = useThemeStyles();
 
   return (
-    <AuthProvider> {/* ✅ Wrap all navigation inside the provider */}
+    <AuthProvider> {/* Wrap all navigation inside the provider */}
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           name="LogScreen"

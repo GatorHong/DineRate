@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
-import { useThemeStyles } from '../constants/Styles';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useRef } from 'react';
+import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native';
+import { useThemeStyles } from '../constants/Styles';
 
 const BackgroundPattern = ({
   opacity = 0.075,
