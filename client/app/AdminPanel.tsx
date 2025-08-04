@@ -294,12 +294,14 @@ const local = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: 10,
+    gap: 8,
   },
   filterButton: {
+    flex: 1,
+    alignItems: 'center',
     backgroundColor: '#333',
-    paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
   },
