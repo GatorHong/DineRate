@@ -2,7 +2,15 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {ActivityIndicator, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Toast from 'react-native-root-toast';
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
 
@@ -36,7 +44,7 @@ export default function Profile() {
   const [logStats, setLogStats] = useState({ toDine: 0, dined: 0 });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [navigatingToAdmin, setNavigatingToAdmin] = useState(false);
   const fetchInProgress = useRef(false);
 
   const fetchData = async (isInitial = false) => {
@@ -90,6 +98,18 @@ export default function Profile() {
     router.replace('/Login');
   };
 
+  const handleAdminPress = () => {
+    setNavigatingToAdmin(true);
+    setTimeout(() => {
+      router.push('/AdminPanel');
+      Toast.show('Navigated to Admin Panel', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+      });
+      setNavigatingToAdmin(false);
+    }, 500);
+  };
+
   if (loading) {
     return (
       <View style={[styles.screenContainer, localStyles.centered]}>
@@ -113,15 +133,41 @@ export default function Profile() {
     <View style={[styles.screenContainer, { paddingTop: 0 }]}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-      <View style={localStyles.logoutRow}>
-        <TouchableOpacity onPress={handleLogout} style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
-
       <View style={localStyles.avatarSection}>
+        {/* Top-right Logout */}
+        <View style={{ width: '100%', alignItems: 'flex-end', paddingHorizontal: 16 }}>
+          <TouchableOpacity onPress={handleLogout} style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Avatar + Name */}
         <Ionicons name="person-circle-outline" size={96} color={colors.icon} style={localStyles.avatar} />
         <Text style={[styles.title, { marginTop: 8 }]}>{user.name || 'No Name'}</Text>
+
+        {/* Admin Panel Button */}
+        {user.role?.toLowerCase() === 'admin' && (
+          <TouchableOpacity
+            style={[
+              styles.buttonContainer,
+              {
+                marginTop: 12,
+                marginBottom: 8,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+              },
+            ]}
+            onPress={handleAdminPress}
+            disabled={navigatingToAdmin}
+          >
+            <Ionicons name="shield-checkmark-outline" size={20} color="white" />
+            <Text style={styles.buttonText}>
+              {navigatingToAdmin ? 'Loading...' : 'Go to Admin Panel'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={localStyles.section}>
@@ -160,13 +206,6 @@ const localStyles = StyleSheet.create({
   centered: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  logoutRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    marginTop: 8,
-    marginBottom: 8,
   },
   avatarSection: {
     alignItems: 'center',
