@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -38,7 +38,6 @@ const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
 export default function Profile() {
   const { styles, colors } = useThemeStyles();
   const router = useRouter();
-  const navigation = useNavigation();
   const { refresh } = useLocalSearchParams();
 
   const [user, setUser] = useState(null);
