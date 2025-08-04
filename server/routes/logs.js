@@ -1,16 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const Log = require('../models/log'); 
+const Log = require('../models/log');
 const jwt = require('jsonwebtoken');
+const { protect, isAdmin } = require('../middlewares/auth');
+const { getLogsByUserId } = require('../controllers/logController');
 
-// Auth middleware
+// Middleware for inline use
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ message: 'Missing token' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(403).json({ message: 'Invalid token' });
-    req.user = { id: decoded.id || decoded._id };
+
+    req.user = {
+      id: decoded.id || decoded._id,
+      role: decoded.role || 'member',
+    };
+
     next();
   });
 };
@@ -20,20 +27,18 @@ router.post('/', authenticate, async (req, res) => {
   try {
     let tags = req.body.tags || [];
 
-if (req.body.description) {
-  const extracted = req.body.description.match(/#\w+/g);
-  if (extracted) {
-    tags = [...new Set([...tags, ...extracted.map(t => t.toLowerCase())])];
-  }
-}
+    if (req.body.description) {
+      const extracted = req.body.description.match(/#\w+/g);
+      if (extracted) {
+        tags = [...new Set([...tags, ...extracted.map(t => t.toLowerCase())])];
+      }
+    }
 
-
-const log = new Log({
-  ...req.body,
-  tags,
-  user: req.user.id,
-});
-
+    const log = new Log({
+      ...req.body,
+      tags,
+      user: req.user.id,
+    });
 
     const saved = await log.save();
     res.status(201).json(saved);
@@ -47,10 +52,10 @@ const log = new Log({
 router.get('/', authenticate, async (req, res) => {
   try {
     const { logType, tag } = req.query;
-const query = { user: req.user.id };
+    const query = { user: req.user.id };
 
-if (logType) query.logType = logType;
-if (tag) query.tags = tag; // exact match on tags array
+    if (logType) query.logType = logType;
+    if (tag) query.tags = tag;
 
     const logs = await Log.find(query).sort({ createdAt: -1 });
     res.json(logs);
@@ -70,10 +75,7 @@ router.get('/stats', authenticate, async (req, res) => {
       Log.countDocuments({ user: userId, logType: 'Dined' }),
     ]);
 
-    res.json({
-      toDine: toDineCount,
-      dined: dinedCount,
-    });
+    res.json({ toDine: toDineCount, dined: dinedCount });
   } catch (err) {
     console.error(' Failed to fetch log stats:', err.message);
     res.status(500).json({ message: 'Failed to fetch log stats' });
@@ -96,13 +98,9 @@ router.get('/:id', authenticate, async (req, res) => {
 router.put('/:id', authenticate, async (req, res) => {
   try {
     const updatedLog = await Log.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id }, // Only allow updating own log
-      {
-  ...req.body,
-  tags: req.body.tags || [],
-},
-
-      { new: true } // Return updated document
+      { _id: req.params.id, user: req.user.id },
+      { ...req.body, tags: req.body.tags || [] },
+      { new: true }
     );
 
     if (!updatedLog) return res.status(404).json({ message: 'Log not found' });
@@ -133,7 +131,7 @@ router.delete('/:id', authenticate, async (req, res) => {
   }
 });
 
-
-
+// ✅ GET /api/logs/user/:id — Admin only
+router.get('/user/:id', protect, isAdmin, getLogsByUserId);
 
 module.exports = router;

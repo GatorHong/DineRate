@@ -1,23 +1,46 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function ConfirmModal({ visible, message, onConfirm, onCancel, colors }) {
-  if (!colors) return null; // prevent unstyled flash
+export default function ConfirmModal({
+  visible,
+  message,
+  onConfirm,
+  onCancel,
+  confirmLabel = 'Confirm',
+  colors,
+}) {
+  if (!colors) return null;
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-    >
+    <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={[styles.modal, { backgroundColor: colors.sectionBackground, borderColor: colors.border }]}>
-          <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
+        <View
+          style={[
+            styles.modal,
+            {
+              backgroundColor: colors.sectionBackground || '#222',
+              borderColor: colors.border || '#444',
+            },
+          ]}
+        >
+          <Text style={[styles.message, { color: colors.text || '#fff' }]}>
+            {message}
+          </Text>
+
           <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onCancel}>
-              <Text style={[styles.button, { color: colors.text }]}>Cancel</Text>
+            <TouchableOpacity onPress={onCancel} style={styles.buttonWrapper}>
+              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onConfirm}>
-              <Text style={[styles.button, { color: 'red', fontWeight: 'bold' }]}>Delete</Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                console.log(`✅ ConfirmModal: ${confirmLabel} clicked`);
+                onConfirm();
+              }}
+              style={styles.buttonWrapper}
+            >
+              <Text style={[styles.button, { color: '#007aff', fontWeight: 'bold' }]}>
+                {confirmLabel}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -47,6 +70,9 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  buttonWrapper: {
+    paddingHorizontal: 10,
   },
   button: {
     fontSize: 16,
