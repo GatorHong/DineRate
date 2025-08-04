@@ -70,6 +70,7 @@ const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
   const [photoUrl, setPhotoUrl] = useState('');
   const [visibility, setVisibility] = useState('Public');
   const [logType, setLogType] = useState('Dined');
+const [googleRating, setGoogleRating] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -89,6 +90,8 @@ const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
         setRating(initialData.rating ?? null);
         setVisibility(initialData.visibility || 'Public');
         setLogType(initialData.logType || 'Dined');
+        setGoogleRating(initialData.googleRating ?? null);
+
       }
     };
     load();
@@ -115,7 +118,8 @@ const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
     setTitle(item.name || '');
     setLocation(item.address || '');
     setPhotoUrl(item.photo_url || '');
-    setRating(item.rating ?? null);
+    setGoogleRating(item.rating ?? null);
+
     setSuggestions([]);
   };
 
@@ -140,6 +144,7 @@ const formattedTags = tags
       logType,
       photoUrl,
       rating,
+      googleRating,
       tags: formattedTags,
     };
 
@@ -219,6 +224,25 @@ const confirmDelete = async () => {
                 onChangeText={handleSearch}
               />
             </View>
+{/* Rating */}
+<View style={styles.formField}>
+  <Text style={styles.formFieldLabel}>Rating</Text>
+  <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+    {[1, 2, 3, 4, 5].map((num) => (
+      <TouchableOpacity key={num} onPress={() => setRating(num)}>
+        <Text
+          style={{
+            fontSize: 28,
+            marginHorizontal: 4,
+            color: num <= rating ? '#FFD700' : colors.icon, // Gold if selected
+          }}
+        >
+          ★
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</View>
 
             {suggestions.length > 0 && (
               <FlatList
@@ -312,14 +336,16 @@ const confirmDelete = async () => {
         </View>
 {/* Tags */}
 <View style={styles.formField}>
-  <Text style={styles.label}>Tags</Text>
+  <Text style={styles.formFieldLabel}>Tags</Text>
   <TextInput
-    style={styles.input}
+    style={styles.formFieldInput} 
     placeholder="e.g. #sushi #birthday #spicy"
+    placeholderTextColor={colors.icon}
     value={tags}
     onChangeText={setTags}
   />
 </View>
+
         {/* Log Section */}
         <View style={styles.formSection}>
           <Text style={styles.formSectionHeader}>Log</Text>

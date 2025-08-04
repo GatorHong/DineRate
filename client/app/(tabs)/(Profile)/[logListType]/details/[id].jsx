@@ -16,18 +16,16 @@ export default function DetailsScreen() {
   const [log, setLog] = useState(null);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        navigation.setOptions({
-            title: title || 'Log',
-            headerShown: true,
-            headerStyle: {
-                backgroundColor: colors.background, // fixes white header
-            },
-            headerTintColor: colors.text, // optional: sets title/icon color
-        });
-    }, [navigation, title, colors]);
+  useEffect(() => {
+    navigation.setOptions({
+      title: title || 'Log',
+      headerShown: true,
+      headerStyle: { backgroundColor: colors.background },
+      headerTintColor: colors.text,
+    });
+  }, [navigation, title, colors]);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchLog = async () => {
       setLoading(true);
       const token = await AsyncStorage.getItem('token');
@@ -43,7 +41,7 @@ export default function DetailsScreen() {
       }
     };
     fetchLog();
-  }, [id, navigation]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -61,17 +59,22 @@ export default function DetailsScreen() {
     );
   }
 
-  return isEditMode ? (
-    <LogForm
-      mode="edit"
-      initialData={log}
-      logId={id}
-      onSaved={() => navigation.goBack()}
-      onCancel={() => navigation.goBack()}
-    />
-  ) : (
+  if (isEditMode) {
+    return (
+      <LogForm
+        mode="edit"
+        initialData={log}
+        logId={id}
+        onSaved={() => navigation.goBack()}
+        onCancel={() => navigation.goBack()}
+      />
+    );
+  }
+
+  return (
     <View style={[styles.screenContainer, { padding: 16 }]}>
-  {/* 🖼️ Restaurant Image */}
+
+  {/* 🖼️ Image */}
   {log.photoUrl && (
     <View
       style={{
@@ -87,22 +90,28 @@ export default function DetailsScreen() {
     >
       <Image
         source={{ uri: log.photoUrl }}
-        style={{
-          width: '100%',
-          height: 220,
-        }}
+        style={{ width: '100%', height: 220 }}
         resizeMode="cover"
       />
     </View>
   )}
 
-  {/* 🍴 Title */}
-  <Text style={[styles.title, { fontSize: 22, marginBottom: 8 }]}>
-    🍴 {log.title}
+  {/* 🍽️ Title */}
+  {/* 🍽️ Title + Google Rating */}
+<View style={{ marginBottom: 8 }}>
+  <Text style={[styles.title, { fontSize: 22 }]}>
+    🍽️ {log.title}
   </Text>
+  {log.googleRating != null && !isNaN(log.googleRating) && (
+  <Text style={[styles.text, { color: '#87CEEB', fontSize: 14, marginTop: 2 }]}>
+    🌐 Google Rating: {Number(log.googleRating).toFixed(1)}
+  </Text>
+)}
 
-  {/* 📍 Location & Date */}
-  <View style={{ marginBottom: 12 }}>
+</View>
+
+  {/* 📍 Location + Time */}
+  <View style={{ marginBottom: 16 }}>
     <Text style={[styles.text, { color: colors.icon }]}>
       📍 {log.location}
     </Text>
@@ -111,7 +120,7 @@ export default function DetailsScreen() {
     </Text>
   </View>
 
-  {/* 🪟 Description (Styled Quote) */}
+  {/* 📝 Description */}
   {log.description && (
     <View
       style={{
@@ -127,20 +136,33 @@ export default function DetailsScreen() {
     </View>
   )}
 
-  {/* 🍽️ Info Block */}
-  <View
-    style={{
-      backgroundColor: '#262626',
-      padding: 12,
-      borderRadius: 12,
-      marginBottom: 16,
-    }}
-  >
-    <Text style={styles.text}>🍔 Food: <Text style={{ color: '#FFD580' }}>{log.food}</Text></Text>
-    <Text style={styles.text}>⭐ Rating: <Text style={{ color: '#FFD700' }}>{log.rating}</Text></Text>
-    <Text style={styles.text}>🔒 Visibility: <Text style={{ color: '#FF7F50' }}>{log.visibility}</Text></Text>
-    <Text style={styles.text}>📂 Category: <Text style={{ color: '#87CEEB' }}>{log.logType}</Text></Text>
-  </View>
+  {/*Info Block */}
+<View
+  style={{
+    backgroundColor: '#262626',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  }}
+>
+  <Text style={styles.text}>
+    🍔 Food: <Text style={{ color: '#FFD580' }}>{log.food}</Text>
+  </Text>
+
+  {/* ⭐ My Rating */}
+{log.rating != null && !isNaN(log.rating) && (
+  <Text style={styles.text}>
+    ⭐ My Rating: <Text style={{ color: '#FFD700' }}>{Number(log.rating).toFixed(1)}</Text>
+  </Text>
+)}
+
+  <Text style={styles.text}>
+    🔒 Visibility: <Text style={{ color: '#FF7F50' }}>{log.visibility}</Text>
+  </Text>
+  <Text style={styles.text}>
+    📂 Category: <Text style={{ color: '#87CEEB' }}>{log.logType}</Text>
+  </Text>
+</View>
 
   {/* 🏷️ Tags */}
   {log.tags?.length > 0 && (
@@ -168,5 +190,6 @@ export default function DetailsScreen() {
     </View>
   )}
 </View>
+
   );
 }
