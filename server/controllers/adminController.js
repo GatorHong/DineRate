@@ -1,17 +1,18 @@
 const User = require('../models/User');
 
+// PUT /admin/users/:id/role
 exports.updateUserRole = async (req, res) => {
   try {
     const { id } = req.params;
     const { role } = req.body;
 
-    if (!['admin', 'member'].includes(role.toLowerCase())) {
-      return res.status(400).json({ message: 'Invalid role' });
+    if (!['admin', 'member'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role specified' });
     }
 
     const updated = await User.findByIdAndUpdate(
       id,
-      { role: role.charAt(0).toUpperCase() + role.slice(1) }, // Normalize to 'Admin'/'Member'
+      { role },
       { new: true }
     );
 
@@ -19,9 +20,9 @@ exports.updateUserRole = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ message: `User role updated to ${updated.role}` });
+    return res.json({ message: 'User role updated', user: updated });
   } catch (err) {
-    console.error('❌ Failed to update user role:', err.message);
-    res.status(500).json({ message: 'Failed to update role' });
+    console.error('❌ updateUserRole error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
   }
 };

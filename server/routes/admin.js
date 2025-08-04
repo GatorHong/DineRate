@@ -5,7 +5,7 @@ const User = require('../models/User');
 const Log = require('../models/log');
 const { protect, isAdmin } = require('../middlewares/auth');
 
-// GET all users (Admin only)
+// ✅ GET all users (Admin only)
 router.get('/users', protect, isAdmin, async (req, res) => {
   try {
     const users = await User.find().select('-password');
@@ -15,7 +15,7 @@ router.get('/users', protect, isAdmin, async (req, res) => {
   }
 });
 
-// GET all logs (Admin only)
+// ✅ GET all logs (Admin only)
 router.get('/logs', protect, isAdmin, async (req, res) => {
   try {
     const logs = await Log.find().populate('user', 'username name');
@@ -25,7 +25,7 @@ router.get('/logs', protect, isAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id/role — Promote or Demote user (Admin only)
+// ✅ PUT: Promote or Demote user (Admin only)
 router.put('/users/:id/role', protect, isAdmin, async (req, res) => {
   try {
     const { role } = req.body;
@@ -49,11 +49,28 @@ router.put('/users/:id/role', protect, isAdmin, async (req, res) => {
     }
 
     console.log(`✅ Updated user ${updatedUser.username} role to ${updatedUser.role}`);
-
     res.json({ message: `User role updated to ${updatedUser.role}` });
   } catch (err) {
     console.error('❌ Failed to update user role:', err.message);
     res.status(500).json({ message: 'Failed to update role' });
+  }
+});
+
+// ✅ DELETE user by ID (Admin only)
+router.delete('/users/:id', protect, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    await User.findByIdAndDelete(id);
+    console.log(`🗑️ Deleted user: ${user.username}`);
+
+    res.json({ message: `User ${user.username} deleted successfully` });
+  } catch (err) {
+    console.error('❌ Failed to delete user:', err.message);
+    res.status(500).json({ message: 'Failed to delete user' });
   }
 });
 
