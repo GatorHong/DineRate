@@ -201,40 +201,114 @@ const confirmDelete = async () => {
         )}
       </View>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.formContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text style={styles.title}>{isEdit ? 'Edit Log' : 'Log a Meal'}</Text>
+     <ScrollView
+  style={{ flex: 1 }}
+  contentContainerStyle={{ padding: 16 }}
+  showsVerticalScrollIndicator={false}
+  keyboardShouldPersistTaps="handled"
+>
+  {/* 🍽️ Title */}
+  <Text style={[styles.title, { fontSize: 24, marginBottom: 16 }]}>
+    {isEdit ? '✏️ Edit Log' : '🍽️ Log a Meal'}
+  </Text>
 
-        {/* Info Section */}
-        <View style={styles.formSection}>
-          <Text style={styles.formSectionHeader}>Info</Text>
+  {/* 🏪 Restaurant Preview (with image and rating) */}
+  {title !== '' && (
+    <View
+      style={{
+        backgroundColor: colors.sectionBackground,
+        padding: 12,
+        borderRadius: 12,
+        flexDirection: 'row',
+        marginBottom: 16,
+        gap: 10,
+        alignItems: 'center',
+      }}
+    >
+      {photoUrl ? (
+        <Image
+          source={{ uri: photoUrl }}
+          style={{ width: 60, height: 60, borderRadius: 10 }}
+        />
+      ) : (
+        <View
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            backgroundColor: colors.border,
+          }}
+        />
+      )}
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.text, { fontWeight: 'bold' }]}>{title}</Text>
+        <Text style={[styles.text, { color: colors.icon, fontSize: 12 }]}>{location}</Text>
+        {googleRating && (
+          <Text style={[styles.text, { color: '#87CEEB', fontSize: 12 }]}>
+            🌐 Google Rating: {Number(googleRating).toFixed(1)}
+          </Text>
+        )}
+      </View>
+    </View>
+  )}
 
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Restaurant</Text>
-              <TextInput
-                style={styles.formFieldInput}
-                placeholder="Start typing..."
-                placeholderTextColor={colors.icon}
-                value={location}
-                onChangeText={handleSearch}
-              />
-            </View>
-{/* Rating */}
-<View style={styles.formField}>
-  <Text style={styles.formFieldLabel}>Rating</Text>
-  <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+  {/* 🔍 Restaurant Search */}
+  <Text style={styles.formFieldLabel}>🏪 Restaurant</Text>
+  <TextInput
+    style={styles.formFieldInput}
+    placeholder="Search restaurant..."
+    placeholderTextColor={colors.icon}
+    value={location}
+    onChangeText={handleSearch}
+  />
+
+  {/* Suggestions */}
+  {suggestions.length > 0 && (
+    <FlatList
+      data={suggestions}
+      keyExtractor={(item) => item.place_id}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          onPress={() => handleSuggestionSelect(item)}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            padding: 10,
+            backgroundColor: colors.sectionBackground,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+          }}
+        >
+          {item.photo_url && (
+            <Image
+              source={{ uri: item.photo_url }}
+              style={{ width: 50, height: 50, borderRadius: 8 }}
+            />
+          )}
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.text, fontWeight: 'bold' }}>{item.name}</Text>
+            <Text style={{ color: colors.text, fontSize: 12 }}>{item.address}</Text>
+            {item.rating && (
+              <Text style={{ color: '#FFD700', fontSize: 12 }}>⭐ {item.rating}</Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
+      style={{ borderRadius: 8, marginTop: 6, marginBottom: 12 }}
+    />
+  )}
+
+  {/* ⭐ Your Rating */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>⭐ Your Rating</Text>
+  <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
     {[1, 2, 3, 4, 5].map((num) => (
       <TouchableOpacity key={num} onPress={() => setRating(num)}>
         <Text
           style={{
-            fontSize: 28,
-            marginHorizontal: 4,
-            color: num <= rating ? '#FFD700' : colors.icon, // Gold if selected
+            fontSize: 32,
+            marginHorizontal: 6,
+            color: num <= rating ? '#FFD700' : colors.icon,
           }}
         >
           ★
@@ -242,145 +316,65 @@ const confirmDelete = async () => {
       </TouchableOpacity>
     ))}
   </View>
-</View>
 
-            {suggestions.length > 0 && (
-              <FlatList
-                data={suggestions}
-                keyExtractor={(item) => item.place_id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => handleSuggestionSelect(item)}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 10,
-                      padding: 10,
-                      backgroundColor: colors.sectionBackground,
-                      borderBottomWidth: 1,
-                      borderBottomColor: colors.border,
-                    }}
-                  >
-                    {item.photo_url && (
-                      <View
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 8,
-                          overflow: 'hidden',
-                          backgroundColor: colors.border,
-                        }}
-                      >
-                        <Image
-                          source={{ uri: item.photo_url }}
-                          style={{ width: 50, height: 50 }}
-                          resizeMode="cover"
-                        />
-                      </View>
-                    )}
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: colors.text, fontWeight: 'bold' }}>
-                        {item.name}
-                      </Text>
-                      <Text style={{ color: colors.text, fontSize: 12 }}>{item.address}</Text>
-                      {item.rating && (
-                        <Text style={{ color: colors.text, fontSize: 12 }}>⭐ {item.rating}</Text>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                )}
-                style={{ borderRadius: 8, marginTop: 4 }}
-              />
-            )}
-          </View>
-
-          {/* Food */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Food</Text>
-              <TextInput
-                style={styles.formFieldInput}
-                placeholder="Enter Food"
-                placeholderTextColor={colors.icon}
-                value={food}
-                onChangeText={setFood}
-              />
-            </View>
-          </View>
-
-          {/* Category */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Category</Text>
-              <ToggleButton
-                options={['Dined', 'To Dine']}
-                value={logType}
-                onChange={setLogType}
-                colors={colors}
-              />
-            </View>
-          </View>
-
-          {/* Visibility */}
-          <View style={styles.formField}>
-            <View style={styles.formFieldRow}>
-              <Text style={styles.formFieldLabel}>Visibility</Text>
-              <ToggleButton
-                options={['Public', 'Private']}
-                value={visibility}
-                onChange={setVisibility}
-                colors={colors}
-              />
-            </View>
-          </View>
-        </View>
-{/* Tags */}
-<View style={styles.formField}>
-  <Text style={styles.formFieldLabel}>Tags</Text>
+  {/* 🍔 Food */}
+  <Text style={styles.formFieldLabel}>🍔 What did you eat?</Text>
   <TextInput
-    style={styles.formFieldInput} 
-    placeholder="e.g. #sushi #birthday #spicy"
+    style={styles.formFieldInput}
+    placeholder="e.g. Pizza, Pho, Sushi"
+    placeholderTextColor={colors.icon}
+    value={food}
+    onChangeText={setFood}
+  />
+
+  {/* 📝 Description */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>📝 Description</Text>
+  <TextInput
+    style={styles.textArea}
+    placeholder="How was it? Spicy? Amazing service?"
+    placeholderTextColor={colors.icon}
+    value={description}
+    onChangeText={setDescription}
+    multiline
+    textAlignVertical="top"
+  />
+
+  {/* 📂 Category & 🔒 Visibility */}
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+    <View style={{ flex: 1 }}>
+      <Text style={styles.formFieldLabel}>📂 Category</Text>
+      <ToggleButton
+        options={['Dined', 'To Dine']}
+        value={logType}
+        onChange={setLogType}
+        colors={colors}
+      />
+    </View>
+    <View style={{ width: 16 }} />
+    <View style={{ flex: 1 }}>
+      <Text style={styles.formFieldLabel}>🔒 Visibility</Text>
+      <ToggleButton
+        options={['Public', 'Private']}
+        value={visibility}
+        onChange={setVisibility}
+        colors={colors}
+      />
+    </View>
+  </View>
+
+  {/* 🏷️ Tags */}
+  <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>🏷️ Tags</Text>
+  <TextInput
+    style={styles.formFieldInput}
+    placeholder="e.g. #spicy #birthday #tacos"
     placeholderTextColor={colors.icon}
     value={tags}
     onChangeText={setTags}
   />
-</View>
 
-        {/* Log Section */}
-        <View style={styles.formSection}>
-          <Text style={styles.formSectionHeader}>Log</Text>
-          <View style={localStyles(colors).logContainer}>
-            <View style={styles.formField}>
-              <View style={styles.formFieldRow}>
-                <Text style={styles.formFieldLabel}>Title</Text>
-                <TextInput
-                  style={styles.formFieldInput}
-                  placeholder="Optional"
-                  placeholderTextColor={colors.icon}
-                  value={title}
-                  onChangeText={setTitle}
-                />
-              </View>
-            </View>
+  <View style={{ height: 40 }} />
+</ScrollView>
 
-            <View style={styles.divider} />
-
-            <View style={localStyles(colors).descriptionContainer}>
-              <TextInput
-                style={styles.textArea}
-                placeholder="Enter your thoughts and description here..."
-                placeholderTextColor={colors.icon}
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                textAlignVertical="top"
-              />
-            </View>
-          </View>
-        </View>
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
 
       {/* 🔒 Confirm Delete Modal */}
       <ConfirmModal
