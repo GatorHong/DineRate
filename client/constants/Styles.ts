@@ -26,6 +26,8 @@ export const Colors = {
         buttonBackground: '#00A7E1',
         sectionBackground: '#003459',
         border: '#003459',
+        emphasisText: '#00A7E1',
+        starColor: '#00A7E1',
     },
 };
 
@@ -195,6 +197,10 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
         formFieldInput: {
             fontSize: 17,
             color: colors.text,
+            backgroundColor : colors.sectionBackground,
+            borderRadius : 10,
+            padding : 8,
+            marginVertical : 4,
             textAlign: 'right',
             flex: 1,
             paddingLeft: 16,
@@ -234,6 +240,10 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
         textArea: {
             fontSize: 16,
             color: colors.text,
+            backgroundColor : colors.sectionBackground,
+            borderRadius : 10,
+            padding : 8,
+            marginVertical : 4,
             minHeight: 120,
             textAlignVertical: 'top',
         },
