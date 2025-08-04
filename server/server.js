@@ -16,18 +16,18 @@ const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurant');
 const logRoutes = require('./routes/logs');
 const googlePlacesRoutes = require('./routes/googlePlaces');
-const adminRoutes = require('./routes/admin'); // ✅ Admin route
+const adminRoutes = require('./routes/admin'); // Admin route
 
 // Route Registration
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/google', googlePlacesRoutes);
-app.use('/api/admin', adminRoutes); // ✅ Admin route mounted
+app.use('/api/admin', adminRoutes); // Admin route mounted
 
 // Health check
 app.get("/", (req, res) => {
-  res.send("✅ DineRate backend is running.");
+  res.send(" DineRate backend is running.");
 });
 
 // MongoDB connection
@@ -43,11 +43,11 @@ mongoose.connect(uri, {
   useUnifiedTopology: true,
 })
 .then(() => {
-  console.log("✅ MongoDB Connected");
+  console.log(" MongoDB Connected");
   app.listen(PORT, () =>
-    console.log(`🚀 Server running on http://localhost:${PORT}`)
+    console.log(` Server running on http://localhost:${PORT}`)
   );
 })
 .catch((err) => {
-  console.error("❌ MongoDB connection error:", err);
+  console.error(" MongoDB connection error:", err);
 });
