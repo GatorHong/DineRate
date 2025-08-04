@@ -82,6 +82,4 @@ router.get('/nearby', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch nearby restaurants' });
   }
 });
-
-// ✅ Fix: export the router
 module.exports = router;

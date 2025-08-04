@@ -1,12 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from "expo-linear-gradient";
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
-import {LinearGradient} from "expo-linear-gradient";
 
 const RestaurantItem = ({ restaurant, colors, styles, onPress }) => (
     <TouchableOpacity style={styles.restaurantListItem} onPress={onPress}>
