@@ -60,7 +60,7 @@ export default function LogForm({
 
   const [token, setToken] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
+  const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [food, setFood] = useState('');
@@ -70,7 +70,7 @@ const [tags, setTags] = useState(initialData.tags?.join(' ') || '');
   const [photoUrl, setPhotoUrl] = useState('');
   const [visibility, setVisibility] = useState('Public');
   const [logType, setLogType] = useState('Dined');
-const [googleRating, setGoogleRating] = useState(null);
+  const [googleRating, setGoogleRating] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -331,7 +331,7 @@ const confirmDelete = async () => {
   <Text style={[styles.formFieldLabel, { marginTop: 16 }]}>📝 Description</Text>
   <TextInput
     style={styles.textArea}
-    placeholder="How was it? Spicy? Amazing service?"
+    placeholder="What did you think about while eating? How was the meal?"
     placeholderTextColor={colors.icon}
     value={description}
     onChangeText={setDescription}
@@ -387,15 +387,3 @@ const confirmDelete = async () => {
     </KeyboardAvoidingView>
   );
 }
-
-const localStyles = (colors) =>
-  StyleSheet.create({
-    logContainer: {
-      backgroundColor: colors.sectionBackground,
-      borderRadius: 10,
-      overflow: 'hidden',
-    },
-    descriptionContainer: {
-      padding: 16,
-    },
-  });
