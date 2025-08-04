@@ -28,7 +28,9 @@ export default function ConfirmModal({
 
           <View style={styles.buttonRow}>
             <TouchableOpacity onPress={onCancel} style={styles.buttonWrapper}>
-              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>Cancel</Text>
+              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>
+                Cancel
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -38,7 +40,19 @@ export default function ConfirmModal({
               }}
               style={styles.buttonWrapper}
             >
-              <Text style={[styles.button, { color: '#007aff', fontWeight: 'bold' }]}>
+              <Text
+                style={[
+                  styles.button,
+                  {
+                    color:
+                      confirmLabel.toLowerCase().includes('delete') ||
+                      confirmLabel.toLowerCase().includes('demote')
+                        ? '#ff3b30' // red for destructive
+                        : '#007aff', // blue for safe
+                    fontWeight: 'bold',
+                  },
+                ]}
+              >
                 {confirmLabel}
               </Text>
             </TouchableOpacity>
