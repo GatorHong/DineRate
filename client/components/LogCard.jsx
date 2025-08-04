@@ -76,25 +76,38 @@ export default function LogCard({ log, placeholder = false }) {
         </Text>
 
         {/* Rating and Log Type */}
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={[styles.text, { fontWeight: 'bold', marginRight: 12 }]}>
-            ⭐ {log.rating}
-          </Text>
-          <View style={{
-            backgroundColor: colors.tint,
-            borderRadius: 6,
-            paddingHorizontal: 10,
-            paddingVertical: 4,
-          }}>
-            <Text style={{
-              color: colors.buttonText,
-              fontSize: 12,
-              fontWeight: '600',
-            }}>
-              {log.logType}
-            </Text>
-          </View>
-        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+  {/* Your Rating */}
+  {log.rating != null && !isNaN(log.rating) && (
+    <Text style={[styles.text, { fontWeight: 'bold' }]}>
+      ⭐ {Number(log.rating).toFixed(1)}
+    </Text>
+  )}
+
+  {/* Google Rating */}
+  {log.googleRating != null && !isNaN(log.googleRating) && (
+    <Text style={[styles.text, { fontWeight: 'bold', color: '#87CEEB' }]}>
+      🌐 {Number(log.googleRating).toFixed(1)}
+    </Text>
+  )}
+
+  {/* Log Type badge */}
+  <View style={{
+    backgroundColor: colors.tint,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  }}>
+    <Text style={{
+      color: colors.buttonText,
+      fontSize: 12,
+      fontWeight: '600',
+    }}>
+      {log.logType}
+    </Text>
+  </View>
+</View>
+
       </View>
 
       {/* Right-side thumbnail image */}

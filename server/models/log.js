@@ -8,6 +8,7 @@ const logSchema = new mongoose.Schema({
   food: String,
   photoUrl: String,
   rating: Number,
+  googleRating: Number,
   visibility: {
     type: String,
     enum: ['Public', 'Private', 'Friend'],
