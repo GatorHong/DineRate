@@ -16,16 +16,16 @@ export const Colors = {
         border: '#E6E8EB',
     },
     dark: {
-        text: '#ECEDEE',
-        background: '#151718',
+        text: '#FFFFFF',
+        background: '#00171F',
         tint: '#fff',
-        icon: '#9BA1A6',
+        icon: '#007EA7',
         tabIconDefault: '#9BA1A6',
-        tabIconSelected: '#007AFF',
+        tabIconSelected: '#00A7E1',
         buttonText: '#fff',
-        buttonBackground: '#007AFF',
-        sectionBackground: '#151718',
-        border: '#2E3235',
+        buttonBackground: '#00A7E1',
+        sectionBackground: '#003459',
+        border: '#003459',
     },
 };
 
