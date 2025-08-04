@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-root-toast';
 import { useThemeStyles } from '../../../constants/Styles';
 import api from '../../../services/api';
 
