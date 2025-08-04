@@ -29,11 +29,12 @@ export default function AdminPanel() {
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [logModalVisible, setLogModalVisible] = useState(false);
   const [logLoading, setLogLoading] = useState(false);
 
-  // ✅ Redirect non-admins
+  // Redirect non-admins
   useEffect(() => {
     if (!user || user.role?.toLowerCase() !== 'admin') {
       router.replace('/(tabs)');
@@ -60,9 +61,7 @@ export default function AdminPanel() {
     }
   }, [user]);
 
-  const handleFilter = (type) => {
-    setFilter(type);
-  };
+  const handleFilter = (type) => setFilter(type);
 
   const filteredUsers = users.filter((u) => {
     const role = u.role?.toLowerCase();
@@ -76,36 +75,39 @@ export default function AdminPanel() {
 
   const handlePromoteDemote = async (id, newRole) => {
     try {
-      console.log('⚙️ Promoting/Demoting user:', id, '->', newRole);
-
       const response = await api.put(
         `/admin/users/${id}/role`,
         { role: newRole },
         {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
+          headers: { Authorization: `Bearer ${user.token}` },
         }
       );
 
-      console.log('✅ Success:', response.data);
-
-      await fetchUsers(); // Refresh full list
-
-      // ✅ Refresh selectedUser with updated role
+      await fetchUsers();
       const updated = await api.get(`/admin/users`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const updatedUser = updated.data.find((u) => u._id === id);
       setSelectedUser(updatedUser);
-
       setModalVisible(false);
     } catch (error) {
       console.error('❌ Error updating role:', error.response?.data || error.message);
     }
   };
 
-
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    try {
+      await api.delete(`/admin/users/${selectedUser._id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setDeleteModalVisible(false);
+      setSelectedUser(null);
+      await fetchUsers();
+    } catch (error) {
+      console.error('❌ Error deleting user:', error.response?.data || error.message);
+    }
+  };
 
   const handleUserPress = async (item) => {
     setLogLoading(true);
@@ -138,15 +140,12 @@ export default function AdminPanel() {
         </TouchableOpacity>
       </View>
 
-      {/* Filters + Search */}
+      {/* Filters */}
       <View style={local.filterRow}>
         {['all', 'admin', 'member'].map((type) => (
           <TouchableOpacity
             key={type}
-            style={[
-              local.filterButton,
-              filter === type && { backgroundColor: '#007aff' },
-            ]}
+            style={[local.filterButton, filter === type && { backgroundColor: '#007aff' }]}
             onPress={() => handleFilter(type)}
           >
             <Text style={{ color: 'white', textTransform: 'capitalize' }}>{type}</Text>
@@ -178,15 +177,13 @@ export default function AdminPanel() {
               setModalVisible(true);
             }}
           >
-            <Text style={local.name}>
-              {item.name} ({item.username})
-            </Text>
+            <Text style={local.name}>{item.name} ({item.username})</Text>
             <Text style={local.role}>Role: {item.role}</Text>
           </TouchableOpacity>
         )}
       />
 
-      {/* Confirm Modal for Promote/Demote */}
+      {/* Promote/Demote Modal */}
       <ConfirmModal
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
@@ -196,9 +193,7 @@ export default function AdminPanel() {
             selectedUser?.role?.toLowerCase() === 'admin' ? 'member' : 'admin'
           )
         }
-        confirmLabel={
-          selectedUser?.role?.toLowerCase() === 'admin' ? 'Demote' : 'Promote'
-        }
+        confirmLabel={selectedUser?.role?.toLowerCase() === 'admin' ? 'Demote' : 'Promote'}
         message={
           selectedUser?.role?.toLowerCase() === 'admin'
             ? 'Are you sure you want to demote this user?'
@@ -207,7 +202,15 @@ export default function AdminPanel() {
         colors={colors}
       />
 
-
+      {/* Delete Modal */}
+      <ConfirmModal
+        visible={deleteModalVisible}
+        onCancel={() => setDeleteModalVisible(false)}
+        onConfirm={handleDeleteUser}
+        confirmLabel="Delete"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        colors={colors}
+      />
 
       {/* Log Modal */}
       <Modal visible={logModalVisible} animationType="slide">
@@ -216,9 +219,7 @@ export default function AdminPanel() {
             <TouchableOpacity onPress={() => setLogModalVisible(false)}>
               <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
-            <Text style={styles.title}>
-              {selectedUser?.name}'s Logs
-            </Text>
+            <Text style={styles.title}>{selectedUser?.name}'s Logs</Text>
           </View>
 
           {logLoading ? (
@@ -247,8 +248,6 @@ export default function AdminPanel() {
                   borderRadius: 6,
                   marginTop: 20,
                   alignSelf: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
                 }}
                 onPress={() => {
                   setModalVisible(true);
@@ -262,6 +261,22 @@ export default function AdminPanel() {
                 </Text>
               </TouchableOpacity>
 
+              {/* Delete Button */}
+              <TouchableOpacity
+                style={{
+                  backgroundColor: 'red',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginTop: 10,
+                  alignSelf: 'center',
+                }}
+                onPress={() => {
+                  setDeleteModalVisible(true);
+                  setLogModalVisible(false);
+                }}
+              >
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>Delete User</Text>
+              </TouchableOpacity>
             </ScrollView>
           )}
         </View>
