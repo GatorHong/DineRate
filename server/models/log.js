@@ -19,10 +19,9 @@ const logSchema = new mongoose.Schema({
     enum: ['Dined', 'To Dine']
     },
     tags: {
-  type: [String],
-  default: [],
-},
-
+      type: [String],
+      default: [],
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Log', logSchema);
