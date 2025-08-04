@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import {ActivityIndicator, FlatList, SafeAreaView, Text, View} from 'react-native';
+import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
 import LogCard from '../../../../components/LogCard';
 import { useThemeStyles } from '../../../../constants/Styles';
 import api from '../../../../services/api';
@@ -46,9 +46,9 @@ export default function LogList() {
 
   // Run on screen focus
   useFocusEffect(
-      useCallback(() => {
-        loadLogs();
-      }, [loadLogs])
+    useCallback(() => {
+      loadLogs();
+    }, [loadLogs])
   );
 
   // ✅ Call this manually after log change
@@ -58,20 +58,35 @@ export default function LogList() {
 
   const renderItem = ({ item }) => <LogCard log={item} />;
 
+  const renderPlaceholderItem = ({ index }) => <LogCard placeholder={true} />;
+
   // Empty state component
   const EmptyListComponent = () => (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40 }}>
-        <Text style={styles.text}>No logs found for "{logListType}".</Text>
-      </View>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40 }}>
+      <Text style={styles.text}>No logs found for &ldquo;{logListType}&rdquo;.</Text>
+    </View>
   );
+
+  // Generate placeholder data
+  const placeholderData = Array(4).fill().map((_, index) => ({ id: `placeholder-${index}` }));
 
   // Render content based on loading state
   const renderContent = () => {
     if (loading) {
       return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color={colors.tint} />
-          </View>
+        <FlatList
+          data={placeholderData}
+          renderItem={renderPlaceholderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingBottom: 80,
+            paddingTop: 16,
+            flexGrow: 1
+          }}
+          showsVerticalScrollIndicator={true}
+          contentInsetAdjustmentBehavior="automatic"
+        />
       );
     }
 
@@ -94,8 +109,8 @@ export default function LogList() {
   };
 
   return (
-      <SafeAreaView style={[styles.screenContainer, { paddingTop: 20, backgroundColor: colors.subScreenBackground }]}>
-        {renderContent()}
-      </SafeAreaView>
+    <SafeAreaView style={[styles.screenContainer, { paddingTop: 20, backgroundColor: colors.subScreenBackground }]}>
+      {renderContent()}
+    </SafeAreaView>
   );
 }

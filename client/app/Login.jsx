@@ -69,8 +69,11 @@ export default function Login() {
 
       // Navigate after animation completes
       setTimeout(() => {
-        router.replace("/(tabs)/Home");
-      }, 1500); // Wait for animation to finish
+        router.navigate({
+          pathname: "/(tabs)/Home",
+          reset: true
+        });
+      }, 1500);
 
     } catch (err) {
       setIsLoading(false);

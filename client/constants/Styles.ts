@@ -115,7 +115,6 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             fontSize: 16,
             color: colors.text,
         },
-        // New styles for dashboard cards
         dashboardContainer: {
             marginBottom: 16,
             flex : 1
