@@ -4,18 +4,51 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 
 export default function LogCard({ log, placeholder = false }) {
-  const { styles, colors } = useThemeStyles();
-  const router = useRouter();
+    const { styles, colors } = useThemeStyles();
+    const router = useRouter();
 
-  if (placeholder) {
-    return (
-      <View style={[styles.card, { marginBottom: 12, opacity: 0.5 }]}>
-        <View style={{ height: 24, backgroundColor: colors.border, borderRadius: 4, marginBottom: 8, width: '60%' }} />
-        <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, marginBottom: 8, width: '40%' }} />
-        <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, width: '30%' }} />
-      </View>
-    );
-  }
+    if (placeholder) {
+        return (
+            <View
+                style={{
+                    backgroundColor: colors.sectionBackground,
+                    borderRadius: 14,
+                    padding: 14,
+                    marginBottom: 14,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    opacity: 0.7
+                }}
+            >
+                {/* Left section with placeholder text content */}
+                <View style={{ flex: 1, paddingRight: 10 }}>
+                    {/* Title placeholder */}
+                    <View style={{ height: 18, backgroundColor: colors.border, borderRadius: 4, marginBottom: 8, width: '70%' }} />
+
+                    {/* Location placeholder */}
+                    <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, marginBottom: 12, width: '50%' }} />
+
+                    {/* Rating placeholders */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, width: 40 }} />
+                        <View style={{ height: 16, backgroundColor: colors.border, borderRadius: 4, width: 40 }} />
+                    </View>
+                </View>
+
+                {/* Right-side thumbnail image placeholder */}
+                <View
+                    style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 10,
+                        marginLeft: 10,
+                        backgroundColor: colors.border
+                    }}
+                />
+            </View>
+        );
+    }
 
   const handlePress = () => {
     router.push({
@@ -52,10 +85,12 @@ export default function LogCard({ log, placeholder = false }) {
           onPress={handleEdit}
           style={{
             position: 'absolute',
-            top: 4,
-            right: -4,
+              top : -10,
+            right: -10,
             padding: 6,
-            zIndex: 1
+            zIndex: 1,
+            backgroundColor : colors.background,
+            borderRadius: 10,
           }}
         >
           <Ionicons name="pencil" size={16} color={colors.icon} />

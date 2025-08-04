@@ -62,11 +62,6 @@ export default function DetailsScreen() {
   if (isEditMode) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.logFormBackground }}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
           <LogForm
             mode="edit"
             initialData={log}
@@ -74,7 +69,6 @@ export default function DetailsScreen() {
             onSaved={() => navigation.goBack()}
             onCancel={() => navigation.goBack()}
           />
-        </ScrollView>
       </SafeAreaView>
     );
   }
