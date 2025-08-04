@@ -29,7 +29,7 @@ const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
       <TouchableOpacity
           activeOpacity={0.8}
           onPress={handlePress}
-          style={{ marginBottom: 48 }}
+          style={{ marginBottom: 15 }}
       >
         <View
             style={[
