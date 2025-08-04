@@ -1,3 +1,4 @@
+// context/AuthContext.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -6,17 +7,23 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Optional: restore token on app start
+  // ✅ Load both token and user data from storage on app start
   useEffect(() => {
-    const loadToken = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        // You'll typically fetch user data from backend using the token
-        // For now, just store the token if you want
-        setUser({ token }); // Replace with full user if needed
+    const loadAuthData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const storedUser = await AsyncStorage.getItem('user');
+        if (token && storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser({ ...parsedUser, token });
+        }
+      } catch (err) {
+        console.error('Error loading auth data:', err);
+        setUser(null);
       }
     };
-    loadToken();
+
+    loadAuthData();
   }, []);
 
   return (

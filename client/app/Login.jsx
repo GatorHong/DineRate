@@ -23,17 +23,16 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", form);
 
-      // ✅ Log role
-      console.log(`✅ Logged in as ${res.data.user.role}`);
+      const { token, user } = res.data;
 
-      // ✅ Save token
-      await AsyncStorage.setItem("token", res.data.token);
+      // ✅ Store both token and user info
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("user", JSON.stringify(user));
 
-      // ✅ Save user in context
-      setUser({
-        ...res.data.user,
-        token: res.data.token,
-      });
+      console.log("✅ Logged in as:", user.role);
+
+      // ✅ Set user in context with token attached
+      setUser({ ...user, token });
 
       router.replace("/(tabs)/Home");
     } catch (err) {

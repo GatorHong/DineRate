@@ -1,21 +1,31 @@
+import { useThemeStyles } from '@/constants/Styles';
+import { AuthContext } from '@/context/AuthContext';
+import api from '@/services/api';
+import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { useThemeStyles } from '../../../constants/Styles';
-import { AuthContext } from '../../../context/AuthContext'; // adjust if needed
-import api from '../../../services/api';
 
 export default function AdminPanel() {
-  const { styles, colors } = useThemeStyles();
+  const { styles } = useThemeStyles();
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
+  const router = useRouter();
 
+  // ✅ Redirect if not admin
+  useEffect(() => {
+    if (!user || user.role?.toLowerCase() !== 'admin') {
+      router.replace('/(tabs)');
+    }
+  }, [user]);
+
+  // ✅ Fetch users only if admin
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await api.get('/admin/users', {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         });
         setUsers(res.data);
@@ -24,8 +34,12 @@ export default function AdminPanel() {
       }
     };
 
-    fetchUsers();
-  }, []);
+    if (user?.role?.toLowerCase() === 'admin') {
+      fetchUsers();
+    }
+  }, [user]);
+
+  if (!user || user.role?.toLowerCase() !== 'admin') return null;
 
   return (
     <View style={styles.screenContainer}>
@@ -38,7 +52,9 @@ export default function AdminPanel() {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={localStyles.card}>
-            <Text style={localStyles.name}>{item.name} ({item.username})</Text>
+            <Text style={localStyles.name}>
+              {item.name} ({item.username})
+            </Text>
             <Text style={localStyles.role}>Role: {item.role}</Text>
           </View>
         )}
