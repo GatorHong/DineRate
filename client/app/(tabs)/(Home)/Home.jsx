@@ -27,7 +27,7 @@ const RestaurantItem = ({ restaurant, colors, styles, onPress }) => (
 );
 
 export default function Home() {
-  const { styles, colors, colorScheme } = useThemeStyles();
+  const { styles, colors } = useThemeStyles();
   const router = useRouter();
 
   const [restaurants, setRestaurants] = useState([]);
@@ -45,7 +45,7 @@ export default function Home() {
       setToken(storedToken);
     };
     fetchToken();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!token) return;
@@ -94,50 +94,75 @@ export default function Home() {
       />
   );
 
-  return (
-      <SafeAreaView style={styles.screenContainer}>
-        <View style={{ flex: 1, padding: 16 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <Text style={styles.title}>DineRate</Text>
-          </View>
+  // Custom header component for the FlatList
+  const ListHeaderComponent = () => (
+    <View style={{ paddingTop: 16, paddingLeft: 16 }}>
+      <Text style={styles.listHeader}>Nearby Restaurants</Text>
+    </View>
+  );
 
-          <View style={styles.listContainer}>
-            <Text style={styles.listHeader}>Nearby Restaurants</Text>
-            {loading ? (
-                <ActivityIndicator size="large" color={colors.tint} />
-            ) : error ? (
-                <Text style={{ color: 'red' }}>{error}</Text>
-            ) : restaurants.length === 0 ? (
-                <Text>No nearby restaurants found.</Text>
-            ) : (
-                <View style={{ flex: 1, position: 'relative' }}>
-                    <FlatList
-                        data={restaurants}
-                        renderItem={renderRestaurantItem}
-                        keyExtractor={(item) => item.place_id}
-                        showsVerticalScrollIndicator={true}
-                        contentContainerStyle={{ paddingBottom: 80 }}
-                    />
-                    <LinearGradient
-                        colors={[
-                            `${colors.background}00`,
-                            `${colors.background}70`,
-                            colors.background
-                        ]}
-                        locations={[0, 0.5, 0.85, 1]}
-                        style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            height: 80,
-                            zIndex: 100,
-                        }}
-                    />
-                </View>
-            )}
-          </View>
+  // Empty state or loading components
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={colors.tint} />
         </View>
-      </SafeAreaView>
+      );
+    }
+
+    if (error) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{error}</Text>
+        </View>
+      );
+    }
+
+    if (restaurants.length === 0) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>No nearby restaurants found.</Text>
+        </View>
+      );
+    }
+
+    return (
+      <FlatList
+        data={restaurants}
+        renderItem={renderRestaurantItem}
+        keyExtractor={(item) => item.place_id}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{ paddingBottom: 80 }}
+        ListHeaderComponent={ListHeaderComponent}
+        contentInsetAdjustmentBehavior="automatic"
+      />
+    );
+  };
+
+  return (
+    <SafeAreaView style={[styles.screenContainer, { paddingTop: 0}]}>
+      <View style={{ flex: 1, paddingHorizontal : 12 }}>
+        {renderContent()}
+        {!loading && !error && restaurants.length > 0 && (
+          <LinearGradient
+            colors={[
+              `${colors.background}00`,
+              `${colors.background}70`,
+              colors.background
+            ]}
+            locations={[0, 0.5, 0.85]}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 80,
+              zIndex: 100,
+            }}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }

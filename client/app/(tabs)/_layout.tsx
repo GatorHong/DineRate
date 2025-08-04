@@ -22,6 +22,7 @@ export default function TabLayout() {
           backgroundColor: colors.background,
         },
         headerTintColor: colors.text,
+
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.border,

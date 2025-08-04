@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { router, useLocalSearchParams } from 'expo-router';
+import {router, useLocalSearchParams, useNavigation} from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Image, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
@@ -13,6 +13,7 @@ export default function RestaurantDetail() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
+  const navigation = useNavigation();
 
   // Load user token
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function RestaurantDetail() {
     };
     fetchToken();
   }, []);
+
 
   // Parse restaurant data
   useEffect(() => {
@@ -35,8 +37,15 @@ export default function RestaurantDetail() {
     }
   }, [restaurant]);
 
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Restaurant Details',
+    });
+  }, [navigation]);
+
   if (!token) return <Text style={[styles.text, { padding: 20 }]}>Loading user...</Text>;
   if (!data) return <Text style={[styles.text, { padding: 20 }]}>Loading...</Text>;
+
 
   const handleAddToDine = async () => {
     if (!token) {

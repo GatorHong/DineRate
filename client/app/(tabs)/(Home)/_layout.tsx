@@ -6,8 +6,8 @@ export default function RootLayout() {
     return (
         <Stack screenOptions={{
             headerShown: true,
-            headerTitle : 'Restaurant',
             headerBackTitle: 'Home',
+            headerLargeTitle : true,
             headerStyle: {
                 backgroundColor: colors.background,
             },
@@ -16,8 +16,8 @@ export default function RootLayout() {
             <Stack.Screen
                 name="Home"
                 options={{
-                    headerShown: false,
-
+                    headerShown: true,
+                    headerTitle : 'DineRate',
                 }}
             />
         </Stack>
