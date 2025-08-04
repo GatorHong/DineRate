@@ -14,6 +14,8 @@ export const Colors = {
         buttonBackground: '#007AFF',
         sectionBackground: '#FFFF',
         border: '#E6E8EB',
+        subScreenBackground: '#d7f3fa',
+        subScreenHeaderBackground: '#bbe4fa',
     },
     dark: {
         text: '#FFFFFF',
@@ -28,6 +30,8 @@ export const Colors = {
         border: '#003459',
         emphasisText: '#00A7E1',
         starColor: '#00A7E1',
+        subScreenBackground: '#020829',
+        subScreenHeaderBackground: '#090221',
     },
 };
 

@@ -40,6 +40,10 @@ export default function RestaurantDetail() {
   useEffect(() => {
     navigation.setOptions({
       title: 'Restaurant Details',
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: colors.subScreenHeaderBackground,
+        }
     });
   }, [navigation]);
 
@@ -95,9 +99,9 @@ export default function RestaurantDetail() {
   const scrollEnabled = contentHeight > containerHeight && containerHeight > 0;
 
   return (
-      <SafeAreaView style={styles.screenContainer}>
+      <SafeAreaView style={[styles.screenContainer]}>
         <ScrollView
-            style={{ backgroundColor: colors.background }}
+            style={{ backgroundColor: colors.subScreenBackground }}
             contentContainerStyle={{ padding: 20 }}
             scrollEnabled={scrollEnabled}
             onLayout={(event) => {
