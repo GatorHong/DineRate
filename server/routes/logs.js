@@ -38,7 +38,7 @@ const log = new Log({
     const saved = await log.save();
     res.status(201).json(saved);
   } catch (err) {
-    console.error('❌ Failed to save log:', err.message);
+    console.error(' Failed to save log:', err.message);
     res.status(500).json({ message: 'Failed to create log' });
   }
 });
@@ -55,7 +55,7 @@ if (tag) query.tags = tag; // exact match on tags array
     const logs = await Log.find(query).sort({ createdAt: -1 });
     res.json(logs);
   } catch (err) {
-    console.error('❌ Failed to fetch logs:', err.message);
+    console.error(' Failed to fetch logs:', err.message);
     res.status(500).json({ message: 'Failed to fetch logs' });
   }
 });
@@ -75,7 +75,7 @@ router.get('/stats', authenticate, async (req, res) => {
       dined: dinedCount,
     });
   } catch (err) {
-    console.error('❌ Failed to fetch log stats:', err.message);
+    console.error(' Failed to fetch log stats:', err.message);
     res.status(500).json({ message: 'Failed to fetch log stats' });
   }
 });
@@ -87,7 +87,7 @@ router.get('/:id', authenticate, async (req, res) => {
     if (!log) return res.status(404).json({ message: 'Log not found' });
     res.json(log);
   } catch (err) {
-    console.error('❌ Failed to fetch log:', err.message);
+    console.error(' Failed to fetch log:', err.message);
     res.status(500).json({ message: 'Failed to fetch log' });
   }
 });
@@ -109,7 +109,7 @@ router.put('/:id', authenticate, async (req, res) => {
 
     res.json(updatedLog);
   } catch (err) {
-    console.error('❌ Failed to update log:', err.message);
+    console.error(' Failed to update log:', err.message);
     res.status(500).json({ message: 'Failed to update log' });
   }
 });
@@ -128,7 +128,7 @@ router.delete('/:id', authenticate, async (req, res) => {
 
     res.json({ message: 'Log deleted successfully' });
   } catch (err) {
-    console.error('❌ Failed to delete log:', err.message);
+    console.error(' Failed to delete log:', err.message);
     res.status(500).json({ message: 'Failed to delete log' });
   }
 });

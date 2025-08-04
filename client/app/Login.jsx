@@ -25,13 +25,13 @@ export default function Login() {
 
       const { token, user } = res.data;
 
-      // ✅ Store both token and user info
+      // Store both token and user info
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("user", JSON.stringify(user));
 
       console.log("✅ Logged in as:", user.role);
 
-      // ✅ Set user in context with token attached
+      // Set user in context with token attached
       setUser({ ...user, token });
 
       router.replace("/(tabs)/Home");
