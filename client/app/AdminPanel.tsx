@@ -1,31 +1,39 @@
+import ConfirmModal from '@/components/ConfirmModal';
 import { useThemeStyles } from '@/constants/Styles';
 import { AuthContext } from '@/context/AuthContext';
 import api from '@/services/api';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import {
-  Alert,
   FlatList,
+  Modal,
   RefreshControl,
+  ScrollView,
   StyleSheet,
-  Switch,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Toast from 'react-native-root-toast';
 
 export default function AdminPanel() {
-  const { styles, colors } = useThemeStyles();
+  const { styles } = useThemeStyles();
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
   const [users, setUsers] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('all'); // 'all', 'admin', 'member'
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [logModalVisible, setLogModalVisible] = useState(false);
+  const [logLoading, setLogLoading] = useState(false);
 
+  // ✅ Redirect non-admins
   useEffect(() => {
     if (!user || user.role?.toLowerCase() !== 'admin') {
       router.replace('/(tabs)');
@@ -36,10 +44,10 @@ export default function AdminPanel() {
     try {
       setRefreshing(true);
       const res = await api.get('/admin/users', {
-        headers: { Authorization: `Bearer ${user?.token}` },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
       setUsers(res.data);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch users');
     } finally {
       setRefreshing(false);
@@ -52,94 +60,89 @@ export default function AdminPanel() {
     }
   }, [user]);
 
-  const changeUserRole = async (userId, newRole) => {
+  const handleFilter = (type) => {
+    setFilter(type);
+  };
+
+  const filteredUsers = users.filter((u) => {
+    const matchesRole =
+      filter === 'all' ||
+      (filter === 'admin' && u.role === 'admin') ||
+      (filter === 'member' && u.role !== 'admin');
+    const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase());
+    return matchesRole && matchesSearch;
+  });
+
+  const handlePromoteDemote = async (id, newRole) => {
     try {
-      await api.put(`/admin/users/${userId}/role`, { role: newRole }, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      Toast.show('Role updated', { duration: Toast.durations.SHORT });
+      await api.put(
+        `/admin/users/${id}/role`,
+        { role: newRole },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
       fetchUsers();
     } catch (err) {
-      Toast.show('Failed to update role', { duration: Toast.durations.SHORT });
+      setError('Failed to update role');
     }
+    setModalVisible(false);
   };
 
-  const toggleUserActive = async (userId, currentStatus) => {
+  const handleUserPress = async (item) => {
+    setLogLoading(true);
+    setSelectedUser(item);
     try {
-      await api.put(`/admin/users/${userId}/status`, { active: !currentStatus }, {
+      const res = await api.get(`/logs/user/${item._id}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      Toast.show(`User ${!currentStatus ? 'enabled' : 'disabled'}`, { duration: Toast.durations.SHORT });
-      fetchUsers();
+      setLogs(res.data);
+      setLogModalVisible(true);
     } catch (err) {
-      Toast.show('Failed to toggle user status', { duration: Toast.durations.SHORT });
+      setError('Failed to load user logs');
+    } finally {
+      setLogLoading(false);
     }
   };
-
-  const deleteUser = (userId) => {
-    Alert.alert(
-      'Delete User',
-      'Are you sure you want to delete this user?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await api.delete(`/admin/users/${userId}`, {
-                headers: { Authorization: `Bearer ${user.token}` },
-              });
-              Toast.show('User deleted', { duration: Toast.durations.SHORT });
-              fetchUsers();
-            } catch (err) {
-              Toast.show('Failed to delete user', { duration: Toast.durations.SHORT });
-            }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const filteredUsers = users.filter((u) =>
-    filter === 'all' ? true : u.role?.toLowerCase() === filter
-  );
 
   if (!user || user.role?.toLowerCase() !== 'admin') return null;
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: 16 }]}>
-      {/* Top Bar */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+    <View style={styles.screenContainer}>
+      {/* Header */}
+      <View style={local.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={colors.text} />
+          <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>Admin Panel</Text>
         <TouchableOpacity onPress={fetchUsers}>
-          <Ionicons name="refresh" size={22} color={colors.text} />
+          <Ionicons name="refresh" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* Filter Tabs */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 12 }}>
+      {/* Filters + Search */}
+      <View style={local.filterRow}>
         {['all', 'admin', 'member'].map((type) => (
           <TouchableOpacity
             key={type}
-            onPress={() => setFilter(type)}
             style={[
-              localStyles.filterButton,
-              { backgroundColor: filter === type ? colors.tint : colors.card },
+              local.filterButton,
+              filter === type && { backgroundColor: '#007aff' },
             ]}
+            onPress={() => handleFilter(type)}
           >
-            <Text style={{ color: filter === type ? 'white' : colors.text, fontSize: 12 }}>
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </Text>
+            <Text style={{ color: 'white', textTransform: 'capitalize' }}>{type}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {error !== '' && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
+      <TextInput
+        placeholder="Search users..."
+        placeholderTextColor="#ccc"
+        style={local.searchInput}
+        value={search}
+        onChangeText={setSearch}
+      />
+
+      {error !== '' && <Text style={{ color: 'red' }}>{error}</Text>}
 
       {/* User List */}
       <FlatList
@@ -147,68 +150,116 @@ export default function AdminPanel() {
         keyExtractor={(item) => item._id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchUsers} />}
         renderItem={({ item }) => (
-          <View style={[localStyles.card, { backgroundColor: colors.card }]}>
-            <Text style={[localStyles.name, { color: colors.text }]}>
+          <TouchableOpacity
+            style={local.card}
+            onPress={() => handleUserPress(item)}
+            onLongPress={() => {
+              setSelectedUser(item);
+              setModalVisible(true);
+            }}
+          >
+            <Text style={local.name}>
               {item.name} ({item.username})
             </Text>
-            <Text style={{ color: colors.text, marginBottom: 6 }}>
-              Role: {item.role} | Status: {item.active ? 'Active' : 'Disabled'}
-            </Text>
-
-            {/* Toggle Active */}
-            <View style={localStyles.row}>
-              <Text style={{ color: colors.text }}>Active:</Text>
-              <Switch
-                value={item.active}
-                onValueChange={() => toggleUserActive(item._id, item.active)}
-              />
-            </View>
-
-            {/* Role Switch & Delete */}
-            <View style={localStyles.row}>
-              <TouchableOpacity
-                onPress={() =>
-                  changeUserRole(item._id, item.role === 'admin' ? 'member' : 'admin')
-                }
-              >
-                <Text style={{ color: colors.link }}>
-                  Make {item.role === 'admin' ? 'Member' : 'Admin'}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => deleteUser(item._id)}>
-                <Text style={{ color: 'red', marginLeft: 20 }}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+            <Text style={local.role}>Role: {item.role}</Text>
+          </TouchableOpacity>
         )}
       />
+
+      {/* Confirm Modal for Promote/Demote */}
+      <ConfirmModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onConfirm={() =>
+          handlePromoteDemote(
+            selectedUser._id,
+            selectedUser.role === 'admin' ? 'member' : 'admin'
+          )
+        }
+        message={`Are you sure you want to ${
+          selectedUser?.role === 'admin' ? 'demote' : 'promote'
+        } this user?`}
+      />
+
+      {/* Log Modal */}
+      <Modal visible={logModalVisible} animationType="slide">
+        <View style={styles.screenContainer}>
+          <View style={local.header}>
+            <TouchableOpacity onPress={() => setLogModalVisible(false)}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {selectedUser?.name}'s Logs
+            </Text>
+          </View>
+          {logLoading ? (
+            <Text style={styles.text}>Loading...</Text>
+          ) : (
+            <ScrollView>
+              <Text style={local.logHeader}>To Dine</Text>
+              {logs.toDine?.map((item, index) => (
+                <Text key={index} style={styles.text}>
+                  - {item.restaurantName}
+                </Text>
+              ))}
+              <Text style={local.logHeader}>Dined</Text>
+              {logs.dined?.map((item, index) => (
+                <Text key={index} style={styles.text}>
+                  - {item.restaurantName}
+                </Text>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 }
 
-const localStyles = StyleSheet.create({
+const local = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  filterButton: {
+    backgroundColor: '#333',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  searchInput: {
+    backgroundColor: '#222',
+    color: 'white',
+    padding: 10,
+    marginVertical: 6,
+    borderRadius: 8,
+  },
   card: {
     padding: 12,
     borderRadius: 8,
-    marginBottom: 12,
-    elevation: 1,
+    backgroundColor: '#111',
+    marginBottom: 10,
   },
   name: {
     fontWeight: 'bold',
     fontSize: 16,
-    marginBottom: 2,
+    color: 'white',
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 6,
+  role: {
+    color: 'gray',
   },
-  filterButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    marginHorizontal: 4,
+  logHeader: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginTop: 16,
+    marginBottom: 8,
+    color: 'white',
   },
 });
