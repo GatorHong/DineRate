@@ -1,3 +1,4 @@
+// controllers/authController.js
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
@@ -11,7 +12,7 @@ const generateToken = (user) => {
 // Register Controller
 exports.register = async (req, res) => {
   try {
-    const { name, username, password } = req.body;
+    const { name, username, password, role } = req.body;
 
     // ✅ Validate input fields
     if (!name || !username || !password) {
@@ -23,17 +24,25 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Username is already taken' });
     }
 
-    const user = await User.create({ name, username, password });
-    const token = generateToken(user);
+    // Only allow "Admin" role if explicitly provided, otherwise default to "Member"
+    const newUser = await User.create({
+      name,
+      username,
+      password,
+      role: role === 'Admin' ? 'Admin' : 'Member',
+    });
+
+    const token = generateToken(newUser);
 
     return res.status(201).json({
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        username: user.username,
-        bio: user.bio,
-        photo: user.photo,
+        id: newUser._id,
+        name: newUser.name,
+        username: newUser.username,
+        bio: newUser.bio,
+        photo: newUser.photo,
+        role: newUser.role,
       },
     });
   } catch (err) {
@@ -66,7 +75,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = generateToken(user);
 
     console.log("✅ Login successful");
 
@@ -78,6 +87,7 @@ exports.login = async (req, res) => {
         username: user.username,
         bio: user.bio,
         photo: user.photo,
+        role: user.role,
       },
     });
 
