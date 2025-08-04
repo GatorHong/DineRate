@@ -6,6 +6,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View, Animated, Easing }
 import { useThemeStyles } from '../constants/Styles';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import IconScroller from '../components/ScrollingIcons';
 
 export default function Login() {
   const { styles, colors } = useThemeStyles();
@@ -106,39 +107,44 @@ export default function Login() {
         </View>
       ) : (
         <>
-          <Text style={styles.title}>Login</Text>
-
-          {errorMessage !== "" && (
-            <View style={localStyles.errorContainer}>
-              <Ionicons name="warning-outline" size={18} color="red" style={{ marginRight: 6 }} />
-              <Text style={localStyles.errorText}>{errorMessage}</Text>
+            <View style={localStyles.topSection}>
+              <IconScroller colors={colors} />
             </View>
-          )}
+          <View style={[styles.formContainer, localStyles.formWrapper]}>
+            <Text style={styles.title}>Login</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor={colors.icon}
-            value={form.username}
-            onChangeText={handleUsernameChange}
-            editable={!isLoading}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={colors.icon}
-            secureTextEntry
-            value={form.password}
-            onChangeText={handlePasswordChange}
-            editable={!isLoading}
-          />
-          <TouchableOpacity
-            style={[styles.buttonContainer, isLoading && localStyles.disabledButton]}
-            onPress={handleSubmit}
-            disabled={isLoading}
-          >
-            <Text style={styles.buttonText}>{isLoading ? "Logging in..." : "Login"}</Text>
-          </TouchableOpacity>
+            {errorMessage !== "" && (
+              <View style={localStyles.errorContainer}>
+                <Ionicons name="warning-outline" size={18} color="red" style={{ marginRight: 6 }} />
+                <Text style={localStyles.errorText}>{errorMessage}</Text>
+              </View>
+            )}
+
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor={colors.icon}
+              value={form.username}
+              onChangeText={handleUsernameChange}
+              editable={!isLoading}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor={colors.icon}
+              secureTextEntry
+              value={form.password}
+              onChangeText={handlePasswordChange}
+              editable={!isLoading}
+            />
+            <TouchableOpacity
+              style={[styles.buttonContainer, isLoading && localStyles.disabledButton]}
+              onPress={handleSubmit}
+              disabled={isLoading}
+            >
+              <Text style={styles.buttonText}>{isLoading ? "Logging in..." : "Login"}</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </View>
@@ -185,5 +191,10 @@ const localStyles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.7,
-  }
+  },
+  topSection: {
+    flex: 0.4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

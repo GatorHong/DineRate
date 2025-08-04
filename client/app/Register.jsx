@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
+import IconScroller from "../components/ScrollingIcons";
 
 export default function Register() {
   const { styles, colors } = useThemeStyles();
@@ -39,6 +40,9 @@ export default function Register() {
 
   return (
     <View style={styles.screenContainer}>
+        <View style={localStyles.topSection}>
+            <IconScroller colors={colors} />
+        </View>
       <Text style={styles.title}>Register</Text>
 
       {error ? (
@@ -73,3 +77,11 @@ export default function Register() {
     </View>
   );
 }
+
+const localStyles = StyleSheet.create({
+    topSection: {
+        flex: 0.4,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
