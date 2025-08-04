@@ -65,10 +65,11 @@ export default function AdminPanel() {
   };
 
   const filteredUsers = users.filter((u) => {
+    const role = u.role?.toLowerCase();
     const matchesRole =
       filter === 'all' ||
-      (filter === 'admin' && u.role === 'admin') ||
-      (filter === 'member' && u.role !== 'admin');
+      (filter === 'admin' && role === 'admin') ||
+      (filter === 'member' && role !== 'admin');
     const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase());
     return matchesRole && matchesSearch;
   });
