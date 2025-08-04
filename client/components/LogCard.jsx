@@ -1,4 +1,4 @@
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
@@ -58,7 +58,7 @@ export default function LogCard({ log, placeholder = false }) {
             zIndex: 1
           }}
         >
-          <FontAwesome name="pencil" size={16} color={colors.icon} />
+          <Ionicons name="pencil" size={16} color={colors.icon} />
         </TouchableOpacity>
 
         {/* Title */}

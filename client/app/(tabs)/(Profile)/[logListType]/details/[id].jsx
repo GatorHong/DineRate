@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import LogForm from '../../../../../components/LogForm';
 import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
@@ -17,13 +17,13 @@ export default function DetailsScreen() {
 
   useEffect(() => {
     navigation.setOptions({
-      title: title || 'Log',
+      title: isEditMode ? 'Edit Log' : (title || 'Log'),
       headerShown: true,
       headerStyle: { backgroundColor: colors.background },
       headerTintColor: colors.text,
       headerLargeTitle: true,
     });
-  }, [navigation, title, colors]);
+  }, [navigation, title, colors, isEditMode]);
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -61,13 +61,21 @@ export default function DetailsScreen() {
 
   if (isEditMode) {
     return (
-      <LogForm
-        mode="edit"
-        initialData={log}
-        logId={id}
-        onSaved={() => navigation.goBack()}
-        onCancel={() => navigation.goBack()}
-      />
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.logFormBackground }}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          <LogForm
+            mode="edit"
+            initialData={log}
+            logId={id}
+            onSaved={() => navigation.goBack()}
+            onCancel={() => navigation.goBack()}
+          />
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
@@ -132,7 +140,7 @@ export default function DetailsScreen() {
           }}
         >
           <Text style={[styles.text, { fontStyle: 'italic', fontSize: 16 }]}>
-            "{log.description}"
+            &ldquo;{log.description}&rdquo;
           </Text>
         </View>
       )}

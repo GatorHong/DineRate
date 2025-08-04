@@ -1,4 +1,3 @@
-//if you want to use tailwind, we can use https://www.nativewind.dev
 import { StyleSheet, useColorScheme } from "react-native";
 
 //Color palette
@@ -16,6 +15,7 @@ export const Colors = {
         border: '#E6E8EB',
         subScreenBackground: '#d7f3fa',
         subScreenHeaderBackground: '#bbe4fa',
+        logFormBackground: '#d7ceb2',
     },
     dark: {
         text: '#FFFFFF',
@@ -32,6 +32,7 @@ export const Colors = {
         starColor: '#00A7E1',
         subScreenBackground: '#020829',
         subScreenHeaderBackground: '#090221',
+        logFormBackground: '#090221',
     },
 };
 

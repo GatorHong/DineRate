@@ -20,7 +20,7 @@ export default function LogList() {
       title: logListType,
       headerLargeTitle: true,
       headerStyle: {
-        backgroundColor: colors.background,
+        backgroundColor: colors.subScreenHeaderBackground,
       },
       headerTintColor: colors.text,
     });
@@ -94,7 +94,7 @@ export default function LogList() {
   };
 
   return (
-      <SafeAreaView style={[styles.screenContainer, { paddingTop: 20 }]}>
+      <SafeAreaView style={[styles.screenContainer, { paddingTop: 20, backgroundColor: colors.subScreenBackground }]}>
         {renderContent()}
       </SafeAreaView>
   );
