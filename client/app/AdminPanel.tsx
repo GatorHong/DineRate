@@ -190,19 +190,24 @@ export default function AdminPanel() {
       <ConfirmModal
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
-        onConfirm={() => {
+        onConfirm={() =>
           handlePromoteDemote(
-            selectedUser._id,
-            selectedUser.role === 'admin' ? 'member' : 'admin'
-          );
-          setModalVisible(false);
-        }}
-        message={`Are you sure you want to ${
-          selectedUser?.role === 'admin' ? 'demote' : 'promote'
-        } this user?`}
-        confirmLabel={selectedUser?.role === 'admin' ? 'Demote' : 'Promote'}
+            selectedUser?._id,
+            selectedUser?.role?.toLowerCase() === 'admin' ? 'member' : 'admin'
+          )
+        }
+        confirmLabel={
+          selectedUser?.role?.toLowerCase() === 'admin' ? 'Demote' : 'Promote'
+        }
+        message={
+          selectedUser?.role?.toLowerCase() === 'admin'
+            ? 'Are you sure you want to demote this user?'
+            : 'Are you sure you want to promote this user?'
+        }
         colors={colors}
       />
+
+
 
       {/* Log Modal */}
       <Modal visible={logModalVisible} animationType="slide">
