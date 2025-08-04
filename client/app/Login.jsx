@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 export default function Login() {
@@ -11,6 +12,7 @@ export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const handleUsernameChange = (text) => setForm({ ...form, username: text.toLowerCase() });
   const handlePasswordChange = (text) => setForm({ ...form, password: text });
@@ -20,8 +22,20 @@ export default function Login() {
 
     try {
       const res = await api.post("/auth/login", form);
+
+      // ✅ Log role
+      console.log(`✅ Logged in as ${res.data.user.role}`);
+
+      // ✅ Save token
       await AsyncStorage.setItem("token", res.data.token);
-      router.replace("/(tabs)/Home"); // 👈 Navigate to Home tab
+
+      // ✅ Save user in context
+      setUser({
+        ...res.data.user,
+        token: res.data.token,
+      });
+
+      router.replace("/(tabs)/Home");
     } catch (err) {
       const message = err?.response?.data?.message || "❌ Login failed";
       setErrorMessage(message);
