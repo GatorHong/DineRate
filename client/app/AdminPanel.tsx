@@ -242,6 +242,8 @@ export default function AdminPanel() {
                   borderRadius: 6,
                   marginTop: 20,
                   alignSelf: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}
                 onPress={() => {
                   setModalVisible(true);
@@ -249,9 +251,12 @@ export default function AdminPanel() {
                 }}
               >
                 <Text style={{ color: 'white', fontWeight: 'bold' }}>
-                  {selectedUser?.role === 'admin' ? 'Demote to Member' : 'Promote to Admin'}
+                  {selectedUser?.role?.toLowerCase() === 'admin'
+                    ? 'Demote to User'
+                    : 'Promote to Admin'}
                 </Text>
               </TouchableOpacity>
+
             </ScrollView>
           )}
         </View>

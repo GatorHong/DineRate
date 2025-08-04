@@ -28,16 +28,30 @@ export default function ConfirmModal({
 
           <View style={styles.buttonRow}>
             <TouchableOpacity onPress={onCancel}>
-              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>Cancel</Text>
+              <Text style={[styles.button, { color: colors.text || '#aaa' }]}>
+                Cancel
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {
-                console.log('✅ ConfirmModal: Confirm clicked');
+                console.log(`✅ ConfirmModal: ${confirmLabel} clicked`);
                 onConfirm();
               }}
             >
-              <Text style={[styles.button, { color: '#007aff', fontWeight: 'bold' }]}>
+              <Text
+                style={[
+                  styles.button,
+                  {
+                    color:
+                      confirmLabel.toLowerCase().includes('demote') ||
+                      confirmLabel.toLowerCase().includes('delete')
+                        ? 'red'
+                        : '#007aff',
+                    fontWeight: 'bold',
+                  },
+                ]}
+              >
                 {confirmLabel}
               </Text>
             </TouchableOpacity>
