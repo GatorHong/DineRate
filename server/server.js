@@ -11,23 +11,26 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Route Imports
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurant');
-const logRoutes = require('./routes/logs'); // Import log routes
+const logRoutes = require('./routes/logs');
 const googlePlacesRoutes = require('./routes/googlePlaces');
-app.use('/api/google', googlePlacesRoutes);
+const adminRoutes = require('./routes/admin'); // ✅ Admin route
 
+// Route Registration
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
-app.use('/api/logs', logRoutes); // Register log routes
+app.use('/api/logs', logRoutes);
+app.use('/api/google', googlePlacesRoutes);
+app.use('/api/admin', adminRoutes); // ✅ Admin route mounted
 
 // Health check
 app.get("/", (req, res) => {
   res.send("✅ DineRate backend is running.");
 });
 
-// MongoDB connection using secure environment variables
+// MongoDB connection
 const DB_USERNAME = process.env.DB_USERNAME;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const CLUSTER_URL = process.env.CLUSTER_URL;
