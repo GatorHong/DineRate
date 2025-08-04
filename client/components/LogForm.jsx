@@ -63,7 +63,7 @@ export default function LogForm({
 
   // Custom light mode color palette
   const customLightColors = {
-    background: '#d7ceb2',
+    background: defaultColors.logFormBackground,
     sectionBackground: '#f5f2e3', // Lighter version of background for better contrast
     text: '#4c5760',
     secondaryText: '#66635b',
@@ -235,7 +235,7 @@ export default function LogForm({
             headers: { Authorization: `Bearer ${token}` },
           });
 
-      router.replace({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
+      router.back({params: { refresh: 'true' }});
     } catch (err) {
       console.error('❌ Save failed:', err.response?.data || err.message);
       alert(err.response?.data?.message || 'Save failed. Please try again.');
@@ -248,7 +248,7 @@ export default function LogForm({
         headers: { Authorization: `Bearer ${token}` },
       });
       setShowConfirm(false);
-      router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
+      router.back({params: { refresh: 'true' }});
     } catch (err) {
       console.error('❌ Error deleting log:', err.message);
       alert(err.response?.data?.message || 'Delete failed.');
@@ -286,16 +286,14 @@ export default function LogForm({
         keyboardShouldPersistTaps="handled"
       >
         {/* Title */}
+        {!isEdit && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-          {isEdit ? (
-              <Ionicons name="create-outline" size={24} color={colors.text} style={{ marginRight: 8 }} />
-          ) : (
-              <Ionicons name="restaurant-outline" size={24} color={colors.text} style={{ marginRight: 8 }} />
-          )}
+              <Ionicons name="pencil-outline" size={24} color={colors.text} style={{ marginRight: 8 }} />
           <Text style={[customStyles.title, { fontSize: 24 }]}>
-            {isEdit ? 'Edit Log' : 'Log a Meal'}
+              Log a Meal
           </Text>
         </View>
+        )}
 
         {/* Restaurant Preview (with image and rating) */}
         {title !== '' && (
