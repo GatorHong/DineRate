@@ -1,14 +1,20 @@
+// routes/auth.js
 const express = require('express');
 const router = express.Router();
 const { register, login } = require('../controllers/authController');
-const protect = require('../middlewares/auth'); // ✅ import the middleware
+const { protect, isAdmin } = require('../middlewares/auth');
 
-// Public routes
 router.post('/register', register);
 router.post('/login', login);
 
+// Example: Get profile
 router.get('/profile', protect, (req, res) => {
-  res.json(req.user); // Return user profile info
+  res.json(req.user);
+});
+
+// Example: Admin-only route
+router.get('/admin-only', protect, isAdmin, (req, res) => {
+  res.json({ message: `Welcome Admin ${req.user.username}` });
 });
 
 module.exports = router;
