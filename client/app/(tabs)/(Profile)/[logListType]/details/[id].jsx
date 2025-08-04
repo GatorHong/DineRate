@@ -139,7 +139,7 @@ export default function DetailsScreen() {
   {/*Info Block */}
 <View
   style={{
-    backgroundColor: '#262626',
+    backgroundColor: colors.sectionBackground,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,

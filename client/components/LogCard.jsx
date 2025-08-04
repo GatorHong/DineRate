@@ -34,7 +34,7 @@ export default function LogCard({ log, placeholder = false }) {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: colors.cardBackground || '#1f1f1f',
+        backgroundColor: colors.sectionBackground,
         borderRadius: 14,
         padding: 14,
         marginBottom: 14,
@@ -86,28 +86,11 @@ export default function LogCard({ log, placeholder = false }) {
 
   {/* Google Rating */}
   {log.googleRating != null && !isNaN(log.googleRating) && (
-    <Text style={[styles.text, { fontWeight: 'bold', color: '#87CEEB' }]}>
+    <Text style={[styles.text, { fontWeight: 'bold', color: colors.text }]}>
       🌐 {Number(log.googleRating).toFixed(1)}
     </Text>
   )}
-
-  {/* Log Type badge */}
-  <View style={{
-    backgroundColor: colors.tint,
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  }}>
-    <Text style={{
-      color: colors.buttonText,
-      fontSize: 12,
-      fontWeight: '600',
-    }}>
-      {log.logType}
-    </Text>
-  </View>
-</View>
-
+        </View>
       </View>
 
       {/* Right-side thumbnail image */}
