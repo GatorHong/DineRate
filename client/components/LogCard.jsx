@@ -1,4 +1,4 @@
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
@@ -38,10 +38,6 @@ export default function LogCard({ log, placeholder = false }) {
         borderRadius: 14,
         padding: 14,
         marginBottom: 14,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 2,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -62,7 +58,7 @@ export default function LogCard({ log, placeholder = false }) {
             zIndex: 1
           }}
         >
-          <FontAwesome name="pencil" size={16} color={colors.icon} />
+          <Ionicons name="pencil" size={16} color={colors.icon} />
         </TouchableOpacity>
 
         {/* Title */}

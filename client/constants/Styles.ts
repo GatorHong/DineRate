@@ -1,4 +1,3 @@
-//if you want to use tailwind, we can use https://www.nativewind.dev
 import { StyleSheet, useColorScheme } from "react-native";
 
 //Color palette
@@ -14,6 +13,9 @@ export const Colors = {
         buttonBackground: '#007AFF',
         sectionBackground: '#FFFF',
         border: '#E6E8EB',
+        subScreenBackground: '#d7f3fa',
+        subScreenHeaderBackground: '#bbe4fa',
+        logFormBackground: '#d7ceb2',
     },
     dark: {
         text: '#FFFFFF',
@@ -28,6 +30,9 @@ export const Colors = {
         border: '#003459',
         emphasisText: '#00A7E1',
         starColor: '#00A7E1',
+        subScreenBackground: '#020829',
+        subScreenHeaderBackground: '#090221',
+        logFormBackground: '#090221',
     },
 };
 
@@ -85,6 +90,7 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
         },
         listContainer: {
             marginBottom: 12,
+            paddingBottom: 48,
             flex: 1
         },
         listHeader: {

@@ -63,7 +63,7 @@ export default function LogForm({
 
   // Custom light mode color palette
   const customLightColors = {
-    background: '#d7ceb2',
+    background: defaultColors.logFormBackground,
     sectionBackground: '#f5f2e3', // Lighter version of background for better contrast
     text: '#4c5760',
     secondaryText: '#66635b',

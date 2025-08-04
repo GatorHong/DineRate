@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import {ActivityIndicator, FlatList, SafeAreaView, Text, View} from 'react-native';
 import LogCard from '../../../../components/LogCard';
 import { useThemeStyles } from '../../../../constants/Styles';
 import api from '../../../../services/api';
@@ -18,12 +18,13 @@ export default function LogList() {
     navigation.setOptions({
       headerShown: true,
       title: logListType,
+      headerLargeTitle: true,
       headerStyle: {
-        backgroundColor: colors.background,
+        backgroundColor: colors.subScreenHeaderBackground,
       },
       headerTintColor: colors.text,
     });
-  }, [navigation, logListType]);
+  }, [navigation, logListType, colors]);
 
   // Fetch logs function
   const loadLogs = useCallback(async () => {
@@ -45,9 +46,9 @@ export default function LogList() {
 
   // Run on screen focus
   useFocusEffect(
-    useCallback(() => {
-      loadLogs();
-    }, [loadLogs])
+      useCallback(() => {
+        loadLogs();
+      }, [loadLogs])
   );
 
   // ✅ Call this manually after log change
@@ -57,20 +58,44 @@ export default function LogList() {
 
   const renderItem = ({ item }) => <LogCard log={item} />;
 
-  return (
-    <View style={styles.screenContainer}>
-      {loading ? (
-        <ActivityIndicator size="large" color={colors.tint} />
-      ) : logs.length === 0 ? (
-        <Text style={styles.text}>No logs found for &#34;{logListType}&#34;.</Text>
-      ) : (
+  // Empty state component
+  const EmptyListComponent = () => (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 40 }}>
+        <Text style={styles.text}>No logs found for "{logListType}".</Text>
+      </View>
+  );
+
+  // Render content based on loading state
+  const renderContent = () => {
+    if (loading) {
+      return (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color={colors.tint} />
+          </View>
+      );
+    }
+
+    return (
         <FlatList
-          data={logs}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={[styles.listContainer, { flex: 0 }]}
+            data={logs}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              paddingBottom: 80,
+              paddingTop: 16,
+              flexGrow: logs.length === 0 ? 1 : undefined
+            }}
+            showsVerticalScrollIndicator={true}
+            contentInsetAdjustmentBehavior="automatic"
+            ListEmptyComponent={EmptyListComponent}
         />
-      )}
-    </View>
+    );
+  };
+
+  return (
+      <SafeAreaView style={[styles.screenContainer, { paddingTop: 20, backgroundColor: colors.subScreenBackground }]}>
+        {renderContent()}
+      </SafeAreaView>
   );
 }
