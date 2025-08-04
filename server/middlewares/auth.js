@@ -13,13 +13,12 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    // ✅ Normalize role to lowercase ('Admin' → 'admin') for consistent comparison
+    //  Normalize role to lowercase ('Admin' → 'admin') for consistent comparison
     req.user = {
       ...user.toObject(),
       role: user.role?.toLowerCase(),
     };
 
-    console.log('🛡️ Authenticated:', req.user.username, '| role:', req.user.role);
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid token' });

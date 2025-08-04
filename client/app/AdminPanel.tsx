@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 
 export default function AdminPanel() {
-  const { styles } = useThemeStyles();
+  const { styles, colors } = useThemeStyles();
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
@@ -76,17 +76,36 @@ export default function AdminPanel() {
 
   const handlePromoteDemote = async (id, newRole) => {
     try {
-      await api.put(
+      console.log('⚙️ Promoting/Demoting user:', id, '->', newRole);
+
+      const response = await api.put(
         `/admin/users/${id}/role`,
         { role: newRole },
-        { headers: { Authorization: `Bearer ${user.token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
       );
-      fetchUsers();
-    } catch (err) {
-      setError('Failed to update role');
+
+      console.log('✅ Success:', response.data);
+
+      await fetchUsers(); // Refresh full list
+
+      // ✅ Refresh selectedUser with updated role
+      const updated = await api.get(`/admin/users`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const updatedUser = updated.data.find((u) => u._id === id);
+      setSelectedUser(updatedUser);
+
+      setModalVisible(false);
+    } catch (error) {
+      console.error('❌ Error updating role:', error.response?.data || error.message);
     }
-    setModalVisible(false);
   };
+
+
 
   const handleUserPress = async (item) => {
     setLogLoading(true);
@@ -170,16 +189,19 @@ export default function AdminPanel() {
       {/* Confirm Modal for Promote/Demote */}
       <ConfirmModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onConfirm={() =>
+        onCancel={() => setModalVisible(false)}
+        onConfirm={() => {
           handlePromoteDemote(
             selectedUser._id,
             selectedUser.role === 'admin' ? 'member' : 'admin'
-          )
-        }
+          );
+          setModalVisible(false);
+        }}
         message={`Are you sure you want to ${
           selectedUser?.role === 'admin' ? 'demote' : 'promote'
         } this user?`}
+        confirmLabel={selectedUser?.role === 'admin' ? 'Demote' : 'Promote'}
+        colors={colors}
       />
 
       {/* Log Modal */}
@@ -193,6 +215,7 @@ export default function AdminPanel() {
               {selectedUser?.name}'s Logs
             </Text>
           </View>
+
           {logLoading ? (
             <Text style={styles.text}>Loading...</Text>
           ) : (
@@ -200,15 +223,35 @@ export default function AdminPanel() {
               <Text style={local.logHeader}>To Dine</Text>
               {logs.toDine?.map((item, index) => (
                 <Text key={index} style={styles.text}>
-                  - {item.title}
+                  - {item.title ?? '[Untitled]'}
                 </Text>
               ))}
+
               <Text style={local.logHeader}>Dined</Text>
               {logs.dined?.map((item, index) => (
                 <Text key={index} style={styles.text}>
-                  - {item.title}
+                  - {item.title ?? '[Untitled]'}
                 </Text>
               ))}
+
+              {/* Promote/Demote Button */}
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#007aff',
+                  padding: 10,
+                  borderRadius: 6,
+                  marginTop: 20,
+                  alignSelf: 'center',
+                }}
+                onPress={() => {
+                  setModalVisible(true);
+                  setLogModalVisible(false);
+                }}
+              >
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                  {selectedUser?.role === 'admin' ? 'Demote to Member' : 'Promote to Admin'}
+                </Text>
+              </TouchableOpacity>
             </ScrollView>
           )}
         </View>
