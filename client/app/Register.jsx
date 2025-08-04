@@ -1,75 +1,114 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
+import IconScroller from "../components/ScrollingIcons";
 
 export default function Register() {
-  const { styles, colors } = useThemeStyles();
-  const router = useRouter();
+    const { styles, colors } = useThemeStyles();
+    const router = useRouter();
 
-  const [form, setForm] = useState({ name: '', username: '', password: '' });
-  const [error, setError] = useState('');
+    const [form, setForm] = useState({ name: '', username: '', password: '' });
+    const [error, setError] = useState('');
 
-  const handleChange = (key) => (text) => {
-    setForm((prev) => ({ ...prev, [key]: text }));
-    setError('');
-  };
+    const handleChange = (key) => (text) => {
+        setForm((prev) => ({ ...prev, [key]: text }));
+        setError('');
+    };
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.username || !form.password) {
-      setError('All fields are required.');
-      return;
-    }
+    const handleSubmit = async () => {
+        if (!form.name || !form.username || !form.password) {
+            setError('All fields are required.');
+            return;
+        }
 
-    try {
-      const res = await api.post('/auth/register', form);
-      await AsyncStorage.setItem('token', res.data.token);
-      router.replace('/Login');
-    } catch (err) {
-      const status = err.response?.status;
-      const msg =
-        status === 409
-          ? 'Username already exists. Try a different one.'
-          : err.response?.data?.message || '❌ Registration failed.';
-      setError(msg);
-    }
-  };
+        try {
+            const res = await api.post('/auth/register', form);
+            await AsyncStorage.setItem('token', res.data.token);
+            router.replace('/Login');
+        } catch (err) {
+            const status = err.response?.status;
+            const msg =
+                status === 409
+                    ? 'Username already exists. Try a different one.'
+                    : err.response?.data?.message || '❌ Registration failed.';
+            setError(msg);
+        }
+    };
 
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.title}>Register</Text>
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={localStyles.container}>
+            <ScrollView contentContainerStyle={localStyles.scrollContent}>
+                <View style={localStyles.headerSection}>
+                    <IconScroller colors={colors} />
+                </View>
 
-      {error ? (
-        <Text style={{ color: 'red', marginBottom: 12, textAlign: 'center' }}>
-          {error}
-        </Text>
-      ) : null}
+                <View style={localStyles.formSection}>
+                    <Text style={styles.title}>Register</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        value={form.name}
-        onChangeText={handleChange('name')}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={form.username}
-        onChangeText={handleChange('username')}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={form.password}
-        onChangeText={handleChange('password')}
-      />
+                    {error ? (
+                        <Text style={localStyles.errorText}>
+                            {error}
+                        </Text>
+                    ) : null}
 
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-    </View>
-  );
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Full Name"
+                        placeholderTextColor={colors.icon}
+                        value={form.name}
+                        onChangeText={handleChange('name')}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Username"
+                        placeholderTextColor={colors.icon}
+                        value={form.username}
+                        onChangeText={handleChange('username')}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        placeholderTextColor={colors.icon}
+                        secureTextEntry
+                        value={form.password}
+                        onChangeText={handleChange('password')}
+                    />
+
+                    <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
 }
+
+const localStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'transparent',
+    },
+    scrollContent: {
+        flexGrow: 1,
+        paddingHorizontal: 24,
+    },
+    headerSection: {
+        flex: 0.4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 0,
+    },
+    formSection: {
+        marginTop: 20, // Add space between scroller and form
+    },
+    errorText: {
+        color: 'red',
+        marginBottom: 12,
+        textAlign: 'center'
+    }
+});
