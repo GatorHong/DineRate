@@ -1,8 +1,7 @@
-// app/(tabs)/(Profile)/[logListType]/details/[id].jsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import LogForm from '../../../../../components/LogForm';
 import { useThemeStyles } from '../../../../../constants/Styles';
 import api from '../../../../../services/api';
@@ -18,12 +17,13 @@ export default function DetailsScreen() {
 
   useEffect(() => {
     navigation.setOptions({
-      title: title || 'Log',
+      title: isEditMode ? 'Edit Log' : (title || 'Log'),
       headerShown: true,
       headerStyle: { backgroundColor: colors.background },
       headerTintColor: colors.text,
+      headerLargeTitle: true,
     });
-  }, [navigation, title, colors]);
+  }, [navigation, title, colors, isEditMode]);
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -45,7 +45,7 @@ export default function DetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.screenContainer}>
+      <View style={[styles.screenContainer, { justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator size="large" color={colors.tint} />
       </View>
     );
@@ -53,7 +53,7 @@ export default function DetailsScreen() {
 
   if (!log) {
     return (
-      <View style={styles.screenContainer}>
+      <View style={[styles.screenContainer, { justifyContent: 'center', alignItems: 'center' }]}>
         <Text style={styles.text}>Log not found.</Text>
       </View>
     );
@@ -61,135 +61,137 @@ export default function DetailsScreen() {
 
   if (isEditMode) {
     return (
-      <LogForm
-        mode="edit"
-        initialData={log}
-        logId={id}
-        onSaved={() => navigation.goBack()}
-        onCancel={() => navigation.goBack()}
-      />
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.logFormBackground }}>
+          <LogForm
+            mode="edit"
+            initialData={log}
+            logId={id}
+            onSaved={() => navigation.goBack()}
+            onCancel={() => navigation.goBack()}
+          />
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={[styles.screenContainer, { padding: 16 }]}>
-
-  {/* 🖼️ Image */}
-  {log.photoUrl && (
-    <View
-      style={{
-        borderRadius: 16,
-        overflow: 'hidden',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        elevation: 4,
-        marginBottom: 16,
-      }}
+    <ScrollView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
     >
-      <Image
-        source={{ uri: log.photoUrl }}
-        style={{ width: '100%', height: 220 }}
-        resizeMode="cover"
-      />
-    </View>
-  )}
+      {/* 🖼️ Image */}
+      {log.photoUrl && (
+        <View
+          style={{
+            borderRadius: 16,
+            overflow: 'hidden',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.2,
+            shadowRadius: 6,
+            elevation: 4,
+            marginBottom: 16,
+          }}
+        >
+          <Image
+            source={{ uri: log.photoUrl }}
+            style={{ width: '100%', height: 220 }}
+            resizeMode="cover"
+          />
+        </View>
+      )}
 
-  {/* 🍽️ Title */}
-  {/* 🍽️ Title + Google Rating */}
-<View style={{ marginBottom: 8 }}>
-  <Text style={[styles.title, { fontSize: 22 }]}>
-    🍽️ {log.title}
-  </Text>
-  {log.googleRating != null && !isNaN(log.googleRating) && (
-  <Text style={[styles.text, { color: '#87CEEB', fontSize: 14, marginTop: 2 }]}>
-    🌐 Google Rating: {Number(log.googleRating).toFixed(1)}
-  </Text>
-)}
-
-</View>
-
-  {/* 📍 Location + Time */}
-  <View style={{ marginBottom: 16 }}>
-    <Text style={[styles.text, { color: colors.icon }]}>
-      📍 {log.location}
-    </Text>
-    <Text style={[styles.text, { color: colors.icon }]}>
-      🕒 {new Date(log.createdAt).toLocaleString()}
-    </Text>
-  </View>
-
-  {/* 📝 Description */}
-  {log.description && (
-    <View
-      style={{
-        backgroundColor: colors.sectionBackground,
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 16,
-      }}
-    >
-      <Text style={[styles.text, { fontStyle: 'italic', fontSize: 16 }]}>
-        “{log.description}”
-      </Text>
-    </View>
-  )}
-
-  {/*Info Block */}
-<View
-  style={{
-    backgroundColor: colors.sectionBackground,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  }}
->
-  <Text style={styles.text}>
-    🍔 Food: <Text style={{ color: '#FFD580' }}>{log.food}</Text>
-  </Text>
-
-  {/* ⭐ My Rating */}
-{log.rating != null && !isNaN(log.rating) && (
-  <Text style={styles.text}>
-    ⭐ My Rating: <Text style={{ color: '#FFD700' }}>{Number(log.rating).toFixed(1)}</Text>
-  </Text>
-)}
-
-  <Text style={styles.text}>
-    🔒 Visibility: <Text style={{ color: '#FF7F50' }}>{log.visibility}</Text>
-  </Text>
-  <Text style={styles.text}>
-    📂 Category: <Text style={{ color: '#87CEEB' }}>{log.logType}</Text>
-  </Text>
-</View>
-
-  {/* 🏷️ Tags */}
-  {log.tags?.length > 0 && (
-    <View style={{ marginBottom: 16 }}>
-      <Text style={[styles.text, { marginBottom: 6 }]}>🏷️ Tags:</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-        {log.tags.map((tag, index) => (
-          <Text
-            key={index}
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-              borderRadius: 20,
-              backgroundColor: '#ffb347',
-              color: '#1a1a1a',
-              fontSize: 13,
-              marginRight: 8,
-              marginBottom: 6,
-            }}
-          >
-            #{tag}
+      {/* 🍽️ Title */}
+      <View style={{ marginBottom: 8 }}>
+        <Text style={[styles.title, { fontSize: 22 }]}>
+          🍽️ {log.title}
+        </Text>
+        {log.googleRating != null && !isNaN(log.googleRating) && (
+          <Text style={[styles.text, { color: '#87CEEB', fontSize: 14, marginTop: 2 }]}>
+            🌐 Google Rating: {Number(log.googleRating).toFixed(1)}
           </Text>
-        ))}
+        )}
       </View>
-    </View>
-  )}
-</View>
 
+      {/* 📍 Location + Time */}
+      <View style={{ marginBottom: 16 }}>
+        <Text style={[styles.text, { color: colors.icon }]}>
+          📍 {log.location}
+        </Text>
+        <Text style={[styles.text, { color: colors.icon }]}>
+          🕒 {new Date(log.createdAt).toLocaleString()}
+        </Text>
+      </View>
+
+      {/* 📝 Description */}
+      {log.description && (
+        <View
+          style={{
+            backgroundColor: colors.sectionBackground,
+            padding: 12,
+            borderRadius: 10,
+            marginBottom: 16,
+          }}
+        >
+          <Text style={[styles.text, { fontStyle: 'italic', fontSize: 16 }]}>
+            &ldquo;{log.description}&rdquo;
+          </Text>
+        </View>
+      )}
+
+      {/*Info Block */}
+      <View
+        style={{
+          backgroundColor: colors.sectionBackground,
+          padding: 16,
+          borderRadius: 12,
+          marginBottom: 16,
+        }}
+      >
+        <Text style={styles.text}>
+          🍔 Food: <Text style={{ color: '#FFD580' }}>{log.food}</Text>
+        </Text>
+
+        {/* ⭐ My Rating */}
+        {log.rating != null && !isNaN(log.rating) && (
+          <Text style={styles.text}>
+            ⭐ My Rating: <Text style={{ color: '#FFD700' }}>{Number(log.rating).toFixed(1)}</Text>
+          </Text>
+        )}
+
+        <Text style={styles.text}>
+          🔒 Visibility: <Text style={{ color: '#FF7F50' }}>{log.visibility}</Text>
+        </Text>
+        <Text style={styles.text}>
+          📂 Category: <Text style={{ color: '#87CEEB' }}>{log.logType}</Text>
+        </Text>
+      </View>
+
+      {/* 🏷️ Tags */}
+      {log.tags?.length > 0 && (
+        <View style={{ marginBottom: 16 }}>
+          <Text style={[styles.text, { marginBottom: 6 }]}>🏷️ Tags:</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {log.tags.map((tag, index) => (
+              <Text
+                key={index}
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                  borderRadius: 20,
+                  backgroundColor: '#ffb347',
+                  color: '#1a1a1a',
+                  fontSize: 13,
+                  marginRight: 8,
+                  marginBottom: 6,
+                }}
+              >
+                #{tag}
+              </Text>
+            ))}
+          </View>
+        </View>
+      )}
+    </ScrollView>
   );
 }
