@@ -1,16 +1,16 @@
 import { useThemeStyles } from "@/constants/Styles";
 import { AuthContext } from "@/context/AuthContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { BlurView } from "expo-blur";
 import { Tabs, router } from "expo-router";
 import { useContext } from "react";
-import {BlurView} from "expo-blur";
-import {Platform, StyleSheet, View} from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 export default function TabLayout() {
-  const { colors } = useThemeStyles();
+  const { colors, colorScheme } = useThemeStyles();
   const { user } = useContext(AuthContext);
 
-  // ✅ Wait for user to be defined
+  // Wait for user to be defined
   if (!user) return null;
 
   const isAdmin = user.role?.toLowerCase() === "admin";
@@ -35,7 +35,7 @@ export default function TabLayout() {
                   Platform.OS === 'web'
                       ? <View style={[StyleSheet.absoluteFill]} />
                       : <BlurView
-                          tint='light'
+                          tint={colorScheme === 'dark' ? 'dark' : 'light'}
                           intensity={80}
                           style={StyleSheet.absoluteFill}
                       />

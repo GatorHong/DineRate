@@ -1,11 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { useState, useRef } from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View, Animated, Easing} from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, Easing, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import IconScroller from "../components/ScrollingIcons";
 import { useThemeStyles } from '../constants/Styles';
 import api from '../services/api';
-import IconScroller from "../components/ScrollingIcons";
 
 export default function Register() {
     const { styles, colors } = useThemeStyles();

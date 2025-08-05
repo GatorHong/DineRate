@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -7,7 +7,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -259,41 +258,35 @@ export default function LogForm({
     setShowConfirm(true);
   };
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={customStyles.formContainer}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-    >
-      <View style={customStyles.formHeader}>
-        <TouchableOpacity onPress={onCancel}>
-          <Text style={customStyles.actionButton}>Cancel</Text>
+  // Create components for the form header and form content
+  const FormHeader = (
+    <View style={customStyles.formHeader}>
+      <TouchableOpacity onPress={onCancel}>
+        <Text style={customStyles.actionButton}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleSubmit}>
+        <Text style={customStyles.emphasisButton}>{isEdit ? 'Save' : 'Done'}</Text>
+      </TouchableOpacity>
+      {isEdit && (
+        <TouchableOpacity onPress={handleDelete}>
+          <Text style={customStyles.deleteButton}>Delete</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSubmit}>
-          <Text style={customStyles.emphasisButton}>{isEdit ? 'Save' : 'Done'}</Text>
-        </TouchableOpacity>
-        {isEdit && (
-          <TouchableOpacity onPress={handleDelete}>
-            <Text style={customStyles.deleteButton}>Delete</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      )}
+    </View>
+  );
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16 }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Title */}
-        {!isEdit && (
+  // Form content before suggestions (to fix virtualized list issue)
+  const FormContentBefore = (
+    <>
+      {/* Title */}
+      {!isEdit && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <Ionicons name="pencil-outline" size={24} color={colors.text} style={{ marginRight: 8 }} />
+          <Ionicons name="pencil-outline" size={24} color={colors.text} style={{ marginRight: 8 }} />
           <Text style={[customStyles.title, { fontSize: 24 }]}>
-              Log a Meal
+            Log a Meal
           </Text>
         </View>
-        )}
+      )}
 
         {/* Restaurant Preview (with image and rating) */}
         {title !== '' && (
@@ -340,76 +333,41 @@ export default function LogForm({
           </View>
         )}
 
-        {/* Restaurant Search */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-          <Ionicons name="restaurant-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
-          <Text style={customStyles.formFieldLabel}>Restaurant</Text>
-        </View>
-        <TextInput
-          style={customStyles.formFieldInput}
-          placeholder="Search restaurant..."
-          placeholderTextColor={colors.secondaryText}
-          value={location}
-          onChangeText={handleSearch}
-        />
+      {/* Restaurant Search */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+        <Ionicons name="restaurant-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
+        <Text style={customStyles.formFieldLabel}>Restaurant</Text>
+      </View>
+      <TextInput
+        style={customStyles.formFieldInput}
+        placeholder="Search restaurant..."
+        placeholderTextColor={colors.secondaryText}
+        value={location}
+        onChangeText={handleSearch}
+      />
+    </>
+  );
 
-        {/* Suggestions */}
-        {suggestions.length > 0 && (
-          <FlatList
-            data={suggestions}
-            keyExtractor={(item) => item.place_id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleSuggestionSelect(item)}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: 10,
-                  backgroundColor: colors.sectionBackground,
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.border,
-                }}
-              >
-                {item.photo_url && (
-                  <Image
-                    source={{ uri: item.photo_url }}
-                    style={{ width: 50, height: 50, borderRadius: 8 }}
-                  />
-                )}
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: colors.text, fontWeight: 'bold' }}>{item.name}</Text>
-                  <Text style={{ color: colors.secondaryText, fontSize: 12 }}>{item.address}</Text>
-                  {item.rating && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Ionicons name="star" size={12} color={colors.starColor} style={{ marginRight: 4 }} />
-                      <Text style={{ color: colors.starColor, fontSize: 12 }}>{item.rating}</Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            )}
-            style={{ borderRadius: 8, marginTop: 6, marginBottom: 12, borderWidth: 1, borderColor: colors.border }}
-          />
-        )}
-
-        {/* Your Rating */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
-          <Ionicons name="star-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
-          <Text style={customStyles.formFieldLabel}>Your Rating</Text>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <TouchableOpacity key={num} onPress={() => setRating(num)}>
-              <Ionicons
-                name={num <= rating ? 'star' : 'star-outline'}
-                size={32}
-                color={num <= rating ? colors.starColor : colors.text}
-                style={{ marginHorizontal: 6 }}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
+  // Form content after suggestions (to fix virtualized list issue)
+  const FormContentAfter = (
+    <>
+      {/* Your Rating */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
+        <Ionicons name="star-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
+        <Text style={customStyles.formFieldLabel}>Your Rating</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
+        {[1, 2, 3, 4, 5].map((num) => (
+          <TouchableOpacity key={num} onPress={() => setRating(num)}>
+            <Ionicons
+              name={num <= rating ? 'star' : 'star-outline'}
+              size={32}
+              color={num <= rating ? colors.starColor : colors.text}
+              style={{ marginHorizontal: 6 }}
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
 
         {/* Food */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
@@ -439,50 +397,121 @@ export default function LogForm({
           textAlignVertical="top"
         />
 
-        {/* Category & Visibility */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
-          <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Ionicons name="list-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
-              <Text style={customStyles.formFieldLabel}>Category</Text>
-            </View>
-            <ToggleButton
-              options={['Dined', 'To Dine']}
-              value={logType}
-              onChange={setLogType}
-              colors={colors}
-            />
+      {/* Category & Visibility */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+            <Ionicons name="list-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
+            <Text style={customStyles.formFieldLabel}>Category</Text>
           </View>
-          <View style={{ width: 16 }} />
-          <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Ionicons name="eye-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
-              <Text style={customStyles.formFieldLabel}>Visibility</Text>
-            </View>
-            <ToggleButton
-              options={['Public', 'Private']}
-              value={visibility}
-              onChange={setVisibility}
-              colors={colors}
-            />
-          </View>
+          <ToggleButton
+            options={['Dined', 'To Dine']}
+            value={logType}
+            onChange={setLogType}
+            colors={colors}
+          />
         </View>
+        <View style={{ width: 16 }} />
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+            <Ionicons name="eye-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
+            <Text style={customStyles.formFieldLabel}>Visibility</Text>
+          </View>
+          <ToggleButton
+            options={['Public', 'Private']}
+            value={visibility}
+            onChange={setVisibility}
+            colors={colors}
+          />
+        </View>
+      </View>
 
-        {/* Tags */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
-          <Ionicons name="pricetag-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
-          <Text style={customStyles.formFieldLabel}>Tags</Text>
-        </View>
-        <TextInput
-          style={customStyles.formFieldInput}
-          placeholder="e.g. #spicy #birthday #tacos"
-          placeholderTextColor={colors.secondaryText}
-          value={tags}
-          onChangeText={setTags}
+      {/* Tags */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
+        <Ionicons name="pricetag-outline" size={18} color={colors.text} style={{ marginRight: 6 }} />
+        <Text style={customStyles.formFieldLabel}>Tags</Text>
+      </View>
+      <TextInput
+        style={customStyles.formFieldInput}
+        placeholder="e.g. #spicy #birthday #tacos"
+        placeholderTextColor={colors.secondaryText}
+        value={tags}
+        onChangeText={setTags}
+      />
+
+      <View style={{ height: 40 }} />
+    </>
+  );
+
+  // Render a suggestion item
+  const renderSuggestionItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => handleSuggestionSelect(item)}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        padding: 10,
+        backgroundColor: colors.sectionBackground,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+        borderRadius: 8,
+        marginBottom: 2,
+        marginHorizontal : 8,
+      }}
+    >
+      {item.photo_url && (
+        <Image
+          source={{ uri: item.photo_url }}
+          style={{ width: 50, height: 50, borderRadius: 8 }}
         />
+      )}
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: colors.text, fontWeight: 'bold' }}>{item.name}</Text>
+        <Text style={{ color: colors.secondaryText, fontSize: 12 }}>{item.address}</Text>
+        {item.rating && (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="star" size={12} color={colors.starColor} style={{ marginRight: 4 }} />
+            <Text style={{ color: colors.starColor, fontSize: 12 }}>{item.rating}</Text>
+          </View>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={customStyles.formContainer}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+    >
+      {FormHeader}
+
+      <FlatList
+        data={suggestions}
+        keyExtractor={(item) => item.place_id}
+        renderItem={renderSuggestionItem}
+        ListHeaderComponent={
+          <View style={{ padding: 16 }}>
+            {FormContentBefore}
+          </View>
+        }
+        ListFooterComponent={
+          <View style={{ padding: 16 }}>
+            {FormContentAfter}
+          </View>
+        }
+        style={{
+          flex: 1,
+        }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: 16,
+        }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        removeClippedSubviews={false}
+      />
 
       {/* Confirm Delete Modal */}
       <ConfirmModal

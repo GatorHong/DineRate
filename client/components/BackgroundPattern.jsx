@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
-import { useThemeStyles } from '../constants/Styles';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useRef } from 'react';
+import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native';
+import { useThemeStyles } from '../constants/Styles';
 
 const BackgroundPattern = ({
   opacity = 0.075,
@@ -86,7 +86,7 @@ const BackgroundPattern = ({
   const getGradientColors = (direction) => {
     // Use ONLY the background color with varying opacity levels
     const transparentBackground = `${colors.background}00`; // Completely transparent
-    const mediumBackground = `${colors.background}99`;      // Medium opacity
+    const mediumBackground = `${colors.background}90`;      // Medium opacity
     const fullBackground = colors.background;               // Full opacity
 
     switch(direction) {

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import {FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
 import LogCard from '../../../../components/LogCard';
 import { useThemeStyles } from '../../../../constants/Styles';
 import api from '../../../../services/api';
@@ -23,6 +23,10 @@ export default function LogList() {
         backgroundColor: colors.subScreenHeaderBackground,
       },
       headerTintColor: colors.text,
+      // Configure back button
+      headerBackVisible: true,
+      // When the back button is pressed, navigate to profile
+      onHeaderBackButtonPress: navigateBackToProfile,
     });
   }, [navigation, logListType, colors]);
 
@@ -51,7 +55,7 @@ export default function LogList() {
     }, [loadLogs])
   );
 
-  // ✅ Call this manually after log change
+  // Call this manually after log change
   const navigateBackToProfile = () => {
     router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
   };
@@ -68,7 +72,7 @@ export default function LogList() {
   );
 
   // Generate placeholder data
-  const placeholderData = Array(4).fill().map((_, index) => ({ id: `placeholder-${index}` }));
+  const placeholderData = Array(logs.length || 0).fill().map((_, index) => ({ id: `placeholder-${index}` }));
 
   // Render content based on loading state
   const renderContent = () => {

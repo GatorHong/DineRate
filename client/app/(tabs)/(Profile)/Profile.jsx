@@ -4,12 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Platform,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
+    Platform,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useThemeStyles } from '../../../constants/Styles';
@@ -29,7 +28,11 @@ const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
       <TouchableOpacity
           activeOpacity={0.8}
           onPress={handlePress}
-          style={{ marginBottom: 15 }}
+          style={{
+            width: '100%',
+            marginBottom: 16,
+            minHeight: 90, // Explicit height for web compatibility
+          }}
       >
         <View
             style={[
@@ -42,6 +45,10 @@ const TrackingListCard = ({ iconName, label, count, colors, styles }) => {
                 elevation: 3,
                 minHeight: 80,
                 paddingVertical: 16,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%', // Ensure full width on web
               }
             ]}
         >
@@ -200,18 +207,14 @@ export default function Profile() {
                                 alignItems: 'center',
                             }}
                         >
-                            {loading ? (
-                                <ActivityIndicator size="large" color="#fff" />
-                            ) : (
-                                <Text style={{ fontSize: 48, fontWeight: 'bold', color: 'white' }}>
-                                    {user.name ? user.name.charAt(0).toUpperCase() : '?'}
-                                </Text>
-                            )}
+                            <Text style={{ fontSize: 48, fontWeight: 'bold', color: 'white' }}>
+                                {user.name ? user.name.charAt(0).toUpperCase() : '?'}
+                            </Text>
                         </LinearGradient>
                     </View>
 
                     <Text style={[styles.title, { marginTop: 12, textAlign: 'center' }]}>
-                        {loading ? "Loading..." : (user.name || 'No Name')}
+                        {(user.name || 'No Name')}
                     </Text>
 
                     {!loading && user.role?.toLowerCase() === 'admin' && (
@@ -239,7 +242,7 @@ export default function Profile() {
                 </LinearGradient>
             </View>
 
-            <View style={{ flex: 1, padding: 20 }}>
+            <View style={{ flex: 1, padding: 20, display: 'flex' }}>
                 <View style={{ marginVertical: 16 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
                         <Ionicons name="person-outline" size={20} color={colors.icon} />
@@ -249,41 +252,33 @@ export default function Profile() {
                     <View style={[styles.formField, { marginBottom: 8 }]}>
                         <View style={styles.formFieldRow}>
                             <Text style={[styles.text, { color: colors.icon }]}>User ID</Text>
-                            {loading ? (
-                                <View style={{ width: 100, height: 16, backgroundColor: colors.border, borderRadius: 4 }} />
-                            ) : (
-                                <Text style={[styles.text, { fontWeight: 'bold' }]}>{user._id}</Text>
-                            )}
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>{user._id}</Text>
                         </View>
                     </View>
-
-                    
                 </View>
 
-                <View style={{ marginVertical: 16 }}>
+                <View style={{
+                    marginVertical: 16,
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: Platform.OS === 'web' ? 'none' : 1, // Fix for web flex issues
+                }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
                         <Ionicons name="list-outline" size={20} color={colors.icon} />
                         <Text style={[styles.listHeader, { marginBottom: 0, marginLeft: 8 }]}>Your Lists</Text>
                     </View>
 
-                    {loading ? (
-                        <>
-                            <View style={[styles.card, {
-                                minHeight: 80,
-                                paddingVertical: 16,
-                                marginBottom: 16,
-                                backgroundColor: colors.border,
-                                opacity: 0.7
-                            }]} />
-                            <View style={[styles.card, {
-                                minHeight: 80,
-                                paddingVertical: 16,
-                                backgroundColor: colors.border,
-                                opacity: 0.7
-                            }]} />
-                        </>
-                    ) : (
-                        <>
+                    <View style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}>
+                        <View style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '100%',
+                        }}>
                             <TrackingListCard
                                 iconName="bookmark"
                                 label="To Dine"
@@ -298,8 +293,8 @@ export default function Profile() {
                                 colors={colors}
                                 styles={styles}
                             />
-                        </>
-                    )}
+                        </View>
+                    </View>
                 </View>
             </View>
         </View>
