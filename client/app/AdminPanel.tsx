@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from 'react';
 import {
   FlatList,
   Modal,
-  RefreshControl,
+  RefreshControl, SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -128,7 +128,7 @@ export default function AdminPanel() {
   if (!user || user.role?.toLowerCase() !== 'admin') return null;
 
   return (
-    <View style={styles.screenContainer}>
+    <SafeAreaView style={styles.screenContainer}>
       {/* Header */}
       <View style={local.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -281,7 +281,7 @@ export default function AdminPanel() {
           )}
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 
