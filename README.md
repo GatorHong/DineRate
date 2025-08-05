@@ -45,7 +45,7 @@ gatorhong-dinerate/
 
 ### 🛠️ First-Time Setup (Do this **once**)
 
-Follow these steps when setting up DineRate for the very first time on your machine:
+Follow these steps to set up DineRate for the first time on your machine:
 
 1. **Clone the repository:**
     ```bash
@@ -53,7 +53,7 @@ Follow these steps when setting up DineRate for the very first time on your mach
     cd DineRate
     ```
 
-2. **Install all dependencies for both frontend and backend:**
+2. **Install dependencies for both frontend and backend:**
 
     - Frontend:
         ```bash
@@ -80,78 +80,50 @@ Follow these steps when setting up DineRate for the very first time on your mach
 
 ---
 
-## 🛠️ Frontend Setup (React Native with Expo)
+### 🧪 Running the App
 
-1. Open a terminal and navigate to the `client` folder:
-    ```bash
-    cd client
-    ```
+#### 1. Start the backend server:
 
-2. Install dependencies:
-    ```bash
-    npm install
-    npx expo install expo-location
-    ```
+Open a terminal and run:
+```bash
+cd server
+npm run dev
+```
 
-3. Start the Expo development server:
-    ```bash
-    npx expo start
-    ```
+The backend will run at: `http://localhost:5000`
 
-4. You can now preview the app using:
-    - **Expo Go app** on your physical device (scan the QR code)
-    - **Android Emulator**: [Expo Android Setup](https://docs.expo.dev/workflow/android-studio-emulator/)
-    - **iOS Simulator**: [Expo iOS Setup](https://docs.expo.dev/workflow/ios-simulator/)
-    - **Development builds**: [Expo Dev Builds](https://docs.expo.dev/develop/development-builds/introduction/)
+#### 2. Start the frontend (Expo app):
 
----
+Open another terminal and run:
+```bash
+cd client
+npx expo install expo-location   # Run once if not installed
+npx expo start
+```
 
-## 🛠️ Backend Setup (Node.js + Express + MongoDB Atlas)
-
-1. Open a **second terminal** and navigate to the `server` folder:
-    ```bash
-    cd server
-    ```
-
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Set up environment variables:  
-    Create a `.env` file inside the `server/` folder and add:
-    ```env
-    MONGO_URI=<your-mongodb-atlas-connection-string>
-    PORT=5000
-    ```
-
-4. Start the backend server:
-    ```bash
-    npm run dev
-    ```
-
-5. Your backend will run at:  
-    `http://localhost:5000`
+You can preview the app using:
+- **Expo Go app** on your physical device (scan the QR code)
+- **Android Emulator** or **iOS Simulator**
+- **Development builds**: [Expo Dev Builds](https://docs.expo.dev/develop/development-builds/introduction/)
 
 ---
 
-### 🔄 Daily Development Workflow (Every time you start coding)
+### 🔁 Daily Development Workflow
 
-Do these steps each time you want to work on the project:
+Every time you start working on the project:
 
-1. **Start the backend server:**
+1. Start the backend:
     ```bash
     cd server
     npm run dev
     ```
 
-2. **Start the frontend (Expo) server:**
+2. Start the frontend:
     ```bash
     cd client
     npx expo start
     ```
 
-3. **Use Expo Go, Android Emulator, or iOS Simulator to view the app.**
 
 
 ---
