@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 
 export default function TabLayout() {
-  const { colors } = useThemeStyles();
+  const { colors, colorScheme } = useThemeStyles();
   const { user } = useContext(AuthContext);
 
   // Wait for user to be defined
@@ -35,7 +35,7 @@ export default function TabLayout() {
                   Platform.OS === 'web'
                       ? <View style={[StyleSheet.absoluteFill]} />
                       : <BlurView
-                          tint='light'
+                          tint={colorScheme === 'dark' ? 'dark' : 'light'}
                           intensity={80}
                           style={StyleSheet.absoluteFill}
                       />

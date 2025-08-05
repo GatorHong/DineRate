@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme } from "react-native";
+import {Platform, StyleSheet, useColorScheme} from "react-native";
 
 //Color palette
 export const Colors = {
@@ -128,7 +128,8 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
 
         },
         card: {
-            flex: 1,
+            display: 'flex',
+            flex: Platform.OS === 'web' ? undefined : 0,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -136,12 +137,15 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             padding: 20,
             borderWidth: 1,
             borderColor: colors.border,
-            color : colors.sectionBackground,
+            color: colors.sectionBackground,
             backgroundColor: colors.sectionBackground,
+            flexShrink: 0,
+            width: '100%',
         },
         cardIconContainer: {
+            display: 'flex',
             alignItems: 'center',
-            color : colors.sectionBackground,
+            color: colors.sectionBackground,
             backgroundColor: colors.sectionBackground,
         },
         cardLabel: {
@@ -153,6 +157,7 @@ export const createThemedStyles = (theme: 'light' | 'dark') => {
             fontSize: 40,
             fontWeight: 'bold',
             color: colors.text,
+            flexShrink: 0, // Prevent number from being squished
         },
         // Form styles
         formContainer: {

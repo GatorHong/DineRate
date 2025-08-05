@@ -23,6 +23,10 @@ export default function LogList() {
         backgroundColor: colors.subScreenHeaderBackground,
       },
       headerTintColor: colors.text,
+      // Configure back button
+      headerBackVisible: true,
+      // When the back button is pressed, navigate to profile
+      onHeaderBackButtonPress: navigateBackToProfile,
     });
   }, [navigation, logListType, colors]);
 
@@ -68,7 +72,7 @@ export default function LogList() {
   );
 
   // Generate placeholder data
-  const placeholderData = Array(4).fill().map((_, index) => ({ id: `placeholder-${index}` }));
+  const placeholderData = Array(logs.length || 0).fill().map((_, index) => ({ id: `placeholder-${index}` }));
 
   // Render content based on loading state
   const renderContent = () => {
