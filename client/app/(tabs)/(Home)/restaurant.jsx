@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {router, useLocalSearchParams, useNavigation} from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {Platform, Alert, Image, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { Alert, Image, Linking, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '../../../constants/Styles';
 
 export default function RestaurantDetail() {

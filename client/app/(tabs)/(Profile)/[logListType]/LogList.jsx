@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import {FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
 import LogCard from '../../../../components/LogCard';
 import { useThemeStyles } from '../../../../constants/Styles';
 import api from '../../../../services/api';
@@ -51,7 +51,7 @@ export default function LogList() {
     }, [loadLogs])
   );
 
-  // ✅ Call this manually after log change
+  // Call this manually after log change
   const navigateBackToProfile = () => {
     router.push({ pathname: '/(tabs)/Profile', params: { refresh: 'true' } });
   };
