@@ -37,7 +37,7 @@ Follow these steps when setting up DineRate for the very first time on your mach
 
 1. **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/GatorHong/DineRate.git
     cd DineRate
     ```
 
@@ -60,16 +60,13 @@ Follow these steps when setting up DineRate for the very first time on your mach
     npm install -g expo-cli
     ```
 
-
 4. **Create a `.env` file inside the `server/` folder:**
     ```env
-    MONGO_URI=mongodb://127.0.0.1:27017/dinerate
+    MONGO_URI=<your-mongodb-atlas-connection-string>
     PORT=5000
     ```
 
 ---
-
-
 
 ## 🛠️ Frontend Setup (React Native with Expo)
 
@@ -97,7 +94,7 @@ Follow these steps when setting up DineRate for the very first time on your mach
 
 ---
 
-## 🛠️ Backend Setup (Node.js + Express + MongoDB)
+## 🛠️ Backend Setup (Node.js + Express + MongoDB Atlas)
 
 1. Open a **second terminal** and navigate to the `server` folder:
     ```bash
@@ -112,7 +109,7 @@ Follow these steps when setting up DineRate for the very first time on your mach
 3. Set up environment variables:  
     Create a `.env` file inside the `server/` folder and add:
     ```env
-    MONGO_URI=mongodb://127.0.0.1:27017/dinerate
+    MONGO_URI=<your-mongodb-atlas-connection-string>
     PORT=5000
     ```
 
@@ -126,60 +123,54 @@ Follow these steps when setting up DineRate for the very first time on your mach
 
 ---
 
-### 🛠️ MongoDB Local Installation (Windows)
-
-1. Download the installer:  
-    [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
-
-2. During installation:
-    - ✅ Check "Install MongoDB as a Service"
-    - ✅ Include MongoDB Compass (optional)
-
-3. Add MongoDB to your system PATH:
-    - Navigate to:  
-        `C:\Program Files\MongoDB\Server\<your-version>\bin`
-    - Copy the path.
-    - Go to:  
-        System Properties → Environment Variables → Path → New → Paste the path.
-
-4. Start MongoDB:
-    ```bash
-    mongod
-    ```
-
----
-
 ### 🔄 Daily Development Workflow (Every time you start coding)
 
 Do these steps each time you want to work on the project:
 
-1. **Start MongoDB** (if not running):
-    ```bash
-    mongod
-    ```
-
-2. **Start the backend server:**
+1. **Start the backend server:**
     ```bash
     cd server
     npm run dev
     ```
 
-3. **Start the frontend (Expo) server:**
+2. **Start the frontend (Expo) server:**
     ```bash
     cd client
     npx expo start
     ```
 
-4. **Use Expo Go, Android Emulator, or iOS Simulator to view the app.**
+3. **Use Expo Go, Android Emulator, or iOS Simulator to view the app.**
+
 
 ---
 
-## 📚 Resources
+## Resources
 
+### Mobile & Frontend
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
 - [Expo Documentation](https://docs.expo.dev/)
 - [Expo Router Guide](https://docs.expo.dev/router/introduction/)
+- [React Navigation](https://reactnavigation.org/)
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/)
+- [Axios](https://axios-http.com/)
+
+### Backend & API
+
+- [Express.js](https://expressjs.com/)
+- [JWT Auth](https://jwt.io/)
+- [Google Places API](https://developers.google.com/maps/documentation/places/web-service)
+
+### Database
+
+- [MongoDB Docs](https://docs.mongodb.com/)
 - [MongoDB Manual](https://www.mongodb.com/docs/manual/)
-- [Express.js Guide](https://expressjs.com/en/starter/installing.html)
+
+### Project Management
+
+- [Jira](https://www.atlassian.com/software/jira)
+
 
 ---
 
