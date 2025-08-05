@@ -86,7 +86,7 @@ const BackgroundPattern = ({
   const getGradientColors = (direction) => {
     // Use ONLY the background color with varying opacity levels
     const transparentBackground = `${colors.background}00`; // Completely transparent
-    const mediumBackground = `${colors.background}99`;      // Medium opacity
+    const mediumBackground = `${colors.background}90`;      // Medium opacity
     const fullBackground = colors.background;               // Full opacity
 
     switch(direction) {
