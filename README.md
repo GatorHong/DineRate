@@ -60,10 +60,8 @@ Follow these steps when setting up DineRate for the very first time on your mach
     npm install -g expo-cli
     ```
 
-4. **Set up your MongoDB server:**
-    - [MongoDB Installation Instructions](#-mongodb-local-installation-windows)
 
-5. **Create a `.env` file inside the `server/` folder:**
+4. **Create a `.env` file inside the `server/` folder:**
     ```env
     MONGO_URI=mongodb://127.0.0.1:27017/dinerate
     PORT=5000
