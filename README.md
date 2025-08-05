@@ -20,10 +20,22 @@ DineRate is a restaurant rating and review application built with **React Native
 ## 📁 Repository Structure
 
 ```
-DineRate/
-├── client/      # React Native Expo frontend
-├── server/      # Express backend with MongoDB
-└── README.md
+
+gatorhong-dinerate/
+├── client/ # React Native (Expo) frontend
+│ ├── app/ # App screens & routing (Expo Router)
+│ ├── assets/ # Fonts and images
+│ ├── components/# Reusable UI components
+│ ├── constants/ # Style and config constants
+│ ├── context/ # Global context (auth)
+│ └── services/ # API interaction logic
+├── server/ # Express backend with MongoDB Atlas
+│ ├── config/ # DB configuration
+│ ├── controllers/ # Route logic
+│ ├── middlewares/# Middleware (auth)
+│ ├── models/ # Mongoose schemas
+│ └── routes/ # API route definitions
+└── README.md # Project documentation
 ```
 
 
