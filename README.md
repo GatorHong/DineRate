@@ -20,10 +20,22 @@ DineRate is a restaurant rating and review application built with **React Native
 ## 📁 Repository Structure
 
 ```
-DineRate/
-├── client/      # React Native Expo frontend
-├── server/      # Express backend with MongoDB
-└── README.md
+
+gatorhong-dinerate/
+├── client/ # React Native (Expo) frontend
+│ ├── app/ # App screens & routing (Expo Router)
+│ ├── assets/ # Fonts and images
+│ ├── components/# Reusable UI components
+│ ├── constants/ # Style and config constants
+│ ├── context/ # Global context (auth)
+│ └── services/ # API interaction logic
+├── server/ # Express backend with MongoDB Atlas
+│ ├── config/ # DB configuration
+│ ├── controllers/ # Route logic
+│ ├── middlewares/# Middleware (auth)
+│ ├── models/ # Mongoose schemas
+│ └── routes/ # API route definitions
+└── README.md # Project documentation
 ```
 
 
@@ -33,15 +45,15 @@ DineRate/
 
 ### 🛠️ First-Time Setup (Do this **once**)
 
-Follow these steps when setting up DineRate for the very first time on your machine:
+Follow these steps to set up DineRate for the first time on your machine:
 
 1. **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/GatorHong/DineRate.git
     cd DineRate
     ```
 
-2. **Install all dependencies for both frontend and backend:**
+2. **Install dependencies for both frontend and backend:**
 
     - Frontend:
         ```bash
@@ -60,128 +72,89 @@ Follow these steps when setting up DineRate for the very first time on your mach
     npm install -g expo-cli
     ```
 
-4. **Set up your MongoDB server:**
-    - [MongoDB Installation Instructions](#-mongodb-local-installation-windows)
-
-5. **Create a `.env` file inside the `server/` folder:**
+4. **Create a `.env` file inside the `server/` folder:**
     ```env
-    MONGO_URI=mongodb://127.0.0.1:27017/dinerate
+    MONGO_URI=<your-mongodb-atlas-connection-string>
     PORT=5000
     ```
 
 ---
 
+### 🧪 Running the App
 
+#### 1. Start the backend server:
 
-## 🛠️ Frontend Setup (React Native with Expo)
+Open a terminal and run:
+```bash
+cd server
+npm run dev
+```
 
-1. Open a terminal and navigate to the `client` folder:
-    ```bash
-    cd client
-    ```
+The backend will run at: `http://localhost:5000`
 
-2. Install dependencies:
-    ```bash
-    npm install
-    npx expo install expo-location
-    ```
+#### 2. Start the frontend (Expo app):
 
-3. Start the Expo development server:
-    ```bash
-    npx expo start
-    ```
+Open another terminal and run:
+```bash
+cd client
+npx expo install expo-location   # Run once if not installed
+npx expo start
+```
 
-4. You can now preview the app using:
-    - **Expo Go app** on your physical device (scan the QR code)
-    - **Android Emulator**: [Expo Android Setup](https://docs.expo.dev/workflow/android-studio-emulator/)
-    - **iOS Simulator**: [Expo iOS Setup](https://docs.expo.dev/workflow/ios-simulator/)
-    - **Development builds**: [Expo Dev Builds](https://docs.expo.dev/develop/development-builds/introduction/)
-
----
-
-## 🛠️ Backend Setup (Node.js + Express + MongoDB)
-
-1. Open a **second terminal** and navigate to the `server` folder:
-    ```bash
-    cd server
-    ```
-
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Set up environment variables:  
-    Create a `.env` file inside the `server/` folder and add:
-    ```env
-    MONGO_URI=mongodb://127.0.0.1:27017/dinerate
-    PORT=5000
-    ```
-
-4. Start the backend server:
-    ```bash
-    npm run dev
-    ```
-
-5. Your backend will run at:  
-    `http://localhost:5000`
+You can preview the app using:
+- **Expo Go app** on your physical device (scan the QR code)
+- **Android Emulator** or **iOS Simulator**
+- **Development builds**: [Expo Dev Builds](https://docs.expo.dev/develop/development-builds/introduction/)
 
 ---
 
-### 🛠️ MongoDB Local Installation (Windows)
+### 🔁 Daily Development Workflow
 
-1. Download the installer:  
-    [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
+Every time you start working on the project:
 
-2. During installation:
-    - ✅ Check "Install MongoDB as a Service"
-    - ✅ Include MongoDB Compass (optional)
-
-3. Add MongoDB to your system PATH:
-    - Navigate to:  
-        `C:\Program Files\MongoDB\Server\<your-version>\bin`
-    - Copy the path.
-    - Go to:  
-        System Properties → Environment Variables → Path → New → Paste the path.
-
-4. Start MongoDB:
-    ```bash
-    mongod
-    ```
-
----
-
-### 🔄 Daily Development Workflow (Every time you start coding)
-
-Do these steps each time you want to work on the project:
-
-1. **Start MongoDB** (if not running):
-    ```bash
-    mongod
-    ```
-
-2. **Start the backend server:**
+1. Start the backend:
     ```bash
     cd server
     npm run dev
     ```
 
-3. **Start the frontend (Expo) server:**
+2. Start the frontend:
     ```bash
     cd client
     npx expo start
     ```
 
-4. **Use Expo Go, Android Emulator, or iOS Simulator to view the app.**
+
 
 ---
 
-## 📚 Resources
+## Resources
 
+### Mobile & Frontend
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
 - [Expo Documentation](https://docs.expo.dev/)
 - [Expo Router Guide](https://docs.expo.dev/router/introduction/)
+- [React Navigation](https://reactnavigation.org/)
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/)
+- [Axios](https://axios-http.com/)
+
+### Backend & API
+
+- [Express.js](https://expressjs.com/)
+- [JWT Auth](https://jwt.io/)
+- [Google Places API](https://developers.google.com/maps/documentation/places/web-service)
+
+### Database
+
+- [MongoDB Docs](https://docs.mongodb.com/)
 - [MongoDB Manual](https://www.mongodb.com/docs/manual/)
-- [Express.js Guide](https://expressjs.com/en/starter/installing.html)
+
+### Project Management
+
+- [Jira](https://www.atlassian.com/software/jira)
+
 
 ---
 
